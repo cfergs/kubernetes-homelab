@@ -32,7 +32,7 @@ spec:
   claimRef:
     kind: PersistentVolumeClaim
     name: config-file-pvc
-    namespace: downloads
+    namespace: media
   persistentVolumeReclaimPolicy: Retain
   storageClassName: longhorn-customised
   volumeMode: Filesystem
@@ -41,7 +41,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: config-file-pvc
-  namespace: downloads
+  namespace: media
 spec:
   accessModes:
     - ReadWriteMany
