@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: init-sonarr-cm
-  namespace: downloads
+  name: init-radarr-cm
+  namespace: media
 data:
-  99-sonarr-init.sh: |
+  99-radarr-init.sh: |
     #!/usr/bin/with-contenv bash
 
     FILE=${CONFIG_FILE}
-    URL=/sonarr
+    URL=/radarr
 
     if [ ! -f "$FILE" ]; then
       echo "no config file exists - you must be doing a fresh install"
@@ -25,19 +25,19 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sonarr
-  namespace: downloads
+  name: radarr
+  namespace: media
   labels:
-    app: sonarr
+    app: radarr
 spec:
   replicas: 1 # tells deployment to run x pods matching the template
   selector:
     matchLabels:
-      app: sonarr
+      app: radarr
   template:
     metadata:
       labels:
-        app: sonarr
+        app: radarr
     spec:
       volumes:
       - name: config-volume
@@ -45,13 +45,13 @@ spec:
           claimName: config-file-pvc
       - name: scripts # name of volume
         configMap:
-          name: init-sonarr-cm # name of the ConfigMap you want to mount.
+          name: init-radarr-cm # name of the ConfigMap you want to mount.
           items: # files to create
-          - key: 99-sonarr-init.sh
-            path: 99-sonarr-init.sh
+          - key: 99-radarr-init.sh
+            path: 99-radarr-init.sh
       containers:
-      - name: sonarr
-        image: hotio/sonarr
+      - name: radarr
+        image: hotio/radarr
         lifecycle:
           postStart:
             exec:
@@ -60,11 +60,11 @@ spec:
         - name: CONFIG_FILE
           value: /config/config.xml
         ports:
-        - containerPort: 8989
+        - containerPort: 7878
         volumeMounts:
         - name: config-volume
-          mountPath: /config
-          subPath: configs/sonarr
+          mountPath: "/config"
+          subPath: "configs/radarr"
         - name: scripts
           mountPath: /scripts
         startupProbe:
@@ -72,45 +72,42 @@ spec:
             command:
               - /bin/sh
               - -c
-              - grep "<UrlBase>/sonarr</UrlBase>" /config/config.xml
-              # other ways of testing that didnt pan out
-              # curl -s http://localhost:8989/sonarr/ping -H 'Accept: application/json' | jq -e '. | select(.status=="OK")'
-              # file=$(cat /config/config.xml); APIKEY=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' <<< "$file"); jq -e ".urlBase" <<< $( curl -s -k --fail "localhost:8989/sonarr/api/v3/system/status?apiKey=$APIKEY"); ## need to add in if $? then exit 1 
+              - grep "<UrlBase>/radarr</UrlBase>" /config/config.xml
           failureThreshold: 10
           periodSeconds: 10
         livenessProbe:
           httpGet:
-            path: /sonarr
-            port: 8989
+            path: /radarr
+            port: 7878
           initialDelaySeconds: 60
           periodSeconds: 60
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sonarr
-  namespace: downloads
+  name: radarr
+  namespace: media
   labels:
-    app: sonarr
+    app: radarr
 spec:
   ports:
-  - port: 8989
+  - port: 7878
     protocol: TCP
-    targetPort: 8989
+    targetPort: 7878
   selector:
-    app: sonarr
+    app: radarr
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: sonarr-ingress
-  namespace: downloads
+  name: radarr-ingress
+  namespace: media
 spec:
   entryPoints:
   - web
   routes:
-    - match: PathPrefix(`/sonarr`)
+    - match: PathPrefix(`/radarr`)
       kind: Rule
       services:
-        - name: sonarr
-          port: 8989
+        - name: radarr
+          port: 7878
