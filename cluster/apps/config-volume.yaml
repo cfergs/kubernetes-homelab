@@ -20,7 +20,7 @@ metadata:
   name: config-file-pv
 spec:
   capacity:
-    storage: 1Gi
+    storage: 5Gi
   csi:
     driver: driver.longhorn.io
     volumeHandle: config-file-volume
@@ -47,7 +47,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
+      storage: 5Gi
   volumeName: config-file-pv
   storageClassName: longhorn-customised
   volumeMode: Filesystem
