@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sabnzbd
+  namespace: media
+  labels:
+    app: sabnzbd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sabnzbd
+  template:
+    metadata:
+      labels:
+        app: sabnzbd
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+      volumes:
+      - name: config-volume
+        persistentVolumeClaim:
+          claimName: config-file-pvc
+      containers:
+      - name: sabnzbd
+        image: ghcr.io/k8s-at-home/sabnzbd
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TZ
+          value: Australia/Perth
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+          subPath: configs/sabnzbd
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sabnzbd
+  namespace: media
+  labels:
+    app: sabnzbd
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: sabnzbd
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sabnzbd-ingress
+  namespace: media
+spec:
+  entryPoints:
+  - web
+  routes:
+    - match: PathPrefix(`/sabnzbd`)
+      kind: Rule
+      services:
+        - name: sabnzbd
+          port: 8080

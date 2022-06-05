@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-bazarr-files
+  namespace: media
+data:
+  config.ini: |
+    [general]
+    ip = 0.0.0.0
+    port = 6767
+    base_url = /bazarr
+
+    [analytics]
+    enabled = False
+  entrypoint.sh: |
+    #!/usr/bin/env bash
+
+    #shellcheck disable=SC1091
+    source "/shim/umask.sh"
+    source "/shim/vpn.sh"
+
+    if [[ ! -f "/config/config/config.ini" ]]; then
+      printf "Copying over default configuration ... "
+      mkdir -p /config/config
+      cp /app/config.ini /config/config/config.ini
+    fi
+
+    exec /usr/bin/python3 /app/bazarr.py --no-update --config /config ${EXTRA_ARGS}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bazarr
+  namespace: media
+  labels:
+    app: bazarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bazarr
+  template:
+    metadata:
+      labels:
+        app: bazarr
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+      volumes:
+      - name: config-volume
+        persistentVolumeClaim:
+          claimName: config-file-pvc
+      - name: bazarr-config-ini
+        configMap:
+          name: init-bazarr-files
+          items:
+          - key: config.ini
+            path: config.ini
+          defaultMode: 0644
+      - name: bazarr-entrypoint-sh
+        configMap:
+          name: init-bazarr-files
+          items:
+          - key: entrypoint.sh
+            path: entrypoint.sh
+          defaultMode: 0755
+      containers:
+      - name: bazarr
+        image: ghcr.io/k8s-at-home/bazarr
+        command: ["/bin/sh"]
+        args: ["-c", "/app/entrypoint.sh"]
+        ports:
+        - containerPort: 6767
+        volumeMounts:
+        - name: config-volume
+          mountPath: "/config"
+          subPath: "configs/bazarr"
+        - name: bazarr-config-ini
+          mountPath: /app/config.ini
+          subPath: config.ini
+        - name: bazarr-entrypoint-sh
+          mountPath: /app/entrypoint.sh
+          subPath: entrypoint.sh
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bazarr
+  namespace: media
+  labels:
+    app: bazarr
+spec:
+  ports:
+  - port: 6767
+    protocol: TCP
+    targetPort: 6767
+  selector:
+    app: bazarr
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: bazarr-ingress
+  namespace: media
+spec:
+  entryPoints:
+  - web
+  routes:
+    - match: PathPrefix(`/bazarr`)
+      kind: Rule
+      services:
+        - name: bazarr
+          port: 6767
