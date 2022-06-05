@@ -1,26 +1,43 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: init-sonarr-cm
+  name: init-sonarr-files
   namespace: media
 data:
-  99-sonarr-init.sh: |
-    #!/usr/bin/with-contenv bash
+  config.xml: |
+    <Config>
+      <LogLevel>info</LogLevel>
+      <EnableSsl>False</EnableSsl>
+      <Port>8989</Port>
+      <SslPort>9898</SslPort>
+      <UrlBase>/sonarr</UrlBase>
+      <BindAddress>*</BindAddress>
+      <ApiKey></ApiKey>
+      <AuthenticationMethod>None</AuthenticationMethod>
+      <UpdateMechanism>BuiltIn</UpdateMechanism>
+      <LaunchBrowser>True</LaunchBrowser>
+      <Branch>main</Branch>
+      <SslCertHash></SslCertHash>
+      <AnalyticsEnabled>False</AnalyticsEnabled>
+    </Config>
+  entrypoint.sh: |
+    #!/usr/bin/env bash
 
-    FILE=${CONFIG_FILE}
-    URL=/sonarr
+    #shellcheck disable=SC1091
+    source "/shim/umask.sh"
+    source "/shim/vpn.sh"
 
-    if [ ! -f "$FILE" ]; then
-      echo "no config file exists - you must be doing a fresh install"
-      echo "a config file will be created for you by the container. Restart container to update values"
+    if [[ ! -f "/config/config.xml" ]]; then
+      printf "Copying over default configuration ... "
+      mkdir -p /config
+      cp /app/config.xml /config/config.xml
+
+      printf "Creating api keys ... "
+      api_key=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)
+      sed -i -e "s/<ApiKey><\/ApiKey>$/<ApiKey>${api_key}<\/ApiKey>/g" /config/config.xml
     fi
 
-    if [ -f "$FILE" ]; then
-      sed -i '/<UrlBase><\/UrlBase>/,${s||<UrlBase>'"$URL"'<\/UrlBase>|;b};$q1' $FILE
-      if [ $? -eq 0 ]; then
-        echo "updated baseurl to $URL"
-      fi
-    fi
+    exec /usr/bin/mono --debug /app/Sonarr.exe --nobrowser --data=/config ${EXTRA_ARGS}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,7 +47,7 @@ metadata:
   labels:
     app: sonarr
 spec:
-  replicas: 1 # tells deployment to run x pods matching the template
+  replicas: 1
   selector:
     matchLabels:
       app: sonarr
@@ -39,51 +56,49 @@ spec:
       labels:
         app: sonarr
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
       volumes:
       - name: config-volume
         persistentVolumeClaim:
           claimName: config-file-pvc
-      - name: scripts # name of volume
+      - name: sonarr-config-xml
         configMap:
-          name: init-sonarr-cm # name of the ConfigMap you want to mount.
-          items: # files to create
-          - key: 99-sonarr-init.sh
-            path: 99-sonarr-init.sh
+          name: init-sonarr-files
+          items:
+          - key: config.xml
+            path: config.xml
+          defaultMode: 0644
+      - name: sonarr-entrypoint-sh
+        configMap:
+          name: init-sonarr-files
+          items:
+          - key: entrypoint.sh
+            path: entrypoint.sh
+          defaultMode: 0755
       containers:
       - name: sonarr
-        image: hotio/sonarr
-        lifecycle:
-          postStart:
-            exec:
-              command: ["/bin/sh", "-c", 'cp /scripts/* /etc/cont-init.d/']
-        env:
-        - name: CONFIG_FILE
-          value: /config/config.xml
+        image: ghcr.io/k8s-at-home/sonarr
+        command: ["/bin/sh"]
+        args: ["-c", "/app/entrypoint.sh"]
         ports:
         - containerPort: 8989
         volumeMounts:
         - name: config-volume
-          mountPath: /config
-          subPath: configs/sonarr
-        - name: scripts
-          mountPath: /scripts
-        startupProbe:
-          exec:
-            command:
-              - /bin/sh
-              - -c
-              - grep "<UrlBase>/sonarr</UrlBase>" /config/config.xml
-              # other ways of testing that didnt pan out
-              # curl -s http://localhost:8989/sonarr/ping -H 'Accept: application/json' | jq -e '. | select(.status=="OK")'
-              # file=$(cat /config/config.xml); APIKEY=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' <<< "$file"); jq -e ".urlBase" <<< $( curl -s -k --fail "localhost:8989/sonarr/api/v3/system/status?apiKey=$APIKEY"); ## need to add in if $? then exit 1 
-          failureThreshold: 10
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /sonarr
-            port: 8989
-          initialDelaySeconds: 60
-          periodSeconds: 60
+          mountPath: "/config"
+          subPath: "configs/sonarr"
+        - name: sonarr-config-xml
+          mountPath: /app/config.xml
+          subPath: config.xml
+        - name: sonarr-entrypoint-sh
+          mountPath: /app/entrypoint.sh
+          subPath: entrypoint.sh
+        securityContext:
+          allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
