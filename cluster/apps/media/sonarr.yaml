@@ -6,18 +6,7 @@ metadata:
 data:
   config.xml: |
     <Config>
-      <LogLevel>info</LogLevel>
-      <EnableSsl>False</EnableSsl>
-      <Port>8989</Port>
-      <SslPort>9898</SslPort>
       <UrlBase>/sonarr</UrlBase>
-      <BindAddress>*</BindAddress>
-      <ApiKey></ApiKey>
-      <AuthenticationMethod>None</AuthenticationMethod>
-      <UpdateMechanism>BuiltIn</UpdateMechanism>
-      <LaunchBrowser>True</LaunchBrowser>
-      <Branch>main</Branch>
-      <SslCertHash></SslCertHash>
       <AnalyticsEnabled>False</AnalyticsEnabled>
     </Config>
   entrypoint.sh: |
@@ -31,10 +20,6 @@ data:
       printf "Copying over default configuration ... "
       mkdir -p /config
       cp /app/config.xml /config/config.xml
-
-      printf "Creating api keys ... "
-      api_key=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)
-      sed -i -e "s/<ApiKey><\/ApiKey>$/<ApiKey>${api_key}<\/ApiKey>/g" /config/config.xml
     fi
 
     exec /usr/bin/mono --debug /app/Sonarr.exe --nobrowser --data=/config ${EXTRA_ARGS}

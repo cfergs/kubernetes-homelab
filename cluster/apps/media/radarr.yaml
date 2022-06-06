@@ -6,19 +6,7 @@ metadata:
 data:
   config.xml: |
     <Config>
-      <LogLevel>info</LogLevel>
       <UrlBase>/radarr</UrlBase>
-      <UpdateMechanism>BuiltIn</UpdateMechanism>
-      <BindAddress>*</BindAddress>
-      <Port>7878</Port>
-      <SslPort>9898</SslPort>
-      <EnableSsl>False</EnableSsl>
-      <LaunchBrowser>True</LaunchBrowser>
-      <ApiKey></ApiKey>
-      <AuthenticationMethod>None</AuthenticationMethod>
-      <Branch>master</Branch>
-      <SslCertPath></SslCertPath>
-      <SslCertPassword></SslCertPassword>
       <AnalyticsEnabled>False</AnalyticsEnabled>
     </Config>
   entrypoint.sh: |
@@ -32,10 +20,6 @@ data:
       printf "Copying over default configuration ... "
       mkdir -p /config
       cp /app/config.xml /config/config.xml
-
-      printf "Creating api keys ... "
-      api_key=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 32 | head -n 1)
-      sed -i -e "s/<ApiKey><\/ApiKey>$/<ApiKey>${api_key}<\/ApiKey>/g" /config/config.xml
     fi
 
     exec /app/Radarr --nobrowser --data=/config ${EXTRA_ARGS}
