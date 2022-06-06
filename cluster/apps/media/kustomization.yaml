@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 - bazarr.yaml
 - mylar3.yaml
+- prowlarr.yaml
 - radarr.yaml
 - sabnzbd.yaml
 - sonarr.yaml
