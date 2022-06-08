@@ -29,10 +29,6 @@ spec:
       numberOfReplicas: "2"
   accessModes:
     - ReadWriteMany
-  #claimRef:
-  #  kind: PersistentVolumeClaim
-  #  name: config-file-pvc
-  #  namespace: media
   persistentVolumeReclaimPolicy: Retain
   storageClassName: longhorn-customised
   volumeMode: Filesystem

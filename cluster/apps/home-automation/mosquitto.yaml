@@ -21,7 +21,7 @@ metadata:
   labels:
     app: mosquitto
 spec:
-  replicas: 1 # tells deployment to run x pods matching the template
+  replicas: 1
   selector:
     matchLabels:
       app: mosquitto

@@ -2,6 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - bazarr.yaml
+- media-namespace.yaml
+- media-volume.yaml
 - mylar3.yaml
 - prowlarr.yaml
 - radarr.yaml

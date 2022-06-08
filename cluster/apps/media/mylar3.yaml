@@ -61,7 +61,7 @@ metadata:
   labels:
     app: mylar3
 spec:
-  replicas: 1 # tells deployment to run x pods matching the template
+  replicas: 1
   selector:
     matchLabels:
       app: mylar3
@@ -74,10 +74,10 @@ spec:
       - name: config-volume
         persistentVolumeClaim:
           claimName: config-file-pvc
-      - name: scripts # name of volume
+      - name: scripts
         configMap:
-          name: init-mylar3-cm # name of the ConfigMap you want to mount.
-          items: # files to create
+          name: init-mylar3-cm
+          items:
           - key: 99-mylar3-init.sh
             path: 99-mylar3-init.sh
       containers:
@@ -100,7 +100,7 @@ spec:
           subPath: configs/mylar3
         - name: scripts
           mountPath: /scripts
-        startupProbe:  # broken - fix
+        startupProbe:
           exec:
             command:
               - /bin/sh
