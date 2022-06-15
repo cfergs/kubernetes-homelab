@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
 - longhorn-class.yaml
 - longhorn-ingress.yml
-- longhorn-install.yaml
