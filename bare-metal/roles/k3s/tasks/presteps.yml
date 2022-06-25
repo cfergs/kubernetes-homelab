@@ -1,0 +1,11 @@
+---
+- name: Uninstall modemmanager
+  apt:
+    name: modemmanager
+    state: absent
+
+- name: Install nfs # without this volumes wont work
+  become: true
+  ansible.builtin.apt:
+    name: nfs-common
+    update_cache: yes
