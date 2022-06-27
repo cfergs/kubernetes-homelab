@@ -1,0 +1,6 @@
+---
+- name: Install Kubectl
+  include_tasks: kubectl.yml
+
+- name: Flux Deployment
+  include_tasks: flux.yml

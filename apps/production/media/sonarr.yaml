@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-sonarr-files
+  namespace: media
+data:
+  config.xml: |
+    <Config>
+      <UrlBase>/sonarr</UrlBase>
+      <AnalyticsEnabled>False</AnalyticsEnabled>
+    </Config>
+  entrypoint.sh: |
+    #!/usr/bin/env bash
+
+    #shellcheck disable=SC1091
+    source "/shim/umask.sh"
+    source "/shim/vpn.sh"
+
+    if [[ ! -f "/config/config.xml" ]]; then
+      printf "Copying over default configuration ... "
+      mkdir -p /config
+      cp /app/config.xml /config/config.xml
+    fi
+
+    exec /usr/bin/mono --debug /app/Sonarr.exe --nobrowser --data=/config ${EXTRA_ARGS}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  namespace: media
+  labels:
+    app: sonarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+      volumes:
+      - name: config-volume
+        persistentVolumeClaim:
+          claimName: config-file-pvc
+      - name: sonarr-config-xml
+        configMap:
+          name: init-sonarr-files
+          items:
+          - key: config.xml
+            path: config.xml
+          defaultMode: 0644
+      - name: sonarr-entrypoint-sh
+        configMap:
+          name: init-sonarr-files
+          items:
+          - key: entrypoint.sh
+            path: entrypoint.sh
+          defaultMode: 0755
+      containers:
+      - name: sonarr
+        image: ghcr.io/k8s-at-home/sonarr
+        command: ["/bin/sh"]
+        args: ["-c", "/app/entrypoint.sh"]
+        ports:
+        - containerPort: 8989
+        volumeMounts:
+        - name: config-volume
+          mountPath: "/config"
+          subPath: "configs/sonarr"
+        - name: sonarr-config-xml
+          mountPath: /app/config.xml
+          subPath: config.xml
+        - name: sonarr-entrypoint-sh
+          mountPath: /app/entrypoint.sh
+          subPath: entrypoint.sh
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr
+  namespace: media
+  labels:
+    app: sonarr
+spec:
+  ports:
+  - port: 8989
+    protocol: TCP
+    targetPort: 8989
+  selector:
+    app: sonarr
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sonarr-ingress
+  namespace: media
+spec:
+  entryPoints:
+  - web
+  routes:
+    - match: PathPrefix(`/sonarr`)
+      kind: Rule
+      services:
+        - name: sonarr
+          port: 8989

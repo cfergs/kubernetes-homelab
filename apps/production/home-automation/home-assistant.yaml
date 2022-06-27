@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homeassistant
+  namespace: home-automation
+  labels:
+    app: homeassistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homeassistant
+  template:
+    metadata:
+      labels:
+        app: homeassistant
+    spec:
+      volumes:
+      - name: automation-volume
+        persistentVolumeClaim:
+          claimName: automation-volume-pvc
+      containers:
+      - name: homeassistant
+        image: homeassistant/home-assistant
+        ports:
+        - containerPort: 8123
+        env:
+        - name: TZ
+          value: Australia/Perth
+        volumeMounts:
+        - name: automation-volume
+          mountPath: /config
+          subPath: configs/home-assistant
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homeassistant
+  namespace: home-automation
+  labels:
+    app: homeassistant
+spec:
+  ports:
+  - port: 8123
+    protocol: TCP
+    targetPort: 8123
+  selector:
+    app: homeassistant
