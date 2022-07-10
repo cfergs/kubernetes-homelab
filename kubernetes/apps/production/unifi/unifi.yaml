@@ -73,3 +73,18 @@ spec:
     protocol: UDP
   selector:
     app: unifi
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: unifi-ingress
+  namespace: media
+spec:
+  entryPoints:
+  - web
+  routes:
+    - match: PathPrefix(`/unifi`)
+      kind: Rule
+      services:
+        - name: unifi
+          port: 8443
