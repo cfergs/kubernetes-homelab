@@ -2,4 +2,4 @@
   connection: local
   become: true
   roles:
-    - name: flux 
+    - name: flux

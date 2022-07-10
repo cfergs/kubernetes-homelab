@@ -1,6 +1,6 @@
 ---
 - name: Install Kubernetes
-  include_role:
+  ansible.builtin.include_role:
     name: xanmanning.k3s
 
 - name: cluster | kubeconfig | copy config file to localhost
