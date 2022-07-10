@@ -1,3 +1,53 @@
+apiVersion: longhorn.io/v1beta1
+kind: Volume
+metadata:
+  labels:
+    longhornvolume: bazarr-config-volume
+    #recurring-job-group.longhorn.io/backup: enabled
+  name: bazarr-config-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwx
+  storageClassName: longhorn-customised
+  engineImage: longhornio/longhorn-engine:v1.2.4
+  frontend: blockdev
+  numberOfReplicas: 2
+  size: "104857600"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: bazarr-config-pv
+spec:
+  capacity:
+    storage: 100Mi
+  csi:
+    driver: driver.longhorn.io
+    volumeHandle: bazarr-config-volume
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: "2"
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-customised
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: bazarr-config-pvc
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+  volumeName: bazarr-config-pv
+  storageClassName: longhorn-customised
+  volumeMode: Filesystem
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -53,7 +103,7 @@ spec:
       volumes:
       - name: config-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: bazarr-config-pvc
       - name: bazarr-config-ini
         configMap:
           name: init-bazarr-files
@@ -78,7 +128,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: "/config"
-          subPath: "configs/bazarr"
+          subPath: "bazarr"
         - name: bazarr-config-ini
           mountPath: /app/config.ini
           subPath: config.ini
