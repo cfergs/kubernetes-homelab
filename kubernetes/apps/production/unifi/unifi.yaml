@@ -78,7 +78,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: unifi-ingress
-  namespace: media
+  namespace: unifi
 spec:
   entryPoints:
   - web
