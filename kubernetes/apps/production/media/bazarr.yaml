@@ -3,6 +3,7 @@ kind: Volume
 metadata:
   labels:
     longhornvolume: bazarr-config-volume
+    #recurring-job-group.longhorn.io/backup: enabled
   name: bazarr-config-volume
   namespace: longhorn-system
 spec:
@@ -126,8 +127,8 @@ spec:
         - containerPort: 6767
         volumeMounts:
         - name: config-volume
-          mountPath: /config
-          subPath: bazarr
+          mountPath: "/config"
+          subPath: "bazarr"
         - name: bazarr-config-ini
           mountPath: /app/config.ini
           subPath: config.ini

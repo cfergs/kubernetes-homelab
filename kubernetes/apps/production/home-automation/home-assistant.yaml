@@ -1,52 +1,3 @@
-apiVersion: longhorn.io/v1beta1
-kind: Volume
-metadata:
-  labels:
-    longhornvolume: home-assistant-config-volume
-  name: home-assistant-config-volume
-  namespace: longhorn-system
-spec:
-  accessMode: rwx
-  storageClassName: longhorn-customised
-  engineImage: longhornio/longhorn-engine:v1.2.4
-  frontend: blockdev
-  numberOfReplicas: 2
-  size: "1073741824"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: home-assistant-config-pv
-spec:
-  capacity:
-    storage: 1Gi
-  csi:
-    driver: driver.longhorn.io
-    volumeHandle: home-assistant-config-volume
-    fsType: ext4
-    volumeAttributes:
-      numberOfReplicas: "2"
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: longhorn-customised
-  volumeMode: Filesystem
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: home-assistant-config-pvc
-  namespace: media
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  volumeName: home-assistant-config-pv
-  storageClassName: longhorn-customised
-  volumeMode: Filesystem
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -67,7 +18,7 @@ spec:
       volumes:
       - name: automation-volume
         persistentVolumeClaim:
-          claimName: home-assistant-config-pvc
+          claimName: automation-volume-pvc
       containers:
       - name: homeassistant
         image: homeassistant/home-assistant
@@ -79,7 +30,7 @@ spec:
         volumeMounts:
         - name: automation-volume
           mountPath: /config
-          subPath: home-assistant
+          subPath: configs/home-assistant
 ---
 apiVersion: v1
 kind: Service
