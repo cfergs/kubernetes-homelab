@@ -1,10 +1,11 @@
 ---
 - name: Flux | Setup | Binary
-  include_role:
+  ansible.builtin.include_role:
     name: nicholaswilde.flux2
 
-- name: Flux | Check
-  ansible.builtin.shell: 'flux check --kubeconfig "{{ kubectl_configpath }}/config"'
+- name: Flux | Check # noqa no-changed-when
+# forces prerequisites
+  ansible.builtin.command: 'flux check --kubeconfig "{{ kubectl_configpath }}/config"'
   register: flux_check
 
 - name: Flux | Deploy | Set Github PAT
@@ -14,7 +15,7 @@
     flux bootstrap github --owner={{ github_owner }} \
     --repository={{ repository_name }} \
     --path={{ target_path }} \
-    --branch={{ branch }} \ 
+    --branch={{ branch }} \
     --personal={{ personal }} \
     --private={{ private }} \
     --kubeconfig "{{ kubectl_configpath }}/config"

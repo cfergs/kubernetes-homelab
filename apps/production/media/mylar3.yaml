@@ -35,7 +35,7 @@ data:
         if [ $? -eq 0 ]; then
           echo "updated baseurl to $URL"
         fi
-      
+
       if [ ${COMICVINE_API_KEY_FILE} ]; then
         COMICVINE_APIKEY=$(cat $COMICVINE_API_KEY_FILE)
         sed -i '/comicvine_api = None$/,${s||comicvine_api = '"${COMICVINE_APIKEY}"'|;b};$q1' $FILE

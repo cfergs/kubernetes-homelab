@@ -1,6 +1,6 @@
 ---
 - name: Uninstall modemmanager
-  apt:
+  ansible.builtin.apt:
     name: modemmanager
     state: absent
 
