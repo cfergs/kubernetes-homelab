@@ -45,7 +45,7 @@ spec:
         - name: TZ
           value: Australia/Perth
         volumeMounts:
-        - name: automation-volume
+        - name: unifi-volume
           mountPath: /unifi
 ---
 apiVersion: v1
