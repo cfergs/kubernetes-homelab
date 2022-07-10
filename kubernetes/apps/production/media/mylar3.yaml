@@ -1,3 +1,52 @@
+apiVersion: longhorn.io/v1beta1
+kind: Volume
+metadata:
+  labels:
+    longhornvolume: mylar3-config-volume
+  name: mylar3-config-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwx
+  storageClassName: longhorn-customised
+  engineImage: longhornio/longhorn-engine:v1.2.4
+  frontend: blockdev
+  numberOfReplicas: 2
+  size: "104857600"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: mylar3-config-pv
+spec:
+  capacity:
+    storage: 100Mi
+  csi:
+    driver: driver.longhorn.io
+    volumeHandle: mylar3-config-volume
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: "2"
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-customised
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mylar3-config-pvc
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+  volumeName: mylar3-config-pv
+  storageClassName: longhorn-customised
+  volumeMode: Filesystem
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -73,7 +122,7 @@ spec:
       volumes:
       - name: config-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: mylar3-config-pvc
       - name: scripts
         configMap:
           name: init-mylar3-cm
@@ -97,7 +146,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /config
-          subPath: configs/mylar3
+          subPath: mylar3
         - name: scripts
           mountPath: /scripts
         startupProbe:

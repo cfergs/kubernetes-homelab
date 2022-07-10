@@ -1,3 +1,52 @@
+apiVersion: longhorn.io/v1beta1
+kind: Volume
+metadata:
+  labels:
+    longhornvolume: prowlarr-config-volume
+  name: prowlarr-config-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwx
+  storageClassName: longhorn-customised
+  engineImage: longhornio/longhorn-engine:v1.2.4
+  frontend: blockdev
+  numberOfReplicas: 2
+  size: "524288000"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: prowlarr-config-pv
+spec:
+  capacity:
+    storage: 500Mi
+  csi:
+    driver: driver.longhorn.io
+    volumeHandle: prowlarr-config-volume
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: "2"
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-customised
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: prowlarr-config-pvc
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
+  volumeName: prowlarr-config-pv
+  storageClassName: longhorn-customised
+  volumeMode: Filesystem
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -50,7 +99,7 @@ spec:
       volumes:
       - name: config-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: prowlarr-config-pvc
       - name: prowlarr-config-xml
         configMap:
           name: init-prowlarr-files
@@ -74,8 +123,8 @@ spec:
         - containerPort: 9696
         volumeMounts:
         - name: config-volume
-          mountPath: "/config"
-          subPath: "configs/prowlarr"
+          mountPath: /config
+          subPath: prowlarr
         - name: prowlarr-config-xml
           mountPath: /app/config.xml
           subPath: config.xml

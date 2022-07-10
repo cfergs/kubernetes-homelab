@@ -1,3 +1,52 @@
+apiVersion: longhorn.io/v1beta1
+kind: Volume
+metadata:
+  labels:
+    longhornvolume: sabnzbd-config-volume
+  name: sabnzbd-config-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwx
+  storageClassName: longhorn-customised
+  engineImage: longhornio/longhorn-engine:v1.2.4
+  frontend: blockdev
+  numberOfReplicas: 2
+  size: "1073741824"
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: sabnzbd-config-pv
+spec:
+  capacity:
+    storage: 1Gi
+  csi:
+    driver: driver.longhorn.io
+    volumeHandle: sabnzbd-config-volume
+    fsType: ext4
+    volumeAttributes:
+      numberOfReplicas: "2"
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-customised
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sabnzbd-config-pvc
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: sabnzbd-config-pv
+  storageClassName: longhorn-customised
+  volumeMode: Filesystem
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,7 +73,7 @@ spec:
       volumes:
       - name: config-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: sabnzbd-config-pvc
       containers:
       - name: sabnzbd
         image: ghcr.io/k8s-at-home/sabnzbd
