@@ -8,7 +8,6 @@ metadata:
   namespace: longhorn-system
 spec:
   accessMode: rwx
-  storageClassName: longhorn-customised
   dataLocality: best-effort
   engineImage: longhornio/longhorn-engine:v1.3.0
   frontend: blockdev
