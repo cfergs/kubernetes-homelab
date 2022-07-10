@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unifi
+  namespace: unifi
+  labels:
+    app: unifi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unifi
+  template:
+    metadata:
+      labels:
+        app: unifi
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        fsGroupChangePolicy: "OnRootMismatch"
+      volumes:
+      - name: unifi-volume
+        persistentVolumeClaim:
+          claimName: unifi-volume-pvc
+      containers:
+      - name: unifi
+        image: jacobalberty/unifi:stable-6
+        ports:
+        - containerPort: 3478 # used for STUN
+          name: ubnt-3478
+          protocol: UDP
+        - containerPort: 8080 # device and application communication
+          name: ubnt-8080
+          protocol: TCP
+        - containerPort: 8443 # application GUI/API as seen in a web browser - Non Appliance
+          name: ubnt-8443
+          protocol: TCP
+        - containerPort: 10001
+          name: ubnt-10001
+          protocol: UDP
+        env:
+        - name: TZ
+          value: Australia/Perth
+        volumeMounts:
+        - name: automation-volume
+          mountPath: /unifi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi
+  namespace: unifi
+  labels:
+    app: unifi
+spec:
+  ports:
+  - port: 3478
+    name: stun-port
+    targetPort: 3478
+    protocol: UDP
+  - port: 8080
+    name: uap-inform
+    targetPort: 8080
+  - port: 8443
+    name: controller-gui-api
+    targetPort: 8443
+  - port: 10001
+    name: ap-discovery
+    targetPort: 10001
+    protocol: UDP
+  selector:
+    app: unifi
