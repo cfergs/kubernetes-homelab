@@ -1,0 +1,7 @@
+exclude_paths:
+  - .venv
+  - apps
+  - clusters
+  - infrastructure
+  - scratch
+use_default_rules: true
