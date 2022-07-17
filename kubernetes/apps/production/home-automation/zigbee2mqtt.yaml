@@ -16,28 +16,24 @@ spec:
       labels:
         app: zigbee2mqtt
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
       volumes:
       - name: automation-volume
         persistentVolumeClaim:
           claimName: automation-volume-pvc
-      - name: zigbee2mqtt-udev
-        hostPath:
-          path: /run/udev
-      - name: ttyusb
-        hostPath:
-          path: /dev/ttyUSB0
       containers:
       - name: zigbee2mqtt
-        image: koenkk/zigbee2mqtt
-        securityContext:
-          privileged: true
+        image: koenkk/zigbee2mqtt:1.26.0
         ports:
         - containerPort: 8080
         env:
         - name: TZ
           value: Australia/Perth
-        - name: ZIGBEE2MQTT_CONFIG_FRONTEND_HOST
-          value: '0.0.0.0'
         - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PORT
           value: '8080'
         - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
@@ -45,7 +41,7 @@ spec:
         - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
           value: 'true'
         - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
-          value: /dev/ttyUSB0
+          value: tcp://zigbee-ser2sock:10000
         - name: ZIGBEE2MQTT_CONFIG_ADVANCED_CHANNEL
           value: '20'
         - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT
@@ -58,10 +54,8 @@ spec:
         - name: automation-volume
           mountPath: /app/data
           subPath: configs/zigbee2mqtt
-        - name: zigbee2mqtt-udev
-          mountPath: /run/udev
-        - name: ttyusb
-          mountPath: /dev/ttyUSB0
+        securityContext:
+          allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
@@ -77,18 +71,30 @@ spec:
     targetPort: 8080
   selector:
     app: zigbee2mqtt
-#---
-#apiVersion: traefik.containo.us/v1alpha1
-#kind: IngressRoute
-#metadata:
-#  name: zigbee2mqtt-ingress
-#  namespace: home-automation
-#spec:
-#  entryPoints:
-#  - web
-#  routes:
-#    - match: PathPrefix(`/zigbee2mqtt`)
-#      kind: Rule
-#      services:
-#        - name: zigbee2mqtt
-#          port: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: zigbee2mqtt-ingress
+  namespace: home-automation
+spec:
+  entryPoints:
+  - web
+  routes:
+    - match: PathPrefix(`/zigbee2mqtt`)
+      kind: Rule
+      services:
+        - name: zigbee2mqtt
+          port: 8080
+      middlewares:
+        - name: zigbee2mqtt-stripprefixregex
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: zigbee2mqtt-stripprefixregex
+  namespace: home-automation
+spec:
+  stripPrefixRegex:
+    regex:
+      - "/[a-z0-9_]+"
