@@ -5,4 +5,5 @@ resources:
 - ha-volume.yaml
 - home-assistant.yaml
 - mosquitto.yaml
+- ser2sock.yaml
 - zigbee2mqtt.yaml
