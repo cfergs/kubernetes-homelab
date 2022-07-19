@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee-ser2sock
+  namespace: home-automation
+  labels:
+    app: zigbee-ser2sock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zigbee-ser2sock
+  template:
+    metadata:
+      labels:
+        app: zigbee-ser2sock
+    spec:
+      volumes:
+      - name: ttyusb
+        hostPath:
+          path: /dev/ttyUSB0
+      containers:
+      - name: ser2sock
+        image: tenstartups/ser2sock@sha256:379d9338c720da30b63dc4cf2ecea07eb89dac7d62d5c79047294fffe97ae559
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 10000
+        env:
+        - name: BAUD_RATE
+          value: '115200'
+        - name: LISTENER_PORT
+          value: '10000'
+        - name: SERIAL_DEVICE
+          value: /dev/ttyUSB0
+        volumeMounts:
+        - name: ttyusb
+          mountPath: /dev/ttyUSB0
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: usb
+                operator: In
+                values:
+                - zigbee
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zigbee-ser2sock
+  namespace: home-automation
+  labels:
+    app: zigbee-ser2sock
+spec:
+  ports:
+  - port: 10000
+    protocol: TCP
+    targetPort: 10000
+  selector:
+    app: zigbee-ser2sock

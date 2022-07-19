@@ -21,7 +21,7 @@ spec:
           claimName: automation-volume-pvc
       containers:
       - name: homeassistant
-        image: homeassistant/home-assistant
+        image: homeassistant/home-assistant:2022.3.8
         ports:
         - containerPort: 8123
         env:

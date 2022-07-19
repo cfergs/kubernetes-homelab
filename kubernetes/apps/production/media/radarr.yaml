@@ -1,29 +1,3 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: init-radarr-files
-  namespace: media
-data:
-  config.xml: |
-    <Config>
-      <UrlBase>/radarr</UrlBase>
-      <AnalyticsEnabled>False</AnalyticsEnabled>
-    </Config>
-  entrypoint.sh: |
-    #!/usr/bin/env bash
-
-    #shellcheck disable=SC1091
-    source "/shim/umask.sh"
-    source "/shim/vpn.sh"
-
-    if [[ ! -f "/config/config.xml" ]]; then
-      printf "Copying over default configuration ... "
-      mkdir -p /config
-      cp /app/config.xml /config/config.xml
-    fi
-
-    exec /app/Radarr --nobrowser --data=/config ${EXTRA_ARGS}
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -51,37 +25,18 @@ spec:
       - name: config-volume
         persistentVolumeClaim:
           claimName: config-file-pvc
-      - name: radarr-config-xml
-        configMap:
-          name: init-radarr-files
-          items:
-          - key: config.xml
-            path: config.xml
-          defaultMode: 0644
-      - name: radarr-entrypoint-sh
-        configMap:
-          name: init-radarr-files
-          items:
-          - key: entrypoint.sh
-            path: entrypoint.sh
-          defaultMode: 0755
       containers:
       - name: radarr
         image: ghcr.io/k8s-at-home/radarr
-        command: ["/bin/sh"]
-        args: ["-c", "/app/entrypoint.sh"]
         ports:
         - containerPort: 7878
+        env:
+        - name: RADARR__URL_BASE
+          value: /radarr
         volumeMounts:
         - name: config-volume
           mountPath: "/config"
           subPath: "configs/radarr"
-        - name: radarr-config-xml
-          mountPath: /app/config.xml
-          subPath: config.xml
-        - name: radarr-entrypoint-sh
-          mountPath: /app/entrypoint.sh
-          subPath: entrypoint.sh
         securityContext:
           allowPrivilegeEscalation: false
 ---
