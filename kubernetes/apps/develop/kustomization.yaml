@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 - ../production/media/media-namespace.yaml
 - ../production/media/media-volume.yaml
+- ../production/media/sonarr.yaml
 patches:
   - patch: |-
       - op: replace

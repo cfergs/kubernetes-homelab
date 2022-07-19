@@ -11,3 +11,12 @@ spec:
   path: ./kubernetes/infrastructure/production
   prune: true
   validation: client
+patches:
+  - patch: |-
+      - op: replace
+        path: /parameters/numberOfReplicas
+        value: "1"
+    target:
+      kind: StorageClass
+      name: longhorn-customised
+      namespace: longhorn-system
