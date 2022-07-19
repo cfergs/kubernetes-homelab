@@ -2,4 +2,33 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - ../production/media/media-namespace.yaml
-- media-volume.yaml
+- ../production/media/media-volume.yaml
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/size
+        value: "1368709120"
+    target:
+      kind: Volume
+      name: config-file-volume
+  - patch: |-
+      - op: replace
+        path: /spec/capacity/storage
+        value: 1Gi
+    target:
+      kind: PersistentVolume
+      name: config-file-pv
+  - patch: |-
+      - op: replace
+        path: /spec/csi/volumeAttributes/numberOfReplicas
+        value: "1"
+    target:
+      kind: PersistentVolume
+      name: config-file-pv
+  - patch: |-
+      - op: replace
+        path: /spec/resources/requests/storage
+        value: 1Gi
+    target:
+      kind: PersistentVolumeClaim
+      name: config-file-pvc
