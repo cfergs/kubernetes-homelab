@@ -20,13 +20,6 @@ patches:
       name: config-file-pv
   - patch: |-
       - op: replace
-        path: /spec/csi/volumeAttributes/numberOfReplicas
-        value: "1"
-    target:
-      kind: PersistentVolume
-      name: config-file-pv
-  - patch: |-
-      - op: replace
         path: /spec/resources/requests/storage
         value: 1Gi
     target:
