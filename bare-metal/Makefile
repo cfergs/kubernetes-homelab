@@ -6,11 +6,14 @@ venv:
 
 	. .venv/bin/activate; ansible-galaxy install -r requirements.yml
 
+ansible-k3s-dev:
+	ansible-playbook -i ./inventory/inventory-develop.yml k3scluster.yml --ask-pass --ask-become-pass -vvvv
+
 ansible-k3s-prod:
 	ansible-playbook -i ./inventory/inventory-prod.yml k3scluster.yml --ask-pass --ask-become-pass
 
-ansible-k3s-dev:
-	ansible-playbook -i ./inventory/inventory-develop.yml k3scluster.yml --ask-pass --ask-become-pass
+ansible-flux-dev:
+	ansible-playbook -i ./inventory/inventory-develop.yml localhost.yml --ask-pass --ask-become-pass
 
-ansible-flux:
-	ansible-playbook localhost.yml --ask-pass --ask-become-pass
+ansible-flux-prod:
+	ansible-playbook -i ./inventory/inventory-prod.yml localhost.yml --ask-pass --ask-become-pass

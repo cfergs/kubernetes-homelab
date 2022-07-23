@@ -8,7 +8,7 @@
   ansible.builtin.command: 'flux check --kubeconfig "{{ kubectl_configpath }}/config"'
   register: flux_check
 
-- name: Flux | Deploy | Set Github PAT
+- name: Flux | Deploy | Bootstrap Cmd
   ansible.builtin.shell: |
     export GITHUB_TOKEN={{ github_token }}
 

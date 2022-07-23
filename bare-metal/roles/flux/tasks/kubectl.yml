@@ -27,8 +27,8 @@
   ansible.builtin.copy:
     src: /tmp/kubeconfig
     dest: '{{ kubectl_configpath }}/config'
-    backup: yes
-    mode: 0600 #originally 644
+    backup: true
+    mode: 0600 # originally 644
   when:
     - result.stat.exists
     - (result.stat.isdir is undefined) or (not result.stat.isdir)

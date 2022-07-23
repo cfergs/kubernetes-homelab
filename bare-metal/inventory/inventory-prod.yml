@@ -1,0 +1,24 @@
+---
+localhost:
+  hosts:
+    127.0.0.1
+  vars:
+    ansible_connection: local
+    branch: main
+    target_path: kubernetes/clusters/production
+    github_token:
+
+k3s_cluster:
+  hosts:
+    monty:
+      k3s_control_node: true
+      ansible_host: 192.168.0.225
+    crackers:
+      ansible_host: 192.168.0.226
+    # mindy:
+    #  ansible_host: 192.168.0.227
+  vars:
+    ansible_connection: paramiko # don't need to apt-get sshpass
+    ansible_user: ubuntu
+    ansible_python_interpreter: /usr/bin/python3
+    k3s_registration_address: 192.168.0.225

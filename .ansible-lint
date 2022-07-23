@@ -1,7 +1,4 @@
 exclude_paths:
   - .venv
-  - apps
-  - clusters
-  - infrastructure
-  - scratch
+  - kubernetes
 use_default_rules: true
