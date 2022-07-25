@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: flux-system
+  name: cluster-settings
+data:
+  DOMAIN_NAME: banana.com
+  METAL_LB_RANGE: 192.168.0.11-192.168.0.12

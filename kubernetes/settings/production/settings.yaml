@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: flux-system
+  name: cluster-settings
+data:
+  DOMAIN_NAME: chickenwaffles.net
+  METAL_LB_RANGE: 192.168.0.241-192.168.0.254
+  

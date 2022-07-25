@@ -4,10 +4,12 @@ metadata:
   name: infrastructure
   namespace: flux-system
 spec:
-  interval: 10m0s
+  interval: 5m0s
+  dependsOn:
+    - name: settings
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/infrastructure/production
+  path: ./kubernetes/infrastructure
   prune: true
   validation: client

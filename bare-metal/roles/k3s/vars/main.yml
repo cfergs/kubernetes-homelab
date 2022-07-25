@@ -2,9 +2,11 @@
 k3s_become: true
 k3s_install_hard_links: true
 k3s_release_version: v1.24.1+k3s1
-#    k3s_server:
-#      disable:
-#        - servicelb
+k3s_server:
+  disable:
+    - servicelb
 k3s_server_manifests_urls:
   - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.3.0/deploy/longhorn.yaml
     filename: longhorn.yml
+  - url: https://raw.githubusercontent.com/metallb/metallb/v0.13.4/config/manifests/metallb-native.yaml
+    filename: metallb-native.yaml
