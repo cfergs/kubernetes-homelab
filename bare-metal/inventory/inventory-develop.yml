@@ -4,7 +4,7 @@ localhost:
     127.0.0.1
   vars:
     ansible_connection: local
-    branch: develop
+    branch: ingress-metallb
     target_path: kubernetes/clusters/develop
     github_token:
 
