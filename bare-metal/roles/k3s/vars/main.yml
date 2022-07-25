@@ -5,6 +5,7 @@ k3s_release_version: v1.24.1+k3s1
 k3s_server:
   disable:
     - servicelb
+    - traefik
 k3s_server_manifests_urls:
   - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.3.0/deploy/longhorn.yaml
     filename: longhorn.yml
