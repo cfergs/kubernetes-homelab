@@ -21,10 +21,10 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
-      volumes:
-      - name: config-volume
-        persistentVolumeClaim:
-          claimName: config-file-pvc
+    #  volumes:
+    #  - name: config-volume
+    #    persistentVolumeClaim:
+    #      claimName: config-file-pvc
       containers:
       - name: sonarr
         image: ghcr.io/k8s-at-home/sonarr
@@ -33,10 +33,10 @@ spec:
         env:
         - name: SONARR__URL_BASE
           value: /sonarr
-        volumeMounts:
-        - name: config-volume
-          mountPath: "/config"
-          subPath: "configs/sonarr"
+      #  volumeMounts:
+      #  - name: config-volume
+      #    mountPath: "/config"
+      #    subPath: "configs/sonarr"
         securityContext:
           allowPrivilegeEscalation: false
 ---
@@ -54,3 +54,20 @@ spec:
     targetPort: 8989
   selector:
     app: sonarr
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sonarr-ingress
+  namespace: media
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /sonarr
+        pathType: Prefix
+        backend:
+          service:
+            name: sonarr
+            port:
+              number: 8989
