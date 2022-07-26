@@ -71,3 +71,4 @@ spec:
             name: sonarr
             port:
               number: 8989
+  ingressClassName: nginx
