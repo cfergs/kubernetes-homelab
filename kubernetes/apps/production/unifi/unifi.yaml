@@ -51,11 +51,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: ${UNIFI_IP}
   name: unifi
   namespace: unifi
   labels:
     app: unifi
 spec:
+  externalTrafficPolicy: Local
   ports:
   - port: 3478
     name: stun-port
@@ -73,18 +76,23 @@ spec:
     protocol: UDP
   selector:
     app: unifi
+  type: LoadBalancer
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: unifi-ingress
   namespace: unifi
 spec:
-  entryPoints:
-  - web
-  routes:
-    - match: PathPrefix(`/unifi`)
-      kind: Rule
-      services:
-        - name: unifi
-          port: 8443
+  ingressClassName: nginx-internal
+  rules:
+  - host: mgmt.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /unifi
+        pathType: Prefix
+        backend:
+          service:
+            name: controller-gui-api
+            port:
+              number: 8443

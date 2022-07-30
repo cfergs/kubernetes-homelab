@@ -103,17 +103,21 @@ spec:
   selector:
     app: bazarr
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: bazarr-ingress
   namespace: media
 spec:
-  entryPoints:
-  - web
-  routes:
-    - match: PathPrefix(`/bazarr`)
-      kind: Rule
-      services:
-        - name: bazarr
-          port: 6767
+  ingressClassName: nginx
+  rules:
+  - host: media.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /bazarr
+        pathType: Prefix
+        backend:
+          service:
+            name: bazarr
+            port:
+              number: 6767

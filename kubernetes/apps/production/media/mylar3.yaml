@@ -130,17 +130,21 @@ spec:
   selector:
     app: mylar3
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: mylar3-ingress
   namespace: media
 spec:
-  entryPoints:
-  - web
-  routes:
-    - match: PathPrefix(`/comics`)
-      kind: Rule
-      services:
-        - name: mylar3
-          port: 8090
+  ingressClassName: nginx
+  rules:
+  - host: media.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /comics
+        pathType: Prefix
+        backend:
+          service:
+            name: mylar3
+            port:
+              number: 8090

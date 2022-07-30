@@ -55,17 +55,21 @@ spec:
   selector:
     app: sabnzbd
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: sabnzbd-ingress
   namespace: media
 spec:
-  entryPoints:
-  - web
-  routes:
-    - match: PathPrefix(`/sabnzbd`)
-      kind: Rule
-      services:
-        - name: sabnzbd
-          port: 8080
+  ingressClassName: nginx
+  rules:
+  - host: media.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /sabnzbd
+        pathType: Prefix
+        backend:
+          service:
+            name: sabnzbd
+            port:
+              number: 8080

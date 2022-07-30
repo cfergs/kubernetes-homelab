@@ -1,36 +1,20 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   name: longhorn-ingress
   namespace: longhorn-system
 spec:
-  entryPoints:
-    - web
-  routes:
-    - match: PathPrefix(`/longhorn/`)
-      kind: Rule
-      services:
-        - name: longhorn-frontend
-          port: http
-      middlewares:
-        - name: longhorn-stripprefix
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: svc-longhorn-headers
-  namespace: longhorn-system
-spec:
-  headers:
-    customRequestHeaders:
-      X-Forwarded-Proto: "https"
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: longhorn-stripprefix
-  namespace: longhorn-system
-spec:
-  stripPrefix:
-    prefixes:
-      - /longhorn/
+  ingressClassName: nginx-internal
+  rules:
+  - host: mgmt.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /longhorn(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: longhorn-frontend
+            port:
+              number: 80

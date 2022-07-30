@@ -46,3 +46,22 @@ spec:
     targetPort: 8123
   selector:
     app: homeassistant
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hass-ingress
+  namespace: home-automation
+spec:
+  ingressClassName: nginx-internal
+  rules:
+  - host: hass.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: homeassistant
+            port:
+              number: 8123

@@ -55,17 +55,21 @@ spec:
   selector:
     app: sonarr
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: sonarr-ingress
   namespace: media
 spec:
-  entryPoints:
-  - web
-  routes:
-    - match: PathPrefix(`/sonarr`)
-      kind: Rule
-      services:
-        - name: sonarr
-          port: 8989
+  ingressClassName: nginx
+  rules:
+  - host: media.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /sonarr
+        pathType: Prefix
+        backend:
+          service:
+            name: sonarr
+            port:
+              number: 8989

@@ -9,3 +9,12 @@
   ansible.builtin.apt:
     name: nfs-common
     update_cache: true
+
+- name: Delete traefik file (if exists) # https://github.com/k3s-io/k3s/issues/1160
+  become: true
+  ansible.builtin.file:
+    path: /var/lib/rancher/k3s/server/manifests/traefik.yaml
+    state: absent
+  when:
+  - k3s_control_node is defined
+  - k3s_control_node

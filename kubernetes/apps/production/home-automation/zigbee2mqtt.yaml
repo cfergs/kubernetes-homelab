@@ -72,29 +72,23 @@ spec:
   selector:
     app: zigbee2mqtt
 ---
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   name: zigbee2mqtt-ingress
   namespace: home-automation
 spec:
-  entryPoints:
-  - web
-  routes:
-    - match: PathPrefix(`/zigbee2mqtt`)
-      kind: Rule
-      services:
-        - name: zigbee2mqtt
-          port: 8080
-      middlewares:
-        - name: zigbee2mqtt-stripprefixregex
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: zigbee2mqtt-stripprefixregex
-  namespace: home-automation
-spec:
-  stripPrefixRegex:
-    regex:
-      - "/[a-z0-9_]+"
+  ingressClassName: nginx-internal
+  rules:
+  - host: hass.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /zigbee2mqtt(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: zigbee2mqtt
+            port:
+              number: 8080
