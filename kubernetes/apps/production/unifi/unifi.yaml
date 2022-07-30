@@ -93,6 +93,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: controller-gui-api
+            name: unifi
             port:
               number: 8443
