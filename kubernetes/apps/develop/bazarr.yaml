@@ -51,9 +51,6 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: config-volume
-        persistentVolumeClaim:
-          claimName: config-file-pvc
       - name: bazarr-config-ini
         configMap:
           name: init-bazarr-files
@@ -76,9 +73,6 @@ spec:
         ports:
         - containerPort: 6767
         volumeMounts:
-        - name: config-volume
-          mountPath: "/config"
-          subPath: "configs/bazarr"
         - name: bazarr-config-ini
           mountPath: /app/config.ini
           subPath: config.ini
@@ -109,9 +103,9 @@ metadata:
   name: bazarr-ingress
   namespace: media
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-internal
   rules:
-  - host: media.${DOMAIN_NAME}
+  - host: internal.${DOMAIN_NAME}
     http:
       paths:
       - path: /bazarr

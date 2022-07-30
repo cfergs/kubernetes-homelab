@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sabnzbd
+  name: sonarr
   namespace: media
   labels:
-    app: sabnzbd
+    app: sonarr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sabnzbd
+      app: sonarr
   template:
     metadata:
       labels:
-        app: sabnzbd
+        app: sonarr
     spec:
       securityContext:
         runAsNonRoot: true
@@ -21,44 +21,44 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
-      volumes:
-      - name: config-volume
-        persistentVolumeClaim:
-          claimName: config-file-pvc
+    #  volumes:
+    #  - name: config-volume
+    #    persistentVolumeClaim:
+    #      claimName: config-file-pvc
       containers:
-      - name: sabnzbd
-        image: ghcr.io/k8s-at-home/sabnzbd
+      - name: sonarr
+        image: ghcr.io/k8s-at-home/sonarr
         ports:
-        - containerPort: 8080
+        - containerPort: 8989
         env:
-        - name: TZ
-          value: Australia/Perth
-        volumeMounts:
-        - name: config-volume
-          mountPath: /config
-          subPath: configs/sabnzbd
+        - name: SONARR__URL_BASE
+          value: /sonarr
+      #  volumeMounts:
+      #  - name: config-volume
+      #    mountPath: "/config"
+      #    subPath: "configs/sonarr"
         securityContext:
           allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sabnzbd
+  name: sonarr
   namespace: media
   labels:
-    app: sabnzbd
+    app: sonarr
 spec:
   ports:
-  - port: 8080
+  - port: 8989
     protocol: TCP
-    targetPort: 8080
+    targetPort: 8989
   selector:
-    app: sabnzbd
+    app: sonarr
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sabnzbd-ingress
+  name: sonarr-ingress
   namespace: media
 spec:
   ingressClassName: nginx
@@ -66,10 +66,10 @@ spec:
   - host: media.${DOMAIN_NAME}
     http:
       paths:
-      - path: /sabnzbd
+      - path: /sonarr
         pathType: Prefix
         backend:
           service:
-            name: sabnzbd
+            name: sonarr
             port:
-              number: 8080
+              number: 8989
