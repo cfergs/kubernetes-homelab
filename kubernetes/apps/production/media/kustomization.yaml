@@ -4,7 +4,7 @@ resources:
 - bazarr.yaml
 - media-namespace.yaml
 - media-volume.yaml
-- mylar3.yaml
+# - mylar3.yaml
 - prowlarr.yaml
 - radarr.yaml
 - sabnzbd.yaml
