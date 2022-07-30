@@ -334,6 +334,8 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: ${INGRESS_EXTERNAL_IP}
   labels:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx

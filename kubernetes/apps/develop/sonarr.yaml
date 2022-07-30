@@ -61,8 +61,10 @@ metadata:
   name: sonarr-ingress
   namespace: media
 spec:
+  ingressClassName: nginx
   rules:
-  - http:
+  - host: media.${DOMAIN_NAME}
+    http:
       paths:
       - path: /sonarr
         pathType: Prefix
@@ -71,4 +73,3 @@ spec:
             name: sonarr
             port:
               number: 8989
-  ingressClassName: nginx

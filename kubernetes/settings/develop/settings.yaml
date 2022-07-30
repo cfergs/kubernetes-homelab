@@ -4,5 +4,8 @@ metadata:
   namespace: flux-system
   name: cluster-settings
 data:
-  DOMAIN_NAME: banana.com
-  METAL_LB_RANGE: 192.168.0.11-192.168.0.12
+  DOMAIN_NAME: demo.chickenwaffles.net
+  METAL_LB_RANGE: 192.168.0.11-192.168.0.13
+  INGRESS_EXTERNAL_IP: 192.168.0.11
+  INGRESS_INTERNAL_IP: 192.168.0.12
+  UNIFI_IP: 192.168.0.13
