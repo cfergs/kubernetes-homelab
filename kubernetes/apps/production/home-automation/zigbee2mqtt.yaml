@@ -76,6 +76,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
     nginx.ingress.kubernetes.io/rewrite-target: /$2
   name: zigbee2mqtt-ingress
   namespace: home-automation
@@ -92,3 +93,6 @@ spec:
             name: zigbee2mqtt
             port:
               number: 8080
+  tls:
+  - hosts:
+    - hass.${DOMAIN_NAME}

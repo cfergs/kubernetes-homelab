@@ -50,6 +50,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
   name: hass-ingress
   namespace: home-automation
 spec:
@@ -65,3 +67,6 @@ spec:
             name: homeassistant
             port:
               number: 8123
+  tls:
+  - hosts:
+    - hass.${DOMAIN_NAME}
