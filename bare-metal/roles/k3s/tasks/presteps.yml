@@ -1,5 +1,6 @@
 ---
 - name: Uninstall modemmanager
+  become: true
   ansible.builtin.apt:
     name: modemmanager
     state: absent
@@ -10,15 +11,15 @@
     name: nfs-common
     update_cache: true
 
-# Remove traefik as leveraging nginx. Adding .skip is recommended. 
+# Remove traefik as leveraging nginx. Adding .skip is recommended.
 - name: Delete traefik file (if exists)
   become: true
   ansible.builtin.file:
     path: /var/lib/rancher/k3s/server/manifests/traefik.yaml
     state: absent
   when:
-  - k3s_control_node is defined
-  - k3s_control_node
+    - k3s_control_node is defined
+    - k3s_control_node
 
 - name: Create Traefik skip file
   become: true
@@ -29,11 +30,30 @@
     modification_time: preserve
     access_time: preserve
   when:
-  - k3s_control_node is defined
-  - k3s_control_node
+    - k3s_control_node is defined
+    - k3s_control_node
 
 # addition to above for when running against existing install.
 # 1. Run steps in https://github.com/k3s-io/k3s/issues/1160#issuecomment-1115803175
 # 2. Delete left over resources - (kubectl api-resources | grep traefik) and check each resource
 # 3. Delete crd - (kubectl get crd | grep traefik) THEN kubectl delete crd <crd-name>
 # Another useful link: https://community.traefik.io/t/what-is-the-proper-way-to-uninstall-and-clean-up-the-traefik-helm-charts/11343
+
+- name: Update Multipath file # https://longhorn.io/kb/troubleshooting-volume-with-multipath/
+  become: true
+  ansible.builtin.copy:
+    src: multipath.conf
+    dest: /etc/multipath.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
+  when: "ansible_service_mgr == 'systemd'"
+  register: multipath_conf
+
+- name: Restart multipath systemd
+  become: true
+  ansible.builtin.systemd:
+    name: multipathd
+    state: restarted
+  when: multipath_conf.changed
