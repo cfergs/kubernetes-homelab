@@ -13,15 +13,3 @@ k3s_server_manifests_urls:
     filename: metallb-native.yaml
   - url: https://github.com/cert-manager/cert-manager/releases/download/v1.9.1/cert-manager.yaml
     filename: cert-manager.yaml
-  - url: https://github.com/kubernetes-sigs/secrets-store-csi-driver/releases/download/v1.2.3/csidriver.yaml
-    filename: csidriver.yaml
-  - url: https://github.com/kubernetes-sigs/secrets-store-csi-driver/releases/download/v1.2.3/rbac-secretproviderclass.yaml
-    filename: rbac-secretproviderclass.yaml
-  - url: https://github.com/kubernetes-sigs/secrets-store-csi-driver/releases/download/v1.2.3/secrets-store.csi.x-k8s.io_secretproviderclasses.yaml
-    filename: secrets-store.csi.x-k8s.io_secretproviderclasses.yaml
-  - url: https://github.com/kubernetes-sigs/secrets-store-csi-driver/releases/download/v1.2.3/secrets-store.csi.x-k8s.io_secretproviderclasspodstatuses.yaml
-    filename: secrets-store.csi.x-k8s.io_secretproviderclasspodstatuses.yaml
-  - url: https://github.com/kubernetes-sigs/secrets-store-csi-driver/releases/download/v1.2.3/secrets-store-csi-driver.yaml
-    filename: secrets-store-csi-driver.yaml
-  - url: https://github.com/kubernetes-sigs/secrets-store-csi-driver/releases/download/v1.2.3/rbac-secretprovidersyncing.yaml
-    filename: rbac-secretprovidersyncing.yaml
