@@ -3,17 +3,16 @@ kind: Deployment
 metadata:
   name: unifi
   namespace: unifi
-  labels:
-    app: unifi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: unifi
+      name: unifi
   template:
     metadata:
+      name: unifi
       labels:
-        app: unifi
+        name: unifi
     spec:
       securityContext:
         runAsNonRoot: true
@@ -38,9 +37,6 @@ spec:
         - containerPort: 8443 # application GUI/API as seen in a web browser - Non Appliance
           name: ubnt-8443
           protocol: TCP
-        - containerPort: 10001
-          name: ubnt-10001
-          protocol: UDP
         env:
         - name: TZ
           value: Australia/Perth
@@ -48,15 +44,46 @@ spec:
         - name: unifi-volume
           mountPath: /unifi
 ---
+kind: Service
+apiVersion: v1
+metadata:
+  name: unifi-ingress
+  namespace: unifi
+spec:
+  ports:
+    - name: ubnt-8443
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+  selector:
+    name: unifi
+---
 apiVersion: v1
 kind: Service
 metadata:
+  name: unifi-lb-tcp
   annotations:
     metallb.universe.tf/loadBalancerIPs: ${UNIFI_IP}
-  name: unifi
+    metallb.universe.tf/allow-shared-ip: unifi-lb
   namespace: unifi
-  labels:
-    app: unifi
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - port: 8080
+    name: uap-inform
+    targetPort: 8080
+  selector:
+    name: unifi
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-lb-udp
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: ${UNIFI_IP}
+    metallb.universe.tf/allow-shared-ip: unifi-lb
+  namespace: unifi
 spec:
   externalTrafficPolicy: Local
   ports:
@@ -64,18 +91,8 @@ spec:
     name: stun-port
     targetPort: 3478
     protocol: UDP
-  - port: 8080
-    name: uap-inform
-    targetPort: 8080
-  - port: 8443
-    name: controller-gui-api
-    targetPort: 8443
-  - port: 10001
-    name: ap-discovery
-    targetPort: 10001
-    protocol: UDP
   selector:
-    app: unifi
+    name: unifi
   type: LoadBalancer
 ---
 apiVersion: networking.k8s.io/v1
@@ -83,21 +100,20 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-issuer
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   name: unifi-ingress
   namespace: unifi
 spec:
   ingressClassName: nginx-internal
   rules:
-  - host: mgmt.${DOMAIN_NAME}
+  - host: unifi.${DOMAIN_NAME}
     http:
       paths:
-      - path: /unifi
+      - path: /
         pathType: Prefix
         backend:
           service:
-            name: unifi
+            name: unifi-ingress
             port:
-              number: 8443
-  tls:
-  - hosts:
-    - mgmt.${DOMAIN_NAME}
+              name: ubnt-8443
