@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hass-config
+  namespace: home-automation
+data:
+  configuration.yaml: |-
+    # Configure a default setup of Home Assistant (frontend, api, etc)
+    default_config:
+
+    http:
+      use_x_forwarded_for: true
+      trusted_proxies: 10.0.0.0/8
+
+    # Text to speech
+    tts:
+      - platform: google_translate
+
+    group: !include groups.yaml
+    automation: !include automations.yaml
+    script: !include scripts.yaml
+    scene: !include scenes.yaml
+
+    panel_iframe:
+      zigbee2mqtt:
+        title: zigbee2mqtt
+        url: https://hass.${DOMAIN_NAME}/zigbee2mqtt/
+        icon: mdi:zigbee
+
+    binary_sensor:
+      - platform: workday
+        country: AU
+        province: WA
+
+    sensor:
+      - platform: season

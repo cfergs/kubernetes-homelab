@@ -6,6 +6,7 @@ metadata:
 spec:
   interval: 5m0s
   dependsOn:
+    - name: helm 
     - name: cluster-settings
   sourceRef:
     kind: GitRepository
