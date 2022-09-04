@@ -1,21 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: homeassistant
+  annotations:
+    configmap.reloader.stakater.com/reload: hass-config # reload pod if configuration.yaml updated
+  name: hass
   namespace: home-automation
-  labels:
-    app: homeassistant
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: homeassistant
+      name: hass
   template:
     metadata:
+      name: hass
       labels:
-        app: homeassistant
+        name: hass
     spec:
       volumes:
+      - name: hass-config
+        configMap:
+          name: hass-config
+    #  - name: hass-secrets-store
+    #    csi:
+    #      driver: secrets-store.csi.k8s.io
+    #      readOnly: true
+    #      volumeAttributes:
+    #        secretProviderClass: azure-hass
+    #      nodePublishSecretRef:
+    #        name: ${AZURE_SECRETS_VALUE}
       - name: automation-volume
         persistentVolumeClaim:
           claimName: automation-volume-pvc
@@ -31,21 +43,26 @@ spec:
         - name: automation-volume
           mountPath: /config
           subPath: configs/home-assistant
+        - name: hass-config
+          mountPath: /config/configuration.yaml
+          subPath: configuration.yaml
+      #  - name: hass-secrets-store
+      #    mountPath: /mnt/secrets-store
+      #    readOnly: true
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: homeassistant
+  name: hass
   namespace: home-automation
-  labels:
-    app: homeassistant
 spec:
   ports:
-  - port: 8123
+  - name: hass-8123
+    port: 8123
     protocol: TCP
     targetPort: 8123
   selector:
-    app: homeassistant
+    name: hass
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -64,9 +81,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: homeassistant
+            name: hass
             port:
-              number: 8123
+              name: hass-8123
   tls:
   - hosts:
     - hass.${DOMAIN_NAME}
