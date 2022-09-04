@@ -9,6 +9,7 @@ metadata:
 spec:
   accessMode: rwx
   dataLocality: best-effort
+  replicaAutoBalance: "best-effort"
   engineImage: longhornio/longhorn-engine:v1.3.0
   frontend: blockdev
   numberOfReplicas: 3
