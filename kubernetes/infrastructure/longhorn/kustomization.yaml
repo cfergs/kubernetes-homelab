@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
 - longhorn-class.yaml
 - longhorn-default-settings.yaml 
-- longhorn-ingress.yml
-- longhorn-snapshot.yml
+- longhorn-ingress.yaml
+- longhorn-snapshot.yaml
