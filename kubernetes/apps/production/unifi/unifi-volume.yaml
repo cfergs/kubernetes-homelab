@@ -28,7 +28,7 @@ spec:
       numberOfReplicas: "2"
     volumeHandle: unifi-volume
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: longhorn-static
+  storageClassName: longhorn-customised
   volumeMode: Filesystem
 ---
 kind: PersistentVolumeClaim
@@ -42,6 +42,6 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: longhorn-static
+  storageClassName: longhorn-customised
   volumeMode: Filesystem
   volumeName: unifi-volume-pv
