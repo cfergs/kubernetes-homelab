@@ -1,9 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- media-namespace.yaml
-- bazarr
-- prowlarr
-- radarr
-- sabnzbd
-- sonarr
+- bazarr-volume.yaml
+- bazarr-deployment.yaml

@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prowlarr
+  name: radarr
   namespace: media
   labels:
-    app: prowlarr
+    app: radarr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: prowlarr
+      app: radarr
   template:
     metadata:
       labels:
-        app: prowlarr
+        app: radarr
     spec:
       securityContext:
         runAsNonRoot: true
@@ -22,45 +22,44 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: config-volume
+      - name: radarr-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: radarr-volume-pvc
       containers:
-      - name: prowlarr
-        image: ghcr.io/k8s-at-home/prowlarr
+      - name: radarr
+        image: ghcr.io/k8s-at-home/radarr
         ports:
-        - containerPort: 9696
+        - containerPort: 7878
         env:
-        - name: PROWLARR__URL_BASE
-          value: /prowlarr
+        - name: RADARR__URL_BASE
+          value: /radarr
         volumeMounts:
-        - name: config-volume
-          mountPath: "/config"
-          subPath: "configs/prowlarr"
+        - name: radarr-volume
+          mountPath: /config
         securityContext:
           allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: prowlarr
+  name: radarr
   namespace: media
   labels:
-    app: prowlarr
+    app: radarr
 spec:
   ports:
-  - port: 9696
+  - port: 7878
     protocol: TCP
-    targetPort: 9696
+    targetPort: 7878
   selector:
-    app: prowlarr
+    app: radarr
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-issuer
-  name: prowlarr-ingress
+  name: radarr-ingress
   namespace: media
 spec:
   ingressClassName: nginx
@@ -68,13 +67,13 @@ spec:
   - host: media.${DOMAIN_NAME}
     http:
       paths:
-      - path: /prowlarr
+      - path: /radarr
         pathType: Prefix
         backend:
           service:
-            name: prowlarr
+            name: radarr
             port:
-              number: 9696
+              number: 7878
   tls:
   - hosts:
     - media.${DOMAIN_NAME}

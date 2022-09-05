@@ -1,0 +1,43 @@
+apiVersion: longhorn.io/v1beta2
+kind: Volume
+metadata:
+  name: radarr-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwx
+  engineImage: longhornio/longhorn-engine:v1.3.0
+  frontend: blockdev
+  replicaAutoBalance: best-effort
+  size: "1073741824" # 1GB
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: radarr-volume-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4  
+    volumeHandle: radarr-volume
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: radarr-volume-pvc
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: radarr-volume-pv

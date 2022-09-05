@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sonarr
+  name: sabnzbd
   namespace: media
   labels:
-    app: sonarr
+    app: sabnzbd
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sonarr
+      app: sabnzbd
   template:
     metadata:
       labels:
-        app: sonarr
+        app: sabnzbd
     spec:
       securityContext:
         runAsNonRoot: true
@@ -22,45 +22,44 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: config-volume
+      - name: sabnzbd-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: sabnzbd-volume-pvc
       containers:
-      - name: sonarr
-        image: ghcr.io/k8s-at-home/sonarr
+      - name: sabnzbd
+        image: ghcr.io/k8s-at-home/sabnzbd
         ports:
-        - containerPort: 8989
+        - containerPort: 8080
         env:
-        - name: SONARR__URL_BASE
-          value: /sonarr
+        - name: TZ
+          value: Australia/Perth
         volumeMounts:
-        - name: config-volume
-          mountPath: "/config"
-          subPath: "configs/sonarr"
+        - name: sabnzbd-volume
+          mountPath: /config
         securityContext:
           allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sonarr
+  name: sabnzbd
   namespace: media
   labels:
-    app: sonarr
+    app: sabnzbd
 spec:
   ports:
-  - port: 8989
+  - port: 8080
     protocol: TCP
-    targetPort: 8989
+    targetPort: 8080
   selector:
-    app: sonarr
+    app: sabnzbd
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-issuer
-  name: sonarr-ingress
+  name: sabnzbd-ingress
   namespace: media
 spec:
   ingressClassName: nginx
@@ -68,13 +67,13 @@ spec:
   - host: media.${DOMAIN_NAME}
     http:
       paths:
-      - path: /sonarr
+      - path: /sabnzbd
         pathType: Prefix
         backend:
           service:
-            name: sonarr
+            name: sabnzbd
             port:
-              number: 8989
+              number: 8080
   tls:
   - hosts:
     - media.${DOMAIN_NAME}

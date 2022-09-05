@@ -1,19 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: radarr
+  name: sonarr
   namespace: media
-  labels:
-    app: radarr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: radarr
+      app: sonarr
   template:
     metadata:
       labels:
-        app: radarr
+        app: sonarr
     spec:
       securityContext:
         runAsNonRoot: true
@@ -22,45 +20,44 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: config-volume
+      - name: sonarr-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: sonarr-volume-pvc
       containers:
-      - name: radarr
-        image: ghcr.io/k8s-at-home/radarr
+      - name: sonarr
+        image: ghcr.io/k8s-at-home/sonarr
         ports:
-        - containerPort: 7878
+        - containerPort: 8989
         env:
-        - name: RADARR__URL_BASE
-          value: /radarr
+        - name: SONARR__URL_BASE
+          value: /sonarr
         volumeMounts:
-        - name: config-volume
-          mountPath: "/config"
-          subPath: "configs/radarr"
+        - name: sonarr-volume
+          mountPath: /config
         securityContext:
           allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: radarr
+  name: sonarr
   namespace: media
   labels:
-    app: radarr
+    app: sonarr
 spec:
   ports:
-  - port: 7878
+  - port: 8989
     protocol: TCP
-    targetPort: 7878
+    targetPort: 8989
   selector:
-    app: radarr
+    app: sonarr
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-issuer
-  name: radarr-ingress
+  name: sonarr-ingress
   namespace: media
 spec:
   ingressClassName: nginx
@@ -68,13 +65,13 @@ spec:
   - host: media.${DOMAIN_NAME}
     http:
       paths:
-      - path: /radarr
+      - path: /sonarr
         pathType: Prefix
         backend:
           service:
-            name: radarr
+            name: sonarr
             port:
-              number: 7878
+              number: 8989
   tls:
   - hosts:
     - media.${DOMAIN_NAME}

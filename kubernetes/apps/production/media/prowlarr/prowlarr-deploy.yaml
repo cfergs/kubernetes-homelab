@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sabnzbd
+  name: prowlarr
   namespace: media
   labels:
-    app: sabnzbd
+    app: prowlarr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sabnzbd
+      app: prowlarr
   template:
     metadata:
       labels:
-        app: sabnzbd
+        app: prowlarr
     spec:
       securityContext:
         runAsNonRoot: true
@@ -22,45 +22,44 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: config-volume
+      - name: prowlarr-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: prowlarr-volume-pvc
       containers:
-      - name: sabnzbd
-        image: ghcr.io/k8s-at-home/sabnzbd
+      - name: prowlarr
+        image: ghcr.io/k8s-at-home/prowlarr
         ports:
-        - containerPort: 8080
+        - containerPort: 9696
         env:
-        - name: TZ
-          value: Australia/Perth
+        - name: PROWLARR__URL_BASE
+          value: /prowlarr
         volumeMounts:
-        - name: config-volume
+        - name: prowlarr-volume
           mountPath: /config
-          subPath: configs/sabnzbd
         securityContext:
           allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sabnzbd
+  name: prowlarr
   namespace: media
   labels:
-    app: sabnzbd
+    app: prowlarr
 spec:
   ports:
-  - port: 8080
+  - port: 9696
     protocol: TCP
-    targetPort: 8080
+    targetPort: 9696
   selector:
-    app: sabnzbd
+    app: prowlarr
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-issuer
-  name: sabnzbd-ingress
+  name: prowlarr-ingress
   namespace: media
 spec:
   ingressClassName: nginx
@@ -68,13 +67,13 @@ spec:
   - host: media.${DOMAIN_NAME}
     http:
       paths:
-      - path: /sabnzbd
+      - path: /prowlarr
         pathType: Prefix
         backend:
           service:
-            name: sabnzbd
+            name: prowlarr
             port:
-              number: 8080
+              number: 9696
   tls:
   - hosts:
     - media.${DOMAIN_NAME}

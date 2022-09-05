@@ -51,9 +51,9 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: config-volume
+      - name: bazarr-volume
         persistentVolumeClaim:
-          claimName: config-file-pvc
+          claimName: bazarr-volume-pvc
       - name: bazarr-config-ini
         configMap:
           name: init-bazarr-files
@@ -76,9 +76,8 @@ spec:
         ports:
         - containerPort: 6767
         volumeMounts:
-        - name: config-volume
-          mountPath: "/config"
-          subPath: "configs/bazarr"
+        - name: bazarr-volume
+          mountPath: /config
         - name: bazarr-config-ini
           mountPath: /app/config.ini
           subPath: config.ini

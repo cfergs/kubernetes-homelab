@@ -1,0 +1,12 @@
+apiVersion: longhorn.io/v1beta1 # as of 5/9/22 this is correct version
+kind: RecurringJob
+metadata:
+  name: daily-1am
+  namespace: longhorn-system
+spec:
+  cron: "0 1 * * *"
+  task: "snapshot"
+  groups:
+  - default
+  retain: 2
+  concurrency: 2
