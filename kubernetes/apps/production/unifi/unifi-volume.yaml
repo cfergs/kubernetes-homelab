@@ -1,18 +1,15 @@
 apiVersion: longhorn.io/v1beta2
 kind: Volume
 metadata:
-  labels:
-    longhornvolume: unifi-volume
-    #recurring-job-group.longhorn.io/backup: enabled
   name: unifi-volume
   namespace: longhorn-system
 spec:
   accessMode: rwx
   dataLocality: best-effort
-  replicaAutoBalance: "best-effort"
   engineImage: longhornio/longhorn-engine:v1.3.0
   frontend: blockdev
   numberOfReplicas: 3
+  replicaAutoBalance: best-effort
   size: "5368709120"
 ---
 kind: PersistentVolume
@@ -20,18 +17,18 @@ apiVersion: v1
 metadata:
   name: unifi-volume-pv
 spec:
+  accessModes:
+    - ReadWriteMany
   capacity:
     storage: 5Gi
   csi:
     driver: driver.longhorn.io
-    volumeHandle: unifi-volume
     fsType: ext4
     volumeAttributes:
       numberOfReplicas: "2"
-  accessModes:
-    - ReadWriteMany
+    volumeHandle: unifi-volume
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: longhorn-customised
+  storageClassName: longhorn-static
   volumeMode: Filesystem
 ---
 kind: PersistentVolumeClaim
@@ -45,6 +42,6 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  volumeName: unifi-volume-pv
-  storageClassName: longhorn-customised
+  storageClassName: longhorn-static
   volumeMode: Filesystem
+  volumeName: unifi-volume-pv

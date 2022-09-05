@@ -9,3 +9,4 @@ data:
     allow-node-drain-with-last-healthy-replica: "true"
     default-data-locality: best-effort
     allow-volume-creation-with-degraded-availability: "false"
+    replica-auto-balance: best-effort
