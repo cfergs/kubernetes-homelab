@@ -25,6 +25,9 @@ spec:
       - name: radarr-volume
         persistentVolumeClaim:
           claimName: radarr-volume-pvc
+      - name: movies-volume
+        persistentVolumeClaim:
+          claimName: radarr-movies-pvc
       containers:
       - name: radarr
         image: ghcr.io/k8s-at-home/radarr
@@ -36,6 +39,8 @@ spec:
         volumeMounts:
         - name: radarr-volume
           mountPath: /config
+        - name: movies-volume
+          mountPath: /media
         securityContext:
           allowPrivilegeEscalation: false
 ---
