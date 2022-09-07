@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
 - unifi-namespace.yaml
 - unifi-volume.yaml
-- unifi.yaml
+- unifi-deploy.yaml
