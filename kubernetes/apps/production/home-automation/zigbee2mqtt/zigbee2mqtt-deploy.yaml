@@ -23,9 +23,9 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: automation-volume
+      - name: zigbee2mqtt-volume
         persistentVolumeClaim:
-          claimName: automation-volume-pvc
+          claimName: zigbee2mqtt-volume-pvc
       containers:
       - name: zigbee2mqtt
         image: koenkk/zigbee2mqtt:1.26.0
@@ -51,9 +51,8 @@ spec:
         - name: ZIGBEE2MQTT_CONFIG_LOG_OUTPUT
           value: 'console'
         volumeMounts:
-        - name: automation-volume
+        - name: zigbee2mqtt-volume
           mountPath: /app/data
-          subPath: configs/zigbee2mqtt
         securityContext:
           allowPrivilegeEscalation: false
 ---

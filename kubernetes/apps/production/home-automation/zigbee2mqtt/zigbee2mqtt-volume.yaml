@@ -1,0 +1,43 @@
+apiVersion: longhorn.io/v1beta2
+kind: Volume
+metadata:
+  name: zigbee2mqtt-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwx
+  engineImage: longhornio/longhorn-engine:v1.3.0
+  frontend: blockdev
+  replicaAutoBalance: best-effort
+  size: "64000000" # 64MB
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: zigbee2mqtt-volume-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 64Mi
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: zigbee2mqtt-volume
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: zigbee2mqtt-volume-pvc
+  namespace: home-automation
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 64Mi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: zigbee2mqtt-volume-pv

@@ -20,17 +20,9 @@ spec:
       - name: hass-config
         configMap:
           name: hass-config
-    #  - name: hass-secrets-store
-    #    csi:
-    #      driver: secrets-store.csi.k8s.io
-    #      readOnly: true
-    #      volumeAttributes:
-    #        secretProviderClass: azure-hass
-    #      nodePublishSecretRef:
-    #        name: ${AZURE_SECRETS_VALUE}
-      - name: automation-volume
+      - name: hass-volume
         persistentVolumeClaim:
-          claimName: automation-volume-pvc
+          claimName: hass-volume-pvc
       containers:
       - name: homeassistant
         image: homeassistant/home-assistant:2022.3.8
@@ -40,15 +32,11 @@ spec:
         - name: TZ
           value: Australia/Perth
         volumeMounts:
-        - name: automation-volume
+        - name: hass-volume
           mountPath: /config
-          subPath: configs/home-assistant
         - name: hass-config
           mountPath: /config/configuration.yaml
           subPath: configuration.yaml
-      #  - name: hass-secrets-store
-      #    mountPath: /mnt/secrets-store
-      #    readOnly: true
 ---
 apiVersion: v1
 kind: Service
