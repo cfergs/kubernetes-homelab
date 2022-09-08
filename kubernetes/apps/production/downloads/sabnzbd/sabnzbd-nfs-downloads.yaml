@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sabnzbd-downloads-pv
+  namespace: downloads
+spec:
+  capacity:
+    storage: 500G
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /shares/downloads/usenet
+    server: ${NAS_IP}
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sabnzbd-downloads-pvc
+  namespace: downloads
+spec:
+  storageClassName: ""
+  volumeName: sabnzbd-downloads-pv
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500G

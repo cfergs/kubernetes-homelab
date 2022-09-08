@@ -1,0 +1,142 @@
+# example from: https://github.com/TobiasDeBruijn/HomelabKubernetes/blob/new/manifests/homelab/transmision.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+  namespace: downloads
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: transmission
+  template:
+    metadata:
+      labels:
+        name: transmission
+    spec:
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+        - 1.1.1.1
+        - 9.9.9.9
+      automountServiceAccountToken: false
+      volumes:
+      - name: downloads-volume
+        persistentVolumeClaim:
+          claimName: transmission-downloads-pvc
+      containers:
+      - name: transmission
+        image: haugene/transmission-openvpn@sha256:09d12f2f95409dc51b928245e27c83581d85fd62c089c1e55b4461b38920231b
+        ports:
+        - name: proxy
+          containerPort: 8118
+          protocol: TCP
+        - name: webui
+          containerPort: 9091
+          protocol: TCP
+        securityContext:
+          capabilities:
+            drop:
+            - CAP_NET_RAW
+            add:
+            - NET_ADMIN
+        env:
+        - name: CREATE_TUN_DEVICE
+          value: "true"
+        - name: HEALTH_CHECK_HOST
+          value: google.com
+        - name: LOCAL_NETWORK
+          value: 10.42.0.0/16 # kubernetes range - allow connectivity thru ingress
+        - name: NORDVPN_CATEGORY
+          value: P2P
+        - name: NORDVPN_COUNTRY
+          value: AU
+        - name: NORDVPN_PROTOCOL
+          value: udp
+        - name: OPENVPN_PROVIDER
+          value: NORDVPN
+        - name: OPENVPN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: transmission
+              key: nordvpn-username
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: transmission
+              key: nordvpn-password
+        - name: OPENVPN_OPTS
+          value: "--inactive 3600 --ping 10 --ping-exit 60"
+        - name: TRANSMISSION_DOWNLOAD_DIR
+          value: /media/downloads/torrents/complete
+        - name: TRANSMISSION_DOWNLOAD_QUEUE_SIZE
+          value: "10"
+        - name: TRANSMISSION_INCOMPLETE_DIR
+          value: /media/downloads/torrents/incomplete
+        - name: TRANSMISSION_INCOMPLETE_DIR_ENABLED
+          value: "true"
+        - name: TRANSMISSION_RATIO_LIMIT
+          value: "0"
+        - name: TRANSMISSION_RATIO_LIMIT_ENABLED
+          value: "true"
+        - name: TRANSMISSION_RPC_HOST_WHITELIST_ENABLED
+          value: "false"
+        - name: TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED
+          value: "false"
+        - name: TRANSMISSION_WEB_UI
+          value: transmission-web-control
+        - name: WEBPROXY_ENABLED
+          value: "true"
+        - name: WEBPROXY_PORT
+          value: "8118"
+        - name: ENABLE_UFW
+          value: "true"
+        - name: UFW_ALLOW_GW_NET
+          value: "true"
+        - name: UFW_DISABLE_IPTABLES_REJECT
+          value: "false"
+        volumeMounts:
+        - name: downloads-volume
+          mountPath: /media/downloads/torrents
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transmission
+  namespace: downloads
+spec:
+  ports:
+  - name: proxy
+    port: 8118
+    protocol: TCP
+    targetPort: 8118
+  - name: webui
+    port: 9091
+    protocol: TCP
+    targetPort: 9091
+  selector:
+    name: transmission
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+  name: transmission-ingress
+  namespace: downloads
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: media.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /transmission
+        pathType: Prefix
+        backend:
+          service:
+            name: transmission
+            port:
+              name: webui
+  tls:
+  - hosts:
+    - media.${DOMAIN_NAME}

@@ -23,6 +23,9 @@ spec:
       - name: sonarr-volume
         persistentVolumeClaim:
           claimName: sonarr-volume-pvc
+      - name: downloads-volume
+        persistentVolumeClaim:
+          claimName: sonarr-downloads-pvc
       - name: tvshows-volume
         persistentVolumeClaim:
           claimName: sonarr-tvshows-pvc
@@ -37,8 +40,10 @@ spec:
         volumeMounts:
         - name: sonarr-volume
           mountPath: /config
+        - name: downloads-volume
+          mountPath: /media/downloads
         - name: tvshows-volume
-          mountPath: /media
+          mountPath: /media/tvshows
         securityContext:
           allowPrivilegeEscalation: false
 ---

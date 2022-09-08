@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sabnzbd
-  namespace: media
+  namespace: downloads
   labels:
     app: sabnzbd
 spec:
@@ -25,17 +25,24 @@ spec:
       - name: sabnzbd-volume
         persistentVolumeClaim:
           claimName: sabnzbd-volume-pvc
+      - name: download-volume
+        persistentVolumeClaim:
+          claimName: sabnzbd-downloads-pvc
       containers:
       - name: sabnzbd
-        image: ghcr.io/k8s-at-home/sabnzbd
+        image: ghcr.io/k8s-at-home/sabnzbd:v3.6.1
         ports:
         - containerPort: 8080
         env:
         - name: TZ
           value: Australia/Perth
+        - name: HOST_WHITELIST_ENTRIES # fix "hostname verification failed" error
+          value: media.${DOMAIN_NAME}
         volumeMounts:
         - name: sabnzbd-volume
           mountPath: /config
+        - name: download-volume
+          mountPath: /media/downloads/usenet
         securityContext:
           allowPrivilegeEscalation: false
 ---
@@ -43,7 +50,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: sabnzbd
-  namespace: media
+  namespace: downloads
   labels:
     app: sabnzbd
 spec:
@@ -60,7 +67,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-issuer
   name: sabnzbd-ingress
-  namespace: media
+  namespace: downloads
 spec:
   ingressClassName: nginx
   rules:

@@ -31,7 +31,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: sabnzbd-volume-pvc
-  namespace: media
+  namespace: downloads
 spec:
   accessModes:
     - ReadWriteMany

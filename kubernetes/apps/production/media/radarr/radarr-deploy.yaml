@@ -25,6 +25,9 @@ spec:
       - name: radarr-volume
         persistentVolumeClaim:
           claimName: radarr-volume-pvc
+      - name: downloads-volume
+        persistentVolumeClaim:
+          claimName: radarr-downloads-pvc
       - name: movies-volume
         persistentVolumeClaim:
           claimName: radarr-movies-pvc
@@ -39,8 +42,10 @@ spec:
         volumeMounts:
         - name: radarr-volume
           mountPath: /config
+        - name: downloads-volume
+          mountPath: /media/downloads
         - name: movies-volume
-          mountPath: /media
+          mountPath: /media/movies
         securityContext:
           allowPrivilegeEscalation: false
 ---
