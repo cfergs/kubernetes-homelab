@@ -27,7 +27,7 @@ spec:
           claimName: prowlarr-volume-pvc
       containers:
       - name: prowlarr
-        image: ghcr.io/k8s-at-home/prowlarr
+        image: ghcr.io/k8s-at-home/prowlarr-develop:v0.4.4.1947
         ports:
         - containerPort: 9696
         env:
