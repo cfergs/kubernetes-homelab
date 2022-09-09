@@ -10,3 +10,4 @@ data:
     default-data-locality: best-effort
     allow-volume-creation-with-degraded-availability: "false"
     replica-auto-balance: best-effort
+    node-down-pod-deletion-policy: delete-both-statefulset-and-deployment-pod
