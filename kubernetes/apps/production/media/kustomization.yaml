@@ -4,5 +4,5 @@ resources:
 - media-namespace.yaml
 - bazarr
 - prowlarr
-#- radarr
-#- sonarr
+- radarr
+- sonarr
