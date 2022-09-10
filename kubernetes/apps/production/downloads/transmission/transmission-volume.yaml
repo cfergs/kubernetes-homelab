@@ -1,0 +1,43 @@
+apiVersion: longhorn.io/v1beta2
+kind: Volume
+metadata:
+  name: transmission-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwx
+  engineImage: longhornio/longhorn-engine:v1.3.0
+  frontend: blockdev
+  replicaAutoBalance: best-effort
+  size: "256000000" # 256MB
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: transmission-volume-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 256Mi
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4 
+    volumeHandle: transmission-volume
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: transmission-volume-pvc
+  namespace: downloads
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 256Mi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: transmission-volume-pv

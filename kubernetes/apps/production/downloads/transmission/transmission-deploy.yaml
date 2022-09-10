@@ -14,90 +14,54 @@ spec:
       labels:
         name: transmission
     spec:
-      dnsPolicy: "None"
-      dnsConfig:
-        nameservers:
-        - 1.1.1.1
-        - 9.9.9.9
-      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
       volumes:
+      - name: transmission-volume
+        persistentVolumeClaim:
+          claimName: transmission-volume-pvc
       - name: downloads-volume
         persistentVolumeClaim:
           claimName: transmission-downloads-pvc
       containers:
       - name: transmission
-        image: haugene/transmission-openvpn@sha256:09d12f2f95409dc51b928245e27c83581d85fd62c089c1e55b4461b38920231b
+        image: ghcr.io/onedr0p/transmission:3.00@sha256:35daad26844c5294345c66771a719fe4a9cf72d3673125018598c61f327ffefe
         ports:
-        - name: proxy
-          containerPort: 8118
-          protocol: TCP
         - name: webui
           containerPort: 9091
           protocol: TCP
-        securityContext:
-          capabilities:
-            drop:
-            - CAP_NET_RAW
-            add:
-            - NET_ADMIN
         env:
-        - name: CREATE_TUN_DEVICE
-          value: "true"
-        - name: HEALTH_CHECK_HOST
-          value: google.com
-        - name: LOCAL_NETWORK
-          value: 10.42.0.0/16 # kubernetes range - allow connectivity thru ingress
-        - name: NORDVPN_CATEGORY
-          value: P2P
-        - name: NORDVPN_COUNTRY
-          value: AU
-        - name: NORDVPN_PROTOCOL
-          value: udp
-        - name: OPENVPN_PROVIDER
-          value: NORDVPN
-        - name: OPENVPN_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: transmission
-              key: nordvpn-username
-        - name: OPENVPN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: transmission
-              key: nordvpn-password
-        - name: OPENVPN_OPTS
-          value: "--inactive 3600 --ping 10 --ping-exit 60"
-        - name: TRANSMISSION_DOWNLOAD_DIR
+        - name: TRANSMISSION__DOWNLOAD_DIR
           value: /media/downloads/torrents/complete
-        - name: TRANSMISSION_DOWNLOAD_QUEUE_SIZE
+        - name: TRANSMISSION__DOWNLOAD_QUEUE_SIZE
           value: "10"
-        - name: TRANSMISSION_INCOMPLETE_DIR
+        - name: TRANSMISSION__INCOMPLETE_DIR
           value: /media/downloads/torrents/incomplete
-        - name: TRANSMISSION_INCOMPLETE_DIR_ENABLED
+        - name: TRANSMISSION__INCOMPLETE_DIR_ENABLED
           value: "true"
-        - name: TRANSMISSION_RATIO_LIMIT
+        - name: TRANSMISSION__RATIO_LIMIT
           value: "0"
-        - name: TRANSMISSION_RATIO_LIMIT_ENABLED
+        - name: TRANSMISSION__RATIO_LIMIT_ENABLED
           value: "true"
-        - name: TRANSMISSION_RPC_HOST_WHITELIST_ENABLED
+        - name: TRANSMISSION__RPC_HOST_WHITELIST_ENABLED
           value: "false"
-        - name: TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED
+        - name: TRANSMISSION__SCRAPE_PAUSED_TORRENTS_ENABLED
           value: "false"
-        - name: TRANSMISSION_WEB_UI
-          value: transmission-web-control
-        - name: WEBPROXY_ENABLED
+        - name: TRANSMISSION__SPEED_LIMIT_UP
+          value: "50"
+        - name: TRANSMISSION__SPEED_LIMIT_UP_ENABLED
           value: "true"
-        - name: WEBPROXY_PORT
-          value: "8118"
-        - name: ENABLE_UFW
-          value: "true"
-        - name: UFW_ALLOW_GW_NET
-          value: "true"
-        - name: UFW_DISABLE_IPTABLES_REJECT
-          value: "false"
         volumeMounts:
+        - name: transmission-volume
+          mountPath: /config
         - name: downloads-volume
           mountPath: /media/downloads/torrents
+        securityContext:
+          allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
@@ -106,10 +70,6 @@ metadata:
   namespace: downloads
 spec:
   ports:
-  - name: proxy
-    port: 8118
-    protocol: TCP
-    targetPort: 8118
   - name: webui
     port: 9091
     protocol: TCP
