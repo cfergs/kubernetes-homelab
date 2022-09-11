@@ -12,7 +12,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/apps/production/home-automation
+  path: ./kubernetes/apps/home-automation
   prune: true
   wait: true
   timeout: 5m0s
@@ -22,25 +22,3 @@ spec:
     substituteFrom:
       - kind: ConfigMap
         name: cluster-settings
-  patches:
-  - patch: |-
-      - op: replace
-        path: /spec/size
-        value: "1368709120"
-    target:
-      kind: Volume
-      name: automation-volume
-  - patch: |-
-      - op: replace
-        path: /spec/capacity/storage
-        value: 1Gi
-    target:
-      kind: PersistentVolume
-      name: automation-volume-pv
-  - patch: |-
-      - op: replace
-        path: /spec/resources/requests/storage
-        value: 1Gi
-    target:
-      kind: PersistentVolumeClaim
-      name: automation-volume-pvc
