@@ -15,3 +15,5 @@ data:
   LETSENCRYPT_SERVER: https://acme-staging-v02.api.letsencrypt.org/directory
 
   NAS_IP: 192.168.0.11
+
+  LONGHORN_S3_BUCKET:

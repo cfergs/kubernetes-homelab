@@ -11,3 +11,5 @@ data:
     allow-volume-creation-with-degraded-availability: "false"
     replica-auto-balance: best-effort
     node-down-pod-deletion-policy: delete-both-statefulset-and-deployment-pod
+    backup-target-credential-secret: s3-backup-secret
+    backup-target: ${LONGHORN_S3_BUCKET}
