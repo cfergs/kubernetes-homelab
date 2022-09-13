@@ -9,7 +9,7 @@ k3s_server:
 k3s_server_manifests_urls:
   - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.3.0/deploy/longhorn.yaml
     filename: longhorn.yml
-  - url: https://raw.githubusercontent.com/metallb/metallb/v0.13.4/config/manifests/metallb-native.yaml
+  - url: https://raw.githubusercontent.com/metallb/metallb/v0.13.5/config/manifests/metallb-native.yaml
     filename: metallb-native.yaml
   - url: https://github.com/cert-manager/cert-manager/releases/download/v1.9.1/cert-manager.yaml
     filename: cert-manager.yaml
