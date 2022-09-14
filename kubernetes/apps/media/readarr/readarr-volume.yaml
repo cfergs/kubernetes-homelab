@@ -1,0 +1,43 @@
+apiVersion: longhorn.io/v1beta2
+kind: Volume
+metadata:
+  name: readarr-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwo
+  engineImage: longhornio/longhorn-engine:v1.3.0
+  frontend: blockdev
+  replicaAutoBalance: best-effort
+  size: "512000000" # 512MB
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: readarr-volume-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 512Mi
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: readarr-volume
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: readarr-volume-pvc
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512Mi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: readarr-volume-pv

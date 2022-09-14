@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mylar3
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mylar3
+  template:
+    metadata:
+      labels:
+        name: mylar3
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+      volumes:
+      - name: comics-volume
+        persistentVolumeClaim:
+          claimName: mylar3-comics-pvc
+      - name: mylar3-volume
+        persistentVolumeClaim:
+          claimName: mylar3-volume-pvc
+      - name: mylar3-config-ini
+        configMap:
+          name: mylar3-config
+          items:
+          - key: config.ini
+            path: config.ini
+          defaultMode: 0644
+      - name: mylar3-entrypoint-sh
+        configMap:
+          name: mylar3-config
+          items:
+          - key: entrypoint.sh
+            path: entrypoint.sh
+          defaultMode: 0755
+      - name: scratch-volume
+        emptyDir: {}
+      containers:
+      - name: mylar3
+        image: ghcr.io/onedr0p/mylar3:0.6.9@sha256:25d804537426bc05838f568770103f39a691049d7c5697619b77db3eed5f8f0c
+        command: ["/bin/sh"]
+        args: ["-c", "/app/entrypoint.sh"]
+        ports:
+        - containerPort: 8090
+        env:
+        - name: TZ
+          value: Australia/Perth
+        volumeMounts:
+        - name: mylar3-config-ini
+          mountPath: /app/config.ini
+          subPath: config.ini
+        - name: mylar3-entrypoint-sh
+          mountPath: /app/entrypoint.sh
+          subPath: entrypoint.sh
+        - name: comics-volume
+          mountPath: /media/comics
+        - name: mylar3-volume
+          mountPath: /config
+        - name: scratch-volume
+          mountPath: /scratch
+        securityContext:
+          allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mylar3
+  namespace: media
+spec:
+  ports:
+  - name: mylar3-webui
+    port: 8090
+    protocol: TCP
+    targetPort: 8090
+  selector:
+    name: mylar3
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+  name: mylar3-ingress
+  namespace: media
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: media.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /comics
+        pathType: Prefix
+        backend:
+          service:
+            name: mylar3
+            port:
+              name: mylar3-webui
+  tls:
+  - hosts:
+    - media.${DOMAIN_NAME}

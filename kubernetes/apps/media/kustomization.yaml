@@ -4,6 +4,8 @@ resources:
 - media-namespace.yaml
 - media-network-policy.yaml
 - bazarr
+- mylar3
 - prowlarr
 - radarr
+- readarr
 - sonarr

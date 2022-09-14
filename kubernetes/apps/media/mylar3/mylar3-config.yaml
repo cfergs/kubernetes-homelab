@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mylar3-config
+  namespace: media
+data:
+  config.ini: |
+    [General]
+    destination_dir = /media/comics
+    rename_files = True
+
+    [Interface]
+    http_root = /comics
+
+    [API]
+    api_enabled = True
+
+    [Torznab]
+    enable_torznab = True
+
+    [Torrents]
+    enable_torrents = True
+    enable_torrent_search = True
+
+    [PostProcess]
+    post_processing = True
+
+    [DDL]
+    enable_ddl = True
+    ddl_location = /scratch
+  entrypoint.sh: |
+    #!/usr/bin/env bash
+
+    #shellcheck disable=SC1091
+    test -f "/scripts/umask.sh" && source "/scripts/umask.sh"
+
+    if [[ ! -f "/config/config.ini" ]]; then
+      printf "Copying over default configuration ... "
+      cp /app/config.ini /config/config.ini
+    fi
+
+    #shellcheck disable=SC2086
+    exec \
+        /usr/bin/python3 \
+        /app/Mylar.py \
+        --nolaunch \
+        --port 8090 \
+        --datadir /config \
+        "$@"
