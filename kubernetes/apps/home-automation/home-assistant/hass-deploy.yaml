@@ -30,7 +30,7 @@ spec:
         - containerPort: 8123
         env:
         - name: TZ
-          value: Australia/Perth
+          value: ${TIMEZONE}
         volumeMounts:
         - name: hass-volume
           mountPath: /config

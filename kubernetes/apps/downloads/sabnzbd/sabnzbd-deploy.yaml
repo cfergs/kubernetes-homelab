@@ -35,7 +35,7 @@ spec:
         - containerPort: 8080
         env:
         - name: TZ
-          value: Australia/Perth
+          value: ${TIMEZONE}
         - name: HOST_WHITELIST_ENTRIES # fix "hostname verification failed" error
           value: media.${DOMAIN_NAME}
         volumeMounts:

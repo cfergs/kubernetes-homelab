@@ -51,7 +51,7 @@ spec:
         - containerPort: 8090
         env:
         - name: TZ
-          value: Australia/Perth
+          value: ${TIMEZONE}
         volumeMounts:
         - name: mylar3-config-ini
           mountPath: /app/config.ini

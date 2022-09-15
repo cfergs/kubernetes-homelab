@@ -4,6 +4,7 @@ metadata:
   namespace: flux-system
   name: cluster-settings
 data:
+  TIMEZONE: Australia/Perth
   DOMAIN_NAME: chickenwaffles.net
   METAL_LB_RANGE: 192.168.0.241-192.168.0.254
   INGRESS_EXTERNAL_IP: 192.168.0.241

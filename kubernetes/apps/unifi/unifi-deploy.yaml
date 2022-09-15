@@ -39,7 +39,7 @@ spec:
           protocol: TCP
         env:
         - name: TZ
-          value: Australia/Perth
+          value: ${TIMEZONE}
         volumeMounts:
         - name: unifi-volume
           mountPath: /unifi

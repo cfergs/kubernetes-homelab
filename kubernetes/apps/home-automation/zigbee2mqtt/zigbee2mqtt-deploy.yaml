@@ -33,7 +33,7 @@ spec:
         - containerPort: 8080
         env:
         - name: TZ
-          value: Australia/Perth
+          value: ${TIMEZONE}
         - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PORT
           value: '8080'
         - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
