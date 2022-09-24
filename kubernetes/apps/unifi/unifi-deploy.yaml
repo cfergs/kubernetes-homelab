@@ -31,12 +31,18 @@ spec:
         - containerPort: 3478 # used for STUN
           name: ubnt-3478
           protocol: UDP
+        - containerPort: 5514 # Remote Syslog
+          name: ubnt-5514
+          protocol: UDP
         - containerPort: 8080 # device and application communication
           name: ubnt-8080
           protocol: TCP
         - containerPort: 8443 # application GUI/API as seen in a web browser - Non Appliance
           name: ubnt-8443
           protocol: TCP
+        - containerPort: 10001 # device discovery
+          name: ubnt-10001
+          protocol: UDP
         env:
         - name: TZ
           value: ${TIMEZONE}
@@ -90,6 +96,14 @@ spec:
   - port: 3478
     name: stun-port
     targetPort: 3478
+    protocol: UDP
+  - port: 5514
+    name: syslog-port
+    targetPort: 5514
+    protocol: UDP
+  - port: 10001
+    name: discovery
+    targetPort: 10001
     protocol: UDP
   selector:
     name: unifi
