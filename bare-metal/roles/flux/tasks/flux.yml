@@ -5,7 +5,7 @@
 
 - name: Flux | Check # noqa no-changed-when
 # forces prerequisites
-  ansible.builtin.command: 'flux check --kubeconfig "{{ kubectl_configpath }}/config"'
+  ansible.builtin.command: 'flux check --kubeconfig "{{ home_path }}/.kube/config"'
   register: flux_check
 
 - name: Flux | Deploy | Bootstrap Cmd
@@ -18,5 +18,5 @@
     --branch={{ branch }} \
     --personal={{ personal }} \
     --private={{ private }} \
-    --kubeconfig "{{ kubectl_configpath }}/config"
+    --kubeconfig "{{ home_path }}/.kube/config"
   when: flux_check.rc == 0

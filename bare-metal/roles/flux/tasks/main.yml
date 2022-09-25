@@ -1,4 +1,8 @@
 ---
+- name: Set Home Folder
+  ansible.builtin.set_fact:
+    home_path: "{{ lookup('env', 'HOME') }}"
+
 - name: Install Kubectl
   include_tasks: kubectl.yml
 
