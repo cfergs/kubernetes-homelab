@@ -3,5 +3,6 @@ kind: Kustomization
 resources:
 - downloads-namespace.yaml
 - downloads-network-policy.yaml
+- jdownloader
 - sabnzbd
 - transmission
