@@ -6,6 +6,7 @@ metadata:
 spec:
   interval: 10m0s
   dependsOn:
+    - name: namespaces
     - name: cluster-settings
     - name: infrastructure
   sourceRef:
