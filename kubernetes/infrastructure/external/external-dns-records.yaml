@@ -1,0 +1,40 @@
+# from https://bobcares.com/blog/expose-kubernetes-service-using-cloudflare-argo-tunnel/
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: calibre
+  namespace: external
+  labels:
+    external-dns-create: "true"
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: calibre.${DOMAIN_NAME}
+spec:
+  type: ExternalName
+  externalName: ${CLOUDFLARE_TUNNEL_DOMAIN}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: jdownloader
+  namespace: external
+  labels:
+    external-dns-create: "true"
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: jdownloader.${DOMAIN_NAME}
+spec:
+  type: ExternalName
+  externalName: ${CLOUDFLARE_TUNNEL_DOMAIN}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: media
+  namespace: external
+  labels:
+    external-dns-create: "true"
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: media.${DOMAIN_NAME}
+spec:
+  type: ExternalName
+  externalName: ${CLOUDFLARE_TUNNEL_DOMAIN}

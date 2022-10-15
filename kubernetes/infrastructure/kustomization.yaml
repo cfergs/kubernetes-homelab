@@ -7,5 +7,6 @@ resources:
 - cert-manager
 - metallb
 - ingress
+- external # dependent on ingress
 - longhorn
 - downloads-vpn
