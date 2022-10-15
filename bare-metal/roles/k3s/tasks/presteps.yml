@@ -57,3 +57,13 @@
     name: multipathd
     state: restarted
   when: multipath_conf.changed
+
+# https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
+# Leveraged by Cloudflared
+- name: Increase QUIC Buffer Size 
+  become: true
+  ansible.posix.sysctl:
+    name: net.core.rmem_max
+    value: '2500000'
+    sysctl_set: true
+    reload: true # default
