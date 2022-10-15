@@ -1,3 +1,6 @@
+# ingress accessible internally only or via VPN 
+# hosts secure services such hass and unifi
+---
 apiVersion: v1
 kind: Namespace
 metadata:

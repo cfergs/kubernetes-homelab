@@ -1,3 +1,6 @@
+# ingress allowed to be accessed externally and internally
+# externally done via cloudflared
+---
 apiVersion: v1
 kind: Namespace
 metadata:
