@@ -27,6 +27,8 @@ spec:
       - name: downloads-volume
         persistentVolumeClaim:
           claimName: transmission-downloads-pvc
+      - name: tmpvol
+        emptyDir: {}
       containers:
       - name: transmission
         image: ghcr.io/onedr0p/transmission:3.00@sha256:35daad26844c5294345c66771a719fe4a9cf72d3673125018598c61f327ffefe
@@ -60,8 +62,14 @@ spec:
           mountPath: /config
         - name: downloads-volume
           mountPath: /media/downloads/torrents
+        - name: tmpvol
+          mountPath: /tmp # fix issue "Unable to create session lock file (30)" when using ReadOnly FileSystem
         securityContext:
           allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
 ---
 apiVersion: v1
 kind: Service

@@ -49,6 +49,12 @@ spec:
         volumeMounts:
         - name: unifi-volume
           mountPath: /unifi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
 ---
 kind: Service
 apiVersion: v1

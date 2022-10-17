@@ -25,6 +25,8 @@ spec:
       - name: prowlarr-volume
         persistentVolumeClaim:
           claimName: prowlarr-volume-pvc
+      - emptyDir: {}
+        name: tmpvol
       containers:
       - name: prowlarr
         image: ghcr.io/k8s-at-home/prowlarr-develop:v0.4.6.1969@sha256:100c4ec286ace70764cdb632c56d4b1e9f0ab619dfda9393395141ab3da960f8
@@ -36,8 +38,14 @@ spec:
         volumeMounts:
         - name: prowlarr-volume
           mountPath: /config
+        - name: tmpvol
+          mountPath: /tmp # Resolve error when using ReadOnly FS: "Failed to create CoreCLR, HRESULT: 0x80004005" - https://github.com/Azure/azure-functions-host/issues/8181 && https://github.com/dotnet/runtime/issues/3168 
         securityContext:
           allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
 ---
 apiVersion: v1
 kind: Service

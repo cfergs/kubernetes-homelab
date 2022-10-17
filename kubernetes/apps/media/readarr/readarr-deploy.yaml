@@ -29,6 +29,8 @@ spec:
       - name: books-volume
         persistentVolumeClaim:
           claimName: readarr-books-pvc
+      - emptyDir: {}
+        name: tmpvol
       containers:
       - name: readarr
         image: ghcr.io/onedr0p/readarr-develop:0.1.1.1320@sha256:be1ffc2a5049dc5750b9410c38185984718b548bc7e1b66265e04480f10281df
@@ -44,8 +46,14 @@ spec:
           mountPath: /media/books
         - name: downloads-volume
           mountPath: /media/downloads
+        - name: tmpvol
+          mountPath: /tmp
         securityContext:
           allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
 ---
 apiVersion: v1
 kind: Service

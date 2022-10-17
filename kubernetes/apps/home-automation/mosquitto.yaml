@@ -42,7 +42,7 @@ spec:
           name: mosquitto-config
       containers:
       - name: mosquitto
-        image: eclipse-mosquitto
+        image: eclipse-mosquitto:2.0.15-openssl
         ports:
         - containerPort: 1883
         volumeMounts:
@@ -51,6 +51,10 @@ spec:
           subPath: mosquitto.conf
         securityContext:
           allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
 ---
 apiVersion: v1
 kind: Service

@@ -31,6 +31,8 @@ spec:
       - name: movies-volume
         persistentVolumeClaim:
           claimName: radarr-movies-pvc
+      - emptyDir: {}
+        name: tmpvol
       containers:
       - name: radarr
         image: ghcr.io/k8s-at-home/radarr:v4.1.0.6175
@@ -46,8 +48,14 @@ spec:
           mountPath: /media/downloads
         - name: movies-volume
           mountPath: /media/movies
+        - name: tmpvol
+          mountPath: /tmp
         securityContext:
           allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
 ---
 apiVersion: v1
 kind: Service

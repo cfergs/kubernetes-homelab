@@ -29,6 +29,8 @@ spec:
       - name: tvshows-volume
         persistentVolumeClaim:
           claimName: sonarr-tvshows-pvc
+      - emptyDir: {}
+        name: tmpvol
       containers:
       - name: sonarr
         image: ghcr.io/k8s-at-home/sonarr:v3.0.9.1549
@@ -44,8 +46,14 @@ spec:
           mountPath: /media/downloads
         - name: tvshows-volume
           mountPath: /media/tvshows
+        - name: tmpvol
+          mountPath: /tmp # Resolve error when using ReadOnly FS: "Failed to create CoreCLR, HRESULT: 0x80004005" - https://github.com/Azure/azure-functions-host/issues/8181 && https://github.com/dotnet/runtime/issues/3168 
         securityContext:
           allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
 ---
 apiVersion: v1
 kind: Service
