@@ -29,7 +29,7 @@ spec:
         name: tmpvol
       containers:
       - name: prowlarr
-        image: ghcr.io/k8s-at-home/prowlarr-develop:v0.4.6.1969@sha256:100c4ec286ace70764cdb632c56d4b1e9f0ab619dfda9393395141ab3da960f8
+        image: ghcr.io/k8s-at-home/prowlarr-develop:v0.4.7.2016@sha256:df16d5fd2d528d8cb3af58f8c2c245291b2eb7c5622c573573a4c461e8e51c32
         ports:
         - containerPort: 9696
         env:

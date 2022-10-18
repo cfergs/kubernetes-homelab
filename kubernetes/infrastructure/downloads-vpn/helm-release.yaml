@@ -16,12 +16,12 @@ spec:
   interval: 15m
   values:
     image:
-      repository: ghcr.io/k8s-at-home/pod-gateway
-      tag: v1.7.0@sha256:ce4871ccdfb98e8dcb5330125a06954ca3b40d9cff3235fb39ac2ba33feff0ff
+      repository: ghcr.io/angelnu/pod-gateway
+      tag: v1.8.1@sha256:baba1f27d821e8cbd27be115156425041455d1281115a8ca8d3bca9379a3ee24
 
     additionalContainers:
       gluetun:
-        image: qmcgaw/gluetun:v3.31.0@sha256:9ef4853dab38fb829d481283e9f154243b61e54e3fa7973fa9bfb966d08f9f19
+        image: qmcgaw/gluetun:v3.31.1@sha256:d9dfeb8ef4409f93fe4caae0781c038fb3eeaffe80f6ac83e0f3a450ed2a3241
         env:
           - name: VPN_TYPE
             value: openvpn
@@ -66,5 +66,5 @@ spec:
       gatewayAnnotation: setGateway
       gatewayLabel: setGateway
       image:
-        repository: ghcr.io/k8s-at-home/gateway-admision-controller
-        tag: v3.6.0
+        repository: ghcr.io/angelnu/gateway-admision-controller
+        tag: v3.7.0

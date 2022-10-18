@@ -26,7 +26,7 @@ spec:
           claimName: unifi-volume-pvc
       containers:
       - name: unifi
-        image: jacobalberty/unifi:stable-6
+        image: jacobalberty/unifi:v7.2.94
         ports:
         - containerPort: 3478 # used for STUN
           name: ubnt-3478

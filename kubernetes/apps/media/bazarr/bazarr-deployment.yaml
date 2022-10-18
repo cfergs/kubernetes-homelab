@@ -76,7 +76,7 @@ spec:
           claimName: bazarr-tvshows-pvc
       containers:
       - name: bazarr
-        image: ghcr.io/k8s-at-home/bazarr:v1.1.1@sha256:9e6717e5904dd827529dcebd656cc6872e1aeb0882dba85bcaaa722202c74a76
+        image: ghcr.io/k8s-at-home/bazarr:v1.1.2@sha256:2b9b3bfc972c6a182d4fc5daf05c4ac727b6678cb6ce3ded6a8f44125ab6f10f
         command: ["/bin/sh"]
         args: ["-c", "/app/entrypoint.sh"]
         ports:
