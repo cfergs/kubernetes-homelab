@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
 - k8s-at-home-charts.yaml
 - k8s-at-home-library.yaml
+- kubernetes-reflector.yaml
 - reloader.yaml

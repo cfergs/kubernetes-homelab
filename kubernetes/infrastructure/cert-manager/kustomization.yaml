@@ -1,6 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- cloudflare-secret.yaml # get key from vault and create k8s secret
 - issuer.yaml
 - certificate.yaml
