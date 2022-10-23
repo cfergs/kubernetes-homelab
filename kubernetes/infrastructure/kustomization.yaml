@@ -4,6 +4,7 @@ resources:
 - reloader
 - csi-secrets-driver  # cannot get consistent install via k8s manifests & helm wont work
 - azure-secrets
+- secrets-sync # central location of creds and synced to where needed
 - cert-manager
 - metallb
 - ingress
