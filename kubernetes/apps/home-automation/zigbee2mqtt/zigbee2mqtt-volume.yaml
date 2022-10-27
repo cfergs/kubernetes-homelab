@@ -8,7 +8,7 @@ spec:
   engineImage: longhornio/longhorn-engine:v1.3.2
   frontend: blockdev
   replicaAutoBalance: best-effort
-  size: "64000000" # 64MB
+  size: "128000000" # 128MB
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -18,7 +18,7 @@ spec:
   accessModes:
     - ReadWriteMany
   capacity:
-    storage: 64Mi
+    storage: 128Mi
   csi:
     driver: driver.longhorn.io
     fsType: ext4
@@ -37,7 +37,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 64Mi
+      storage: 128Mi
   storageClassName: longhorn-static
   volumeMode: Filesystem
   volumeName: zigbee2mqtt-volume-pv
