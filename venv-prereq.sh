@@ -6,7 +6,7 @@ venvPreReqs() {
   echo "*** START: venv pre-requirements check ***"
 
   sudo apt-get update
-  declare -a packages=(python3-pip python3-venv)
+  declare -a packages=(python3-pip python3-venv python3-testresources)
 
   echo "Checking Packages Installed:"
   for package in "${packages[@]}"
