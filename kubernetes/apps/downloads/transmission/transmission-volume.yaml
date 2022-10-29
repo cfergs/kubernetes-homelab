@@ -21,7 +21,7 @@ spec:
     storage: 256Mi
   csi:
     driver: driver.longhorn.io
-    fsType: ext4 
+    fsType: ext4
     volumeHandle: transmission-volume
   persistentVolumeReclaimPolicy: Retain
   storageClassName: longhorn-static

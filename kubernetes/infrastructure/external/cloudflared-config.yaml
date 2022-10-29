@@ -28,21 +28,21 @@ data:
   config.yaml: |
     # Name of the tunnel you want to run
     tunnel: ${DOMAIN_NAME}-tunnel
-    
+
     # Creds - imported from secret - don't modify
     credentials-file: /etc/cloudflared/creds/credentials.json
-    
+
     # Serves the metrics server under /metrics and the readiness server under /ready
     metrics: 0.0.0.0:2000
-    
+
     # Refer to comments above
     no-autoupdate: true
-    
+
     # Global ingress values
     originRequest:
       connectTimeout: 30s
       originServerName: '*.${DOMAIN_NAME}'
-    
+
     # Add value for each new domain. service will be to ingress allowing external access
     ingress:
     - hostname: calibre.${DOMAIN_NAME}
@@ -51,6 +51,6 @@ data:
       service: https://ingress-nginx-controller.ingress-nginx
     - hostname: media.${DOMAIN_NAME}
       service: https://ingress-nginx-controller.ingress-nginx
-    
+
     # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
     - service: http_status:404

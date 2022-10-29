@@ -53,7 +53,7 @@ metadata:
   namespace: downloads
 spec:
   ports:
-  - name: webui 
+  - name: webui
     port: 5800
     protocol: TCP
     targetPort: 5800

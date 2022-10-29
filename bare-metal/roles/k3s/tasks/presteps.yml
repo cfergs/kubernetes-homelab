@@ -60,7 +60,7 @@
 
 # https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
 # Leveraged by Cloudflared
-- name: Increase QUIC Buffer Size 
+- name: Increase QUIC Buffer Size
   become: true
   ansible.posix.sysctl:
     name: net.core.rmem_max

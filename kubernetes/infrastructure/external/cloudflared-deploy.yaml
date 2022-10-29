@@ -53,7 +53,7 @@ spec:
       - name: creds
         secret:
           # By default, the credentials file will be created under ~/.cloudflared/<tunnel ID>.json
-          # when you run `cloudflared tunnel create`. 
+          # when you run `cloudflared tunnel create`.
           # Take the entire output of the json file and store as a secret value - not kidding about this!
           secretName: cloudflared-tunnel-creds
       # Create a config.yaml file from the ConfigMap below.

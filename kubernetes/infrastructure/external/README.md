@@ -12,14 +12,14 @@ Both cloudflared and external-dns require credentials to cloudflare.
 
 ### 1. Cloudflare Zero Trust ###
 
-*** Note: This step is normally last but let's set first .. for good reasons.. *** 
+*** Note: This step is normally last but let's set first .. for good reasons.. ***
 
 *"The internet's a nasty place, dont deploy ANYTHING unauthenticated to the internet!"* - Abraham Lincoln
 
 This step forces a user prior to accessing a resource to do the OAUTH dance and confirm they have access.
 
 Follow steps in:
-1. [Self-Hosted Application](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/ "Create Self-Hosted Application"). 
+1. [Self-Hosted Application](https://developers.cloudflare.com/cloudflare-one/applications/configure-apps/self-hosted-apps/ "Create Self-Hosted Application").
     1. It's recommended to set a wildcard `*` in the **application domain** field so all traffic going to the domain is authed - or add each new subdomain as required.
 2. Next up add some [SSO integration](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/ "Integrate Single Sign-On").
 
@@ -28,8 +28,8 @@ Follow steps in:
 ### 2. Cloudflared ###
 This sets up the tunnel from CloudFlare <--> K8s
 
-1. Manually install cloudflared, create initial tunnel structure and generate credentials json.  
-    1. Leverage steps in https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/ 
+1. Manually install cloudflared, create initial tunnel structure and generate credentials json.
+    1. Leverage steps in https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/
     2. **Note** local cloudflared install isn't needed after this step but is useful for troubleshooting
 2. Take credential .json file, save contents into keyvault.
 3. Follow steps in https://github.com/cloudflare/argo-tunnel-examples/tree/master/named-tunnel-k8s to launch cloudflared.
@@ -41,7 +41,7 @@ Creates example.com CNAME entries pointing to a `*.cfargotunnel.com` record. The
 Using kind=service with type=externalname as ingress can't handle cname creation (afaik).
 
 ## Allowing new sites to leverage CloudFlare Tunnel ##
-As we're dealing with the internet we want to make this a deliberate process for new sites. 
+As we're dealing with the internet we want to make this a deliberate process for new sites.
 
 For each new url:
 1. (clickops) If not using wildcard filtering - Ensure CloudFlare Zero Trust has a self-hosted application covering the new url.

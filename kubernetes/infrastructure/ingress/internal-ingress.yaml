@@ -1,4 +1,4 @@
-# ingress accessible internally only or via VPN 
+# ingress accessible internally only or via VPN
 # hosts secure services such hass and unifi
 ---
 apiVersion: v1

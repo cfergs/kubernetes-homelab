@@ -39,7 +39,7 @@ spec:
         - name: prowlarr-volume
           mountPath: /config
         - name: tmpvol
-          mountPath: /tmp # Resolve error when using ReadOnly FS: "Failed to create CoreCLR, HRESULT: 0x80004005" - https://github.com/Azure/azure-functions-host/issues/8181 && https://github.com/dotnet/runtime/issues/3168 
+          mountPath: /tmp # Resolve error when using ReadOnly FS: "Failed to create CoreCLR, HRESULT: 0x80004005" - https://github.com/Azure/azure-functions-host/issues/8181 && https://github.com/dotnet/runtime/issues/3168
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
