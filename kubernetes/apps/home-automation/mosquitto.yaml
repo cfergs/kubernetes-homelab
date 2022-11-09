@@ -60,12 +60,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mosquitto
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: ${MQTT_IP}
   namespace: home-automation
   labels:
     app: mosquitto
 spec:
+  externalTrafficPolicy: Local
   ports:
   - port: 1883
     targetPort: 1883
   selector:
     app: mosquitto
+  type: LoadBalancer
