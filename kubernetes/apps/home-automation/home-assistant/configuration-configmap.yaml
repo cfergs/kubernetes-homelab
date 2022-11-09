@@ -34,6 +34,3 @@ data:
       - platform: workday
         country: AU
         province: WA
-
-    sensor:
-      - platform: season
