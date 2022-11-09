@@ -24,6 +24,8 @@ spec:
       - name: unifi-volume
         persistentVolumeClaim:
           claimName: unifi-volume-pvc
+      - name: tmpvol
+        emptyDir: {}
       containers:
       - name: unifi
         image: jacobalberty/unifi:v7.2.94
@@ -49,6 +51,8 @@ spec:
         volumeMounts:
         - name: unifi-volume
           mountPath: /unifi
+        - name: tmpvol
+          mountPath: /tmp # needed for creating backups
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
