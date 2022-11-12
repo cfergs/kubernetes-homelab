@@ -3,7 +3,7 @@
   ansible.builtin.include_role:
     name: xanmanning.k3s
 
-- name: cluster | kubeconfig | copy config file to localhost
+- name: Cluster | kubeconfig | copy config file to localhost
   become: true
   run_once: true
   ansible.builtin.fetch:
@@ -14,7 +14,7 @@
     - k3s_control_node is defined
     - k3s_control_node
 
-- name: cluster | kubeconfig | update kubeconfig with the right IPv4 address
+- name: Cluster | kubeconfig | update kubeconfig with the right IPv4 address
   delegate_to: localhost
   become: false
   run_once: true

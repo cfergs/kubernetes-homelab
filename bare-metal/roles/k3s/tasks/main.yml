@@ -1,6 +1,6 @@
 ---
 - name: Pre-Steps
-  include_tasks: presteps.yml
+  ansible.builtin.include_tasks: presteps.yml
 
 - name: Install k3s
-  include_tasks: k3s.yml
+  ansible.builtin.include_tasks: k3s.yml

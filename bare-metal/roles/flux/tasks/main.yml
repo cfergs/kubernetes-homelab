@@ -4,7 +4,7 @@
     home_path: "{{ lookup('env', 'HOME') }}"
 
 - name: Install Kubectl
-  include_tasks: kubectl.yml
+  ansible.builtin.include_tasks: kubectl.yml
 
 - name: Flux Deployment
-  include_tasks: flux.yml
+  ansible.builtin.include_tasks: flux.yml
