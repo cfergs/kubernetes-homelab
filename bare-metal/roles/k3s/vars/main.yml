@@ -13,3 +13,5 @@ k3s_server_manifests_urls:
     filename: metallb-native.yaml
   - url: https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
     filename: cert-manager.yaml
+
+kube_file: /etc/rancher/k3s/k3s.yaml

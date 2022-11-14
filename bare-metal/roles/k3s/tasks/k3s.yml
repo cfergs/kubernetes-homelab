@@ -22,3 +22,19 @@
     path: "/tmp/kubeconfig"
     regexp: "https://127.0.0.1:6443"
     replace: "https://{{ k3s_registration_address }}:6443"
+
+- name: Cluster | Crackers | Zigbee label
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiversion: v1
+      kind: Node
+      metadata:
+        name: crackers
+        labels:
+          usb: zigbee
+    kubeconfig: "{{ kube_file }}"
+  when:
+  - k3s_control_node is defined
+  - k3s_control_node
