@@ -30,7 +30,7 @@ spec:
           claimName: sabnzbd-downloads-pvc
       containers:
       - name: sabnzbd
-        image: ghcr.io/k8s-at-home/sabnzbd:v3.6.1
+        image: ghcr.io/k8s-at-home/sabnzbd:v3.7.0
         ports:
         - containerPort: 8080
         env:

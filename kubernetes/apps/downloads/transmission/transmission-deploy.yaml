@@ -31,7 +31,7 @@ spec:
         emptyDir: {}
       containers:
       - name: transmission
-        image: ghcr.io/onedr0p/transmission:3.00@sha256:35daad26844c5294345c66771a719fe4a9cf72d3673125018598c61f327ffefe
+        image: ghcr.io/onedr0p/transmission:3.00@sha256:05ac0f144072e49d3b1d116483d99c74609493793799a0cd605a1115b115373d
         ports:
         - name: webui
           containerPort: 9091
