@@ -28,6 +28,8 @@ spec:
       - name: download-volume
         persistentVolumeClaim:
           claimName: sabnzbd-downloads-pvc
+      - name: tmpvol
+        emptyDir: {}
       containers:
       - name: sabnzbd
         image: ghcr.io/k8s-at-home/sabnzbd:v3.7.0
@@ -43,6 +45,8 @@ spec:
           mountPath: /config
         - name: download-volume
           mountPath: /media/downloads/usenet
+        - name: tmpvol
+          mountPath: /tmp # needed to download nzbs
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
