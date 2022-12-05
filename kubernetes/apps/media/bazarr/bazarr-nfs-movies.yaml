@@ -7,11 +7,11 @@ spec:
   capacity:
     storage: 2000G
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   nfs:
     path: /shares/movies
     server: ${NAS_IP}
-  persistentVolumeReclaimPolicy: Retain
+  persistentVolumeReclaimPolicy: Delete
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,7 +22,7 @@ spec:
   storageClassName: ""
   volumeName: bazarr-movies-pv
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 2000G

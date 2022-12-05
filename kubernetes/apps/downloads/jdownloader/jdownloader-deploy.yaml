@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: jdownloader
   namespace: downloads
 spec:
+  serviceName: jdownloader
   replicas: 1
   selector:
     matchLabels:
@@ -22,7 +23,7 @@ spec:
           claimName: jdownloader-downloads-pvc
       containers:
       - name: jdownloader
-        image: jlesage/jdownloader-2:v22.11.1
+        image: jlesage/jdownloader-2:v1.7.2
         ports:
         - containerPort: 5800
         env:

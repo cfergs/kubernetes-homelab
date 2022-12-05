@@ -28,13 +28,14 @@ data:
     exec /usr/bin/python3 /app/bazarr.py --no-update --config /config ${EXTRA_ARGS}
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: bazarr
   namespace: media
   labels:
     app: bazarr
 spec:
+  serviceName: bazarr
   replicas: 1
   selector:
     matchLabels:
@@ -136,6 +137,3 @@ spec:
             name: bazarr
             port:
               number: 6767
-  tls:
-  - hosts:
-    - media.${DOMAIN_NAME}

@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: radarr
   namespace: media
   labels:
     app: radarr
 spec:
+  serviceName: radarr
   replicas: 1
   selector:
     matchLabels:
@@ -92,6 +93,3 @@ spec:
             name: radarr
             port:
               number: 7878
-  tls:
-  - hosts:
-    - media.${DOMAIN_NAME}

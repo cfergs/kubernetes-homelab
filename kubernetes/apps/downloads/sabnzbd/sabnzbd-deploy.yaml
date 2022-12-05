@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: sabnzbd
   namespace: downloads
   labels:
     app: sabnzbd
 spec:
+  serviceName: sabnzbd
   replicas: 1
   selector:
     matchLabels:
@@ -89,6 +90,3 @@ spec:
             name: sabnzbd
             port:
               number: 8080
-  tls:
-  - hosts:
-    - media.${DOMAIN_NAME}

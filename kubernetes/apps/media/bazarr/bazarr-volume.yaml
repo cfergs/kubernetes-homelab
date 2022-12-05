@@ -4,7 +4,7 @@ metadata:
   name: bazarr-volume
   namespace: longhorn-system
 spec:
-  accessMode: rwx
+  accessMode: rwo
   engineImage: longhornio/longhorn-engine:v1.3.2
   frontend: blockdev
   replicaAutoBalance: best-effort
@@ -16,7 +16,7 @@ metadata:
   name: bazarr-volume-pv
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   capacity:
     storage: 512Mi
   csi:
@@ -34,7 +34,7 @@ metadata:
   namespace: media
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 512Mi

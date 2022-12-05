@@ -7,7 +7,7 @@ spec:
   capacity:
     storage: 500G
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   nfs:
     path: /shares/downloads/usenet
     server: ${NAS_IP}
@@ -22,7 +22,7 @@ spec:
   storageClassName: ""
   volumeName: sabnzbd-downloads-pv
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 500G

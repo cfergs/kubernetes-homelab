@@ -7,11 +7,11 @@ spec:
   capacity:
     storage: 500G
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   nfs:
     path: /shares/downloads
     server: ${NAS_IP}
-  persistentVolumeReclaimPolicy: Retain
+  persistentVolumeReclaimPolicy: Delete
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,7 +22,7 @@ spec:
   storageClassName: ""
   volumeName: radarr-downloads-pv
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 500G
