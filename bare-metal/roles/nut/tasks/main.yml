@@ -1,0 +1,15 @@
+- name: Kubernetes Role Create
+  ansible.builtin.include_tasks: kubernetes.yml
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node  
+
+# from https://github.com/akusei/pushover-bash
+- name: Pushover
+  ansible.builtin.include_tasks: pushover.yml
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
+
+- name: NUT Install
+  ansible.builtin.include_tasks: nut.yml

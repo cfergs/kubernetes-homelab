@@ -1,0 +1,125 @@
+---
+- name: Node Drain Variable
+  ansible.builtin.set_fact:
+    user_account: node-drainer-sa
+    kube_file: /etc/rancher/k3s/k3s.yaml
+
+- name: Install pip
+  become: true
+  ansible.builtin.apt:
+    name: python3-pip
+    update_cache: true
+
+- name: Pip Installs
+  become: true
+  ansible.builtin.pip:
+    name:
+      - kubernetes==25.3.0
+      - pyyaml==6.0
+
+- name: Create node-drainer-sa ServiceAccount
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: "{{ user_account }}"
+        namespace: default
+    kubeconfig: "{{ kube_file }}"
+
+- name: Create token
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ user_account }}-token"
+        namespace: default
+        annotations:
+          kubernetes.io/service-account.name: "{{ user_account }}"
+      type: kubernetes.io/service-account-token
+    kubeconfig: "{{ kube_file }}"
+
+- name: Create ClusterRole
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRole
+      metadata:
+        name: system:node-drainer
+      rules:
+        # Needed to evict pods
+        - apiGroups: [""]
+          resources: ["pods/eviction"]
+          verbs: ["create"]
+        # Needed to list pods by Node
+        - apiGroups: [""]
+          resources: ["pods"]
+          verbs: ["get", "list"]
+        # Needed to cordon Nodes
+        - apiGroups: [""]
+          resources: ["nodes"]
+          verbs: ["get", "patch"]
+        # Needed to determine Pod owners
+        - apiGroups: ["apps"]
+          resources: ["daemonsets","statefulsets"]
+          verbs: ["get", "list"]
+        # Needed to determine Pod owners
+        - apiGroups: ["extensions"]
+          resources: ["daemonsets", "replicasets"]
+          verbs: ["get", "list"]
+    kubeconfig: "{{ kube_file }}"
+
+- name: Create ClusterRole Binding
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: node-drainer-binding
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: system:node-drainer
+      subjects:
+      - kind: ServiceAccount
+        name: "{{ user_account }}"
+        namespace: default
+    kubeconfig: "{{ kube_file }}"
+
+- name: Get Token
+  become: true
+  ansible.builtin.command: "kubectl get secret {{ user_account }}-token -o jsonpath={.data.token} --kubeconfig={{ kube_file }}"
+  register: token_encrypted
+
+- name: Decrypt Token
+  ansible.builtin.set_fact:
+    user_token: "{{ token_encrypted.stdout | b64decode }}"
+
+- name: Get CA data
+  become: true
+  ansible.builtin.command: "kubectl config view --minify --raw --output jsonpath={..cluster.certificate-authority-data} --kubeconfig={{ kube_file }}"
+  register: kube_ca
+
+- name: Add K8S Token to dummy host # needed when using host specific variable on another host
+  ansible.builtin.add_host:
+    name: K8S_NODE_DRAIN
+    token: "{{ token_encrypted.stdout | b64decode }}"
+    ca: "{{ kube_ca.stdout }}"
+
+- name: Kubectl Deploy config file
+  become: true
+  ansible.builtin.template:
+    src: kubedrainconfig.j2
+    dest: /etc/rancher/k3s/kubedrainconfig
+    owner: root
+    group: nut
+    mode: 0640

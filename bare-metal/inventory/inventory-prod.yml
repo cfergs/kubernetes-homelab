@@ -6,11 +6,13 @@ localhost:
     ansible_connection: local
     branch: main
     target_path: kubernetes/clusters/production
-    github_token:
-
+    kv_url: 'https://chickenwaffles-keyvault.vault.azure.net/'
+    github_token: "{{ lookup('azure_keyvault_secret', 'github-token', vault_url=kv_url) }}"
+    
 k3s_cluster:
   hosts:
     monty:
+      nut_controller_node: true
       k3s_control_node: true
       ansible_host: 192.168.0.225
     crackers:
@@ -21,4 +23,10 @@ k3s_cluster:
     ansible_connection: paramiko # don't need to apt-get sshpass
     ansible_user: ubuntu
     ansible_python_interpreter: /usr/bin/python3
+    nut_controller_address: 192.168.0.225
     k3s_registration_address: 192.168.0.225
+    kv_url: https://chickenwaffles-keyvault.vault.azure.net/
+    PUSHOVER_APP_TOKEN: "{{ lookup('azure_keyvault_secret', 'pushover-app-token', vault_url=kv_url) }}"
+    PUSHOVER_USER_TOKEN: "{{ lookup('azure_keyvault_secret', 'pushover-user-token', vault_url=kv_url) }}"
+    nut_user_controller_password: "{{ lookup('azure_keyvault_secret', 'nut-user-controller-password', vault_url=kv_url) }}"
+    nut_user_subscriber_password: "{{ lookup('azure_keyvault_secret', 'nut-user-subscriber-password', vault_url=kv_url) }}"

@@ -1,0 +1,63 @@
+---
+kube_file: /etc/rancher/k3s/k3s.yaml
+
+nut_max_retry: 3
+
+nut_user_controller_name: nutcontrolleruser
+nut_user_subscriber_name: nutsubscriberuser
+
+upsmon_shutdown_cmd: "/sbin/shutdown -h +0"
+upsmon_notifycmd: "NOTIFYCMD /sbin/upssched"
+upsmon_hostsync_value: 60 # CHANGE
+upsmon_powerdown_flag: "POWERDOWNFLAG /etc/killpower" # can hash out whole line if needed
+
+nut_ups_devices:
+  - |
+    [cyberpower]
+      driver = "usbhid-ups"
+      desc = "CyberPower UPS VP700ELCD"
+      port = "auto"
+      vendorid = "0764"
+      productid = "0501"
+      product = "VP700ELCD"
+      vendor = "CPS"
+      bus = "003"
+      ondelay = 0
+      offdelay = 180
+      lowbatt = 30
+
+  - |
+    [heartbeat]
+      driver = dummy-ups
+      port = heartbeat.dev
+      desc = "Watch over NUT"
+
+## Above Notes ##
+# lowbatt of 30% because we've increased offdelay
+
+nut_ups_listen: |
+  LISTEN 127.0.0.1 3493
+  LISTEN {{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }} 3493
+
+# custom settings depending on if mode is controller or subscriber
+ups_mode:
+  controller:
+    nut_mode: netserver
+    nut_ups_monitors:
+      - "MONITOR cyberpower@{{ nut_controller_address }} 1 {{ nut_user_controller_name }} {{ nut_user_controller_password }} master"
+      - "MONITOR heartbeat@localhost 0 {{ nut_user_controller_name }} {{ nut_user_controller_password }} master"
+    upssched_at_cmds:
+      - AT COMMBAD cyberpower@{{ nut_controller_address }} EXECUTE lostcomms
+      - AT LOWBATT cyberpower@{{ nut_controller_address }} EXECUTE lowbatt
+      - AT NOCOMM cyberpower@{{ nut_controller_address }} EXECUTE lostcomms
+      - AT ONBATT cyberpower@{{ nut_controller_address }} EXECUTE onbatt
+      - AT ONBATT cyberpower@{{ nut_controller_address }} START-TIMER mute_beeper 60
+      - AT ONLINE cyberpower@{{ nut_controller_address }} CANCEL-TIMER mute_beeper
+      - AT ONLINE cyberpower@{{ nut_controller_address }} EXECUTE online
+      - AT REPLBATT cyberpower@{{ nut_controller_address }} EXECUTE replbatt
+      - AT ONBATT heartbeat@localhost CANCEL-TIMER heartbeat-failure-timer
+      - AT ONBATT heartbeat@localhost START-TIMER heartbeat-failure-timer 660
+  subscriber:
+    nut_mode: netclient
+    nut_ups_monitors:
+      - "MONITOR cyberpower@{{ nut_controller_address }} 1 {{ nut_user_subscriber_name }} {{ nut_user_subscriber_password }} slave"
