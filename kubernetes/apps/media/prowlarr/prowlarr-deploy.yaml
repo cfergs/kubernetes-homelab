@@ -1,19 +1,18 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: prowlarr
   namespace: media
-  labels:
-    app: prowlarr
 spec:
+  serviceName: prowlarr
   replicas: 1
   selector:
     matchLabels:
-      app: prowlarr
+      name: prowlarr
   template:
     metadata:
       labels:
-        app: prowlarr
+        name: prowlarr
     spec:
       securityContext:
         runAsNonRoot: true
@@ -52,15 +51,13 @@ kind: Service
 metadata:
   name: prowlarr
   namespace: media
-  labels:
-    app: prowlarr
 spec:
   ports:
   - port: 9696
     protocol: TCP
     targetPort: 9696
   selector:
-    app: prowlarr
+    name: prowlarr
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -82,6 +79,3 @@ spec:
             name: prowlarr
             port:
               number: 9696
-  tls:
-  - hosts:
-    - media.${DOMAIN_NAME}

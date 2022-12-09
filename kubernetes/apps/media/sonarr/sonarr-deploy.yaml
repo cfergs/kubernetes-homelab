@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: sonarr
   namespace: media
 spec:
+  serviceName: sonarr
   replicas: 1
   selector:
     matchLabels:
@@ -60,8 +61,6 @@ kind: Service
 metadata:
   name: sonarr
   namespace: media
-  labels:
-    app: sonarr
 spec:
   ports:
   - port: 8989
@@ -90,6 +89,3 @@ spec:
             name: sonarr
             port:
               number: 8989
-  tls:
-  - hosts:
-    - media.${DOMAIN_NAME}

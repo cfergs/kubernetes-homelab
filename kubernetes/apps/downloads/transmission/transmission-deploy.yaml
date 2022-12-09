@@ -1,10 +1,11 @@
 # example from: https://github.com/TobiasDeBruijn/HomelabKubernetes/blob/new/manifests/homelab/transmision.yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: transmission
   namespace: downloads
 spec:
+  serviceName: transmission
   replicas: 1
   selector:
     matchLabels:
@@ -105,6 +106,3 @@ spec:
             name: transmission
             port:
               name: webui
-  tls:
-  - hosts:
-    - media.${DOMAIN_NAME}

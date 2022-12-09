@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mylar3
   namespace: media
 spec:
+  serviceName: mylar3
   replicas: 1
   selector:
     matchLabels:
@@ -106,6 +107,3 @@ spec:
             name: mylar3
             port:
               name: mylar3-webui
-  tls:
-  - hosts:
-    - media.${DOMAIN_NAME}

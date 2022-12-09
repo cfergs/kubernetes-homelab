@@ -1,12 +1,11 @@
 # https://github.com/Koenkk/zigbee2mqtt/discussions/10899
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: zigbee2mqtt
   namespace: home-automation
-  labels:
-    app: zigbee2mqtt
 spec:
+  serviceName: zigbee2mqtt
   replicas: 1
   selector:
     matchLabels:
@@ -65,8 +64,6 @@ kind: Service
 metadata:
   name: zigbee2mqtt
   namespace: home-automation
-  labels:
-    app: zigbee2mqtt
 spec:
   ports:
   - port: 8080
@@ -96,6 +93,3 @@ spec:
             name: zigbee2mqtt
             port:
               number: 8080
-  tls:
-  - hosts:
-    - hass.${DOMAIN_NAME}

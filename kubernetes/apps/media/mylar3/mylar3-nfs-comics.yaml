@@ -7,10 +7,11 @@ spec:
   capacity:
     storage: 200G
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   nfs:
     path: /shares/comics
     server: ${NAS_IP}
+  persistentVolumeReclaimPolicy: Delete
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -21,7 +22,7 @@ spec:
   storageClassName: ""
   volumeName: mylar3-comics-pv
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 200G

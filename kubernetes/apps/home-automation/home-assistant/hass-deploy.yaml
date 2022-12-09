@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   annotations:
     configmap.reloader.stakater.com/reload: hass-config # reload pod if configuration.yaml updated
   name: hass
   namespace: home-automation
 spec:
+  serviceName: hass
   replicas: 1
   selector:
     matchLabels:
@@ -72,6 +73,3 @@ spec:
             name: hass
             port:
               name: hass-8123
-  tls:
-  - hosts:
-    - hass.${DOMAIN_NAME}

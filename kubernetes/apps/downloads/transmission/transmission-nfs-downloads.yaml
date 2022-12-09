@@ -7,10 +7,11 @@ spec:
   capacity:
     storage: 500G
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   nfs:
     path: /shares/downloads/torrents
     server: ${NAS_IP}
+  persistentVolumeReclaimPolicy: Delete
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -21,7 +22,7 @@ spec:
   storageClassName: ""
   volumeName: transmission-downloads-pv
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 500G
