@@ -5,3 +5,4 @@ resources:
 - k8s-at-home-library.yaml
 - kubernetes-reflector.yaml
 - reloader.yaml
+- splunk-operator.yaml
