@@ -5,11 +5,34 @@
     name: modemmanager
     state: absent
 
+- name: Unmark ModemManager Service
+  become: true
+  ansible.builtin.systemd:
+    masked: false
+    name: ModemManager.service
+
+- name: Remove ModemManager systemd files
+  become: true
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ item }}"
+    state: absent
+  with_items:
+    - ModemManager
+    - dbus-org.freedesktop.ModemManager1.service
+
 - name: Install nfs # without this volumes wont work
   become: true
   ansible.builtin.apt:
     name: nfs-common
     update_cache: true
+
+- name: adjust timeout
+  become: true
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/system.conf
+    block: |
+          DefaultTimeoutStartSec=30s
+          DefaultTimeoutStopSec=30s
 
 # Remove traefik as leveraging nginx. Adding .skip is recommended.
 - name: Delete traefik file (if exists)
@@ -48,15 +71,7 @@
     group: root
     mode: '0644'
     backup: true
-  when: "ansible_service_mgr == 'systemd'"
-  register: multipath_conf
-
-- name: Restart multipath systemd
-  become: true
-  ansible.builtin.systemd:
-    name: multipathd
-    state: restarted
-  when: multipath_conf.changed
+  notify: Restart multipath systemd
 
 # https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
 # Leveraged by Cloudflared

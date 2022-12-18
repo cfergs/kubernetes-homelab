@@ -1,0 +1,8 @@
+---
+- name: Restart multipath systemd
+  become: true
+  ansible.builtin.systemd:
+    name: multipathd
+    daemon_reload: true
+    enabled: true
+    state: restarted

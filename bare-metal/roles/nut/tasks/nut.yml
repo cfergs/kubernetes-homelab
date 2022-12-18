@@ -1,0 +1,126 @@
+---
+- name: Get NUT specific variables # needed so only lookup from kv once
+  ansible.builtin.add_host:
+    name: NUT_VALUES
+    controller_password: "{{ nut_user_controller_password }}"
+    subscriber_password: "{{ nut_user_subscriber_password }}"
+
+# Get values specific to whether NUT instance is a controller or subscriber
+- name: NUT Controller | Get custom variables
+  ansible.builtin.set_fact:
+    values: "{{ ups_mode.controller }}"
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
+
+- name: NUT Subscriber | Get custom variables
+  ansible.builtin.set_fact:
+    values: "{{ ups_mode.subscriber }}"
+  when:
+    - nut_controller_node is not defined
+
+- name: NUT Controller | Install nut server
+  become: true
+  ansible.builtin.apt:
+    name: nut
+    update_cache: true
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
+
+- name: NUT Subscriber | Install nut-client only # doesnt install nut-driver on clients
+  become: true
+  ansible.builtin.apt:
+    name: nut-client
+    update_cache: true
+  when:
+    - nut_controller_node is not defined
+
+- name: NUT Controller | set udev rules # grant nut access to usb - fix error "No matching HID UPS found"
+  become: true
+  ansible.builtin.copy:
+    src: 99-nut.rules
+    dest: /etc/udev/rules.d/99-nut.rules
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart udev
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
+
+# not all files are required by subscriber to work, hence different options for controller vs subscriber
+- name: NUT Controller | Install NUT configuration files
+  become: true
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nut/{{ item }}"
+    owner: root
+    group: nut
+    mode: 0640
+  with_items:
+    - nut.conf
+    - ups.conf
+    - upsd.conf
+    - upsd.users
+    - upsmon.conf
+    - upssched.conf
+  notify: Restart NUT Controller
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
+
+# https://github.com/networkupstools/nut/issues/779 , https://wiki.archlinux.org/title/Network_UPS_Tools#upsd_configuration
+- name: NUT Controller | nut-driver restart modify # cyberpower and dummy ups start issue
+  become: true
+  ansible.builtin.blockinfile:
+    path: /lib/systemd/system/nut-driver.service
+    block: |
+      RestartSec=15s
+      Restart=always
+    state: present
+  notify: Restart NUT Controller
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
+
+- name: NUT Controller | Deploy Heartbeat
+  become: true
+  ansible.builtin.copy:
+    src: heartbeat.dev
+    dest: /etc/nut/heartbeat.dev
+    owner: root
+    group: root
+    mode: 0644 # everything needs read or nut-driver.service won't start for lack of perms
+  notify: Restart NUT Controller
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
+
+- name: NUT Subscriber | Install NUT configuration files
+  become: true
+  ansible.builtin.template:
+    src: "{{ item }}.j2"
+    dest: "/etc/nut/{{ item }}"
+    owner: root
+    group: nut
+    mode: 0640
+  with_items:
+    - nut.conf
+    - upsmon.conf
+  notify: Restart NUT Subscriber
+  when:
+    - nut_controller_node is not defined
+
+- name: NUT Controller | Deploy upssched-cmd Script
+  become: true
+  ansible.builtin.template:
+    src: upssched-cmd.j2
+    dest: /bin/upssched-cmd
+    owner: root
+    group: root
+    mode: 0755
+  notify: Restart NUT Controller
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
