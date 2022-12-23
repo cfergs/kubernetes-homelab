@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  serviceName: jellyfin
+  replicas: 1
+  selector:
+    matchLabels:
+      name: jellyfin
+  template:
+    metadata:
+      labels:
+        name: jellyfin
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+      volumes:
+      - name: jellyfin-volume
+        persistentVolumeClaim:
+          claimName: jellyfin-volume-pvc
+      - name: jellyfin-cache-volume
+        persistentVolumeClaim:
+          claimName: jellyfin-cache-volume-pvc
+      - name: jellyfin-transcode-volume
+        persistentVolumeClaim:
+          claimName: jellyfin-transcode-volume-pvc
+      - name: tmpvol
+        emptyDir: {}
+      - name: movies-volume
+        persistentVolumeClaim:
+          claimName: jellyfin-movies-pvc
+      - name: tvshows-volume
+        persistentVolumeClaim:
+          claimName: jellyfin-tvshows-pvc
+      containers:
+      - name: jellyfin
+        image: jellyfin/jellyfin:10.8.8-amd64
+        ports:
+        - containerPort: 8096 # http
+          name: jellyfin-8096
+          protocol: TCP
+        volumeMounts:
+        - name: jellyfin-volume
+          mountPath: /config
+        - name: jellyfin-cache-volume
+          mountPath: /config/cache
+        - name: jellyfin-transcode-volume
+          mountPath: /config/transcodes
+        - name: tmpvol
+          mountPath: /tmp
+        - name: movies-volume
+          mountPath: /media/movies
+          readOnly: true
+        - name: tvshows-volume
+          mountPath: /media/tvshows
+          readOnly: true
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "kubernetes.io/hostname"
+                operator: In
+                values:
+                - mindy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  ports:
+  - name: jellyfin-webui
+    port: 8096
+    protocol: TCP
+    targetPort: 8096
+  selector:
+    name: jellyfin
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+  name: jellyfin-ingress
+  namespace: media
+spec:
+  ingressClassName: nginx-internal
+  rules:
+  - host: jellyfin.chickenwaffles.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: jellyfin
+            port:
+              number: 8096

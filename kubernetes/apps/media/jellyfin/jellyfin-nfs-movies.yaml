@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-movies-pv
+  namespace: media
+spec:
+  capacity:
+    storage: 2000G
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    path: /shares/movies
+    server: ${NAS_IP}
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-movies-pvc
+  namespace: media
+spec:
+  storageClassName: ""
+  volumeName: jellyfin-movies-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2000G
