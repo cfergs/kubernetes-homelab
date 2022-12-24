@@ -82,6 +82,9 @@ spec:
         args: ["-c", "/app/entrypoint.sh"]
         ports:
         - containerPort: 6767
+        env:
+        - name: TZ
+          value: ${TIMEZONE}
         volumeMounts:
         - name: bazarr-volume
           mountPath: /config
