@@ -1,4 +1,6 @@
 {
     "files.eol": "\r\n",
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "redhat.telemetry.enabled": false,
+    "terminal.integrated.defaultProfile.windows": "Ubuntu-20.04 (WSL)"
 }

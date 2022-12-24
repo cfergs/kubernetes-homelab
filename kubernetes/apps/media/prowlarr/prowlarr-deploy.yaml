@@ -28,10 +28,12 @@ spec:
         name: tmpvol
       containers:
       - name: prowlarr
-        image: ghcr.io/k8s-at-home/prowlarr-develop:v0.4.9.2083@sha256:e98c8dc513f64bea18d58bff4403adfaed87e62fee9bafa04fbcaedf625ea842
+        image: ghcr.io/onedr0p/prowlarr-develop:0.4.11.2143@sha256:b23584c0afa5ae51877f8eaca58ea704281439ed9a67e12fb512d1262f07d751
         ports:
         - containerPort: 9696
         env:
+        - name: PROWLARR__ANALYTICS_ENABLED
+          value: "False"
         - name: PROWLARR__URL_BASE
           value: /prowlarr
         volumeMounts:

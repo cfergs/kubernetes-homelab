@@ -33,13 +33,13 @@ spec:
         emptyDir: {}
       containers:
       - name: sabnzbd
-        image: ghcr.io/k8s-at-home/sabnzbd:v3.7.0
+        image: ghcr.io/onedr0p/sabnzbd:3.7.1@sha256:dcb68eda221b59dcce3a2b297f6d1b2228964d83799b24cb001671890e7d7a10
         ports:
         - containerPort: 8080
         env:
         - name: TZ
           value: ${TIMEZONE}
-        - name: HOST_WHITELIST_ENTRIES # fix "hostname verification failed" error
+        - name: SABNZBD__HOST_WHITELIST_ENTRIES # fix "hostname verification failed" error
           value: media.${DOMAIN_NAME}
         volumeMounts:
         - name: sabnzbd-volume
