@@ -6,7 +6,7 @@ resources:
 - external.yaml
 - home-automation.yaml
 - media.yaml
-- monitor
+- monitor.yaml
 - reloader.yaml
 - secrets-sync.yaml
 - unifi.yaml
