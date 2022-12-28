@@ -4,6 +4,8 @@
 apiVersion: v1
 kind: Namespace
 metadata:
+  annotations:
+    splunk.com/index: ingress
   labels:
     app.kubernetes.io/instance: ingress-nginx-internal
     app.kubernetes.io/name: ingress-nginx-internal

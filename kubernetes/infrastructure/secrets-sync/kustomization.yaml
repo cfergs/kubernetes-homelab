@@ -5,3 +5,6 @@ resources:
 - cloudflare-secret.yaml
 - nordvpn-secret.yaml
 - s3-backup-secret.yaml
+- splunk-blob.yaml
+- splunk-license.yaml
+- splunk-secret.yaml

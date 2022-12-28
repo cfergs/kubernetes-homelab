@@ -5,3 +5,6 @@ resources:
 - k8s-at-home-library.yaml
 - kubernetes-reflector.yaml
 - reloader.yaml
+- splunk-operator.yaml
+- splunk-otel-collector.yaml
+- splunk-connect-for-syslog.yaml

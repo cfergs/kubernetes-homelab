@@ -1,0 +1,84 @@
+apiVersion: enterprise.splunk.com/v4
+kind: Standalone
+metadata:
+  annotations:
+    configmap.reloader.stakater.com/reload: splunk-defaults
+  name: s1
+  namespace: monitor
+#  finalizers:
+#    - enterprise.splunk.com/delete-pvc
+spec: # must specify sizing else etc=10Gi,var=100Gi. Will overwhelm storage and pods won't start
+  appRepo:
+    appsRepoPollIntervalSeconds: 600
+    defaults:
+      volumeName: volume_app_repo
+      scope: local
+    appSources:
+      - name: addons
+        location: addons/
+    volumes:
+      - name: volume_app_repo
+        storageType: blob
+        provider: azure
+        path: splunk/
+        endpoint: ${SPLUNK_AZURE_ENDPOINT}
+        secretRef: azure-blob-splunk-secret
+  extraEnv:
+    - name: AZURE_BLOB_STORAGE_ACCOUNT
+      valueFrom:
+        secretKeyRef:
+          name: azure-blob-splunk-secret
+          key: azure_sa_name
+    - name: AZURE_BLOB_STORAGE_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: azure-blob-splunk-secret
+          key: azure_sa_secret_key
+  volumes:
+    - name: defaults
+      configMap:
+        name: splunk-defaults
+    - name: licenses
+      secret:
+        secretName: splunk-enterprise-license
+  defaultsUrl: /mnt/defaults/default.yml
+  licenseUrl: /mnt/licenses/license.lic
+  etcVolumeStorageConfig:
+    storageClassName: local-path
+    storageCapacity: 2Gi
+  varVolumeStorageConfig:
+    storageClassName: local-path
+    storageCapacity: 2Gi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: splunk
+  namespace: monitor
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx-internal
+  rules:
+  - host: splunk.${DOMAIN_NAME}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: splunk-s1-standalone-service
+            port: 
+              number: 8000
+      - path: /services/collector
+        pathType: Prefix
+        backend:
+          service:
+            name: splunk-s1-standalone-headless
+            port: 
+              number: 8088

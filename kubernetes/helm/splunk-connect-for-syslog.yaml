@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: splunk-connect-for-syslog
+  namespace: flux-system
+spec:
+  url: https://splunk.github.io/splunk-connect-for-syslog
+  interval: 10m
