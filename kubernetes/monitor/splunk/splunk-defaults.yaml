@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: splunk-defaults
+  namespace: monitor
+data:
+  default.yml: |-
+    cert_prefix: https
+    splunk:
+      disable_popups: true
+      http_port: 8000
+      http_enableSSL: true
+      svc_port: 8089
+      hec:
+        enable: true
+        port: 8088
+        ssl: true
+      s2s:
+        enable: true
+        port: 9997
+        ssl: true
+        cert: /opt/splunk/etc/auth/server.pem
+        password: password
+        ca: /opt/splunk/etc/auth/cacert.pem
+      conf:
+        - key: indexes
+          value:
+            directory: /opt/splunk/etc/apps/splunk-operator/local
+            content:
+              default:
+                repFactor : auto
+                maxDataSize : auto
+                homePath : $SPLUNK_DB/$_index_name/db
+                coldPath : $SPLUNK_DB/$_index_name/colddb
+                thawedPath : $SPLUNK_DB/$_index_name/thaweddb
+                remotePath : 'volume:azure_smartstore/$_index_name'
+              'volume:azure_smartstore':
+                storageType : remote
+                remote.azure.endpoint : https://chickenwafflesprodstore.blob.core.windows.net
+                remote.azure.container_name : splunk
+                path : azure://indexes
+                remote.azure.access_key : "{{ lookup('env','AZURE_BLOB_STORAGE_ACCOUNT', no_log='True') }}"
+                remote.azure.secret_key : "{{ lookup('env','AZURE_BLOB_STORAGE_SECRET', no_log='True') }}"
+              k8s_events:
+                disabled : false
+              k8s_apps:
+                disabled : false
+              ingress:
+                disabled : false
+              netops:
+                # hpeprocurve
+                disabled : false
+              osnix:
+                disabled : false
+              netipam:
+                disabled : false
+              netauth:
+                # opnsense:access
+                disabled : false
+              netdhcp:
+                # opnsense:dhcpd
+                disabled : false
+              netfw:
+                # opnsense:filterlog
+                disabled : false
+              netfwsystem:
+                # opnsense, opnsense:cron, opnsense:system, opnsense:syslog
+                disabled : false
+              netids:
+                # opnsense:suricata, opnsense:suricata:json
+                disabled : false
+        - key: telemetry
+          value: 
+            directory: /opt/splunk/etc/apps/splunk_instrumentation/local
+            content:
+              general:
+                sendAnonymizedUsage : false
+                sendSupportUsage : false
+                sendAnonymizedWebAnalytics : false
+                precheckSendAnonymizedUsage : false
+                precheckSendLicenseUsage : false
+                deprecatedConfig : false
+                onCloudInstance : false
+        - key: user-prefs
+          value: 
+            directory: /opt/splunk/etc/system/local
+            content:
+              general:
+                #render_version_messages : 0
+                #hideInstrumentationOptInModal : 1
+                #dismissedInstrumentationOptInVersion : 4
+                tz : Australia/Perth
+              #general_default:
+                #showWhatsNew : 0

@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: splunk-otel-collector
+  namespace: monitor
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: splunk-otel-collector
+      version: 0.67.0
+      interval: 5m
+      sourceRef:
+        kind: HelmRepository
+        name: splunk-otel-collector-chart
+        namespace: flux-system
+  values:
+    clusterName: k3s_homelab
+    environment: production
+    logsEngine: otel
+    splunkPlatform:
+      endpoint: https://splunk.${DOMAIN_NAME}/services/collector/event
+      index: k8s_events
+      metricsEnabled: false
+      logsEnabled: true
+    logsCollection:
+      containers:
+        enabled: true
+    secret:
+      create: false
