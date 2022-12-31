@@ -70,7 +70,7 @@ data:
                 # opnsense:suricata, opnsense:suricata:json
                 disabled : false
         - key: telemetry
-          value: 
+          value:
             directory: /opt/splunk/etc/apps/splunk_instrumentation/local
             content:
               general:
@@ -82,7 +82,7 @@ data:
                 deprecatedConfig : false
                 onCloudInstance : false
         - key: user-prefs
-          value: 
+          value:
             directory: /opt/splunk/etc/system/local
             content:
               general:

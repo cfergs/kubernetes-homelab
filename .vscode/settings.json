@@ -1,6 +1,12 @@
 {
     "files.eol": "\r\n",
+    "files.associations": {
+        "**/bare-metal/**/*.yml": "ansible"
+    },
     "editor.tabSize": 2,
     "redhat.telemetry.enabled": false,
-    "terminal.integrated.defaultProfile.windows": "Ubuntu-20.04 (WSL)"
+    "terminal.integrated.defaultProfile.windows": "Ubuntu-20.04 (WSL)",
+    "ansible.python.interpreterPath": ".venv/bin/python3",
+    "extensions.ignoreRecommendations": true,
+    "ansible.ansible.path": ".venv/bin/ansible"
 }

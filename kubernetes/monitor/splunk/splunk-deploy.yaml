@@ -73,12 +73,12 @@ spec:
         backend:
           service:
             name: splunk-s1-standalone-service
-            port: 
+            port:
               number: 8000
       - path: /services/collector
         pathType: Prefix
         backend:
           service:
             name: splunk-s1-standalone-headless
-            port: 
+            port:
               number: 8088

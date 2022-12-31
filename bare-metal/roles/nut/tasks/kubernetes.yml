@@ -68,7 +68,7 @@
           verbs: ["get", "patch"]
         # Needed to determine Pod owners
         - apiGroups: ["apps"]
-          resources: ["daemonsets","statefulsets"]
+          resources: ["daemonsets","statefulsets"] # noqa yaml[commas]
           verbs: ["get", "list"]
         # Needed to determine Pod owners
         - apiGroups: ["extensions"]
@@ -90,12 +90,12 @@
         kind: ClusterRole
         name: system:node-drainer
       subjects:
-      - kind: ServiceAccount
-        name: "{{ user_account }}"
-        namespace: default
+        - kind: ServiceAccount
+          name: "{{ user_account }}"
+          namespace: default
     kubeconfig: "{{ kube_file }}"
 
-- name: Get Token
+- name: Get Token # noqa no-changed-when
   become: true
   ansible.builtin.command: "kubectl get secret {{ user_account }}-token -o jsonpath={.data.token} --kubeconfig={{ kube_file }}"
   register: token_encrypted
@@ -104,7 +104,7 @@
   ansible.builtin.set_fact:
     user_token: "{{ token_encrypted.stdout | b64decode }}"
 
-- name: Get CA data
+- name: Get CA data # noqa no-changed-when
   become: true
   ansible.builtin.command: "kubectl config view --minify --raw --output jsonpath={..cluster.certificate-authority-data} --kubeconfig={{ kube_file }}"
   register: kube_ca

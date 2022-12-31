@@ -1,5 +1,6 @@
-- hosts: localhost
+- name: Setup localhost
+  hosts: localhost
   connection: local
   become: true
   roles:
-    - name: flux
+    - flux

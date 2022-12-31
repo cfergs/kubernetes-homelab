@@ -36,5 +36,5 @@
           usb: zigbee
     kubeconfig: "{{ kube_file }}"
   when:
-  - k3s_control_node is defined
-  - k3s_control_node
+    - k3s_control_node is defined
+    - k3s_control_node

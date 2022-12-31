@@ -113,7 +113,7 @@ try:
     from azure.common.credentials import ServicePrincipalCredentials
     from azure.keyvault import KeyVaultClient
     from msrest.exceptions import AuthenticationError, ClientRequestError
-    from azure.keyvault.models.key_vault_error import KeyVaultErrorException
+    from azure.keyvault.v7_0.models.key_vault_error import KeyVaultErrorException
 except ImportError:
     pass
 
@@ -135,13 +135,13 @@ token = None
 try:
     token_res = requests.get('http://169.254.169.254/metadata/identity/oauth2/token', params=token_params, headers=token_headers, timeout=(3.05, 27))
     if token_res.ok:
-        token = token_res.json().get("access_token")
+        token = token_res.json().get('access_token')
         if token is not None:
             TOKEN_ACQUIRED = True
         else:
             display.v('Successfully called MSI endpoint, but no token was available. Will use service principal if provided.')
     else:
-        display.v("Unable to query MSI endpoint, Error Code %s. Will use service principal if provided" % token_res.status_code)
+        display.v('Unable to query MSI endpoint, Error Code %s. Will use service principal if provided' % token_res.status_code)
 except Exception:
     display.v('Unable to fetch MSI token. Will use service principal if provided.')
     TOKEN_ACQUIRED = False
@@ -190,7 +190,7 @@ class LookupModule(LookupBase):
             for term in terms:
                 try:
                     secret_res = requests.get(vault_url + '/secrets/' + term, params=secret_params, headers=secret_headers)
-                    ret.append(secret_res.json()["value"])
+                    ret.append(secret_res.json()['value'])
                 except KeyError:
                     raise AnsibleError('Failed to fetch secret ' + term + '.')
                 except Exception:

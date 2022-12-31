@@ -1,4 +1,12 @@
 ---
+- name: Fix KeyvaultErrorException not defined error # https://github.com/Azure/azure_preview_modules/issues/324
+  ansible.builtin.replace:
+    path: ../.venv/lib64/python3.11/site-packages/azure/keyvault/key_vault_authentication.py
+    regexp: 'inspect\.getargspec'
+    replace: 'inspect.getfullargspec'
+  when:
+    - ansible_python_version is version('3.11.0', '>=')
+
 - name: Set Home Folder
   ansible.builtin.set_fact:
     home_path: "{{ lookup('env', 'HOME') }}"

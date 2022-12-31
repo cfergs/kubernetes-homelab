@@ -19,13 +19,13 @@ spec:
     image:
       repository: docker.io/splunk/splunk:9.0.2
 
-    # The kube-rbac-proxy is a small HTTP proxy for a single upstream, that can perform RBAC 
+    # The kube-rbac-proxy is a small HTTP proxy for a single upstream, that can perform RBAC
     # authorization against the Kubernetes API.
     # reference: https://github.com/brancz/kube-rbac-proxy
     kubeRbacProxy:
 
       # Specify kube-rbac-proxy image
-      image: 
+      image:
         repository: gcr.io/kubebuilder/kube-rbac-proxy
         pullPolicy: IfNotPresent
         tag: "v0.11.0"
@@ -80,7 +80,7 @@ spec:
           port: 8081
         initialDelaySeconds: 15
         periodSeconds: 20
-      
+
       readinessProbe:
         httpGet:
           path: /readyz
@@ -95,7 +95,7 @@ spec:
           port: 80
           protocol: TCP
           targetPort: http
-      
+
       # Set resource requests and limits for manager container
       resources:
         limits:

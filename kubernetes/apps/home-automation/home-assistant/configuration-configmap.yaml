@@ -8,7 +8,7 @@ data:
     # Configure a default setup of Home Assistant (frontend, api, etc)
     homeassistant:
       currency: AUD
-    
+
     default_config:
 
     http:
