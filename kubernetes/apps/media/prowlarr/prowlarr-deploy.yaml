@@ -32,6 +32,8 @@ spec:
         ports:
         - containerPort: 9696
         env:
+        - name: PROWLARR__AUTHENTICATION_METHOD
+          value: External
         - name: PROWLARR__ANALYTICS_ENABLED
           value: "False"
         - name: PROWLARR__URL_BASE
