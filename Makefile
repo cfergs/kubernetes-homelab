@@ -8,18 +8,14 @@ pre-setup:
 # pre-commit
 PRE_COMMIT_HOOK_STAMP := .git/hooks/pre-commit
 
-install-pre-commit: pre-setup
-	pip3 install pre-commit
-
-${PRE_COMMIT_HOOK_STAMP}: install-pre-commit
-	pre-commit install
+${PRE_COMMIT_HOOK_STAMP}: ci-environment
+	. .venv/bin/activate; pre-commit install
 
 clean-pre-commit:
-	pre-commit uninstall
+	if [ -f .git/hooks/pre-commit ]; then rm .git/hooks/pre-commit; fi
 
 pre-commit:
-	pre-commit run --all-files
-
+	. .venv/bin/activate; pre-commit run --all-files
 
 #python
 VENV_DIRECTORY := .venv
@@ -48,11 +44,11 @@ clean-venv:
 # environments
 ci-environment: ${FROZEN_DEV_REQUIREMENTS_STAMP}
 
-dev-environment: ${PRE_COMMIT_HOOK_STAMP} ci-environment
+dev-environment: ci-environment ${PRE_COMMIT_HOOK_STAMP}
 
 clean-dev-environment: clean dev-environment
 
-clean: clean-pre-commit clean-venv
+clean: clean-venv clean-pre-commit
 
 
 # Ansible Specific
