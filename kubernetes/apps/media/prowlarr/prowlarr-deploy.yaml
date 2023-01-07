@@ -28,7 +28,7 @@ spec:
         name: tmpvol
       containers:
       - name: prowlarr
-        image: ghcr.io/onedr0p/prowlarr-develop:0.4.11.2143@sha256:b23584c0afa5ae51877f8eaca58ea704281439ed9a67e12fb512d1262f07d751
+        image: ghcr.io/onedr0p/prowlarr-develop:1.0.1.2220@sha256:ec6f7249d644fa50b904727870efa3bc38de31dbab3bd5624c112fec739691c0
         ports:
         - containerPort: 9696
         env:
