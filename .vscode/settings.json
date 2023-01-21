@@ -8,5 +8,6 @@
     "terminal.integrated.defaultProfile.windows": "Ubuntu-20.04 (WSL)",
     "ansible.python.interpreterPath": ".venv/bin/python3",
     "extensions.ignoreRecommendations": true,
-    "ansible.ansible.path": ".venv/bin/ansible"
+    "ansible.ansible.path": ".venv/bin/ansible",
+    "files.insertFinalNewline": true
 }

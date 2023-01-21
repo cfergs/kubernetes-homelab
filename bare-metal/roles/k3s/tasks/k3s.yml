@@ -38,3 +38,35 @@
   when:
     - k3s_control_node is defined
     - k3s_control_node
+
+- name: Create secret-sync namespace
+  become: true
+  kubernetes.core.k8s:
+    name: secrets-sync
+    api_version: v1
+    kind: Namespace
+    state: present
+    kubeconfig: "{{ kube_file }}"
+  when:
+    - k3s_control_node is defined
+    - k3s_control_node
+
+- name: Create Azure-Keyvault secret
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: azure-secrets-store-cred
+        namespace: secrets-sync
+      type: Opaque
+      data:
+        clientid: "{{ KEYVAULT_CLIENT_ID | b64encode }}"
+        clientsecret: "{{ KEYVAULT_SECRET | b64encode }}"
+    kubeconfig: "{{ kube_file }}"
+  no_log: true
+  when:
+    - k3s_control_node is defined
+    - k3s_control_node

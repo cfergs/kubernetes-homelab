@@ -23,4 +23,6 @@ k3s_cluster:
     nut_controller_address: 192.168.0.225
     k3s_registration_address: 192.168.0.8
     kv_url: 'https://chickenwaffles-vault-dev.vault.azure.net/'
+    KEYVAULT_CLIENT_ID: "{{ lookup('azure_keyvault_secret', 'azure-keyvault-client-id', vault_url=kv_url) }}"
+    KEYVAULT_SECRET: "{{ lookup('azure_keyvault_secret', 'azure-keyvault-secret', vault_url=kv_url) }}"
     nut_user_subscriber_password: "{{ lookup('azure_keyvault_secret', 'nut-user-subscriber-password', vault_url=kv_url) }}"

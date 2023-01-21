@@ -11,7 +11,7 @@ ansible-k3s-prod: ansible-requirements
 	. ../.venv/bin/activate; ansible-playbook -i ./inventory/inventory-prod.yml k3scluster.yml --ask-pass --ask-become-pass
 
 ansible-flux-dev: ansible-requirements
-	. ../.venv/bin/activate; ansible-playbook -i ./inventory/inventory-develop.yml localhost.yml --ask-pass --ask-become-pass
+	. ../.venv/bin/activate; ansible-playbook -i ./inventory/inventory-develop.yml localhost.yml --ask-become-pass
 
 ansible-flux-prod: ansible-requirements
-	. ../.venv/bin/activate; ansible-playbook -i ./inventory/inventory-prod.yml localhost.yml --ask-pass --ask-become-pass
+	. ../.venv/bin/activate; ansible-playbook -i ./inventory/inventory-prod.yml localhost.yml --ask-become-pass
