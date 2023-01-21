@@ -94,7 +94,7 @@ metadata:
   name: transmission-ingress
   namespace: downloads
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-external
   rules:
   - host: media.${DOMAIN_NAME}
     http:

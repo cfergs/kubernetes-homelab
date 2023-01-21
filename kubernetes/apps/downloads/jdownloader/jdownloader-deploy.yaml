@@ -71,7 +71,7 @@ metadata:
   name: jdownloader-ingress
   namespace: downloads
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-external
   rules:
   - host: jdownloader.${DOMAIN_NAME}
     http:

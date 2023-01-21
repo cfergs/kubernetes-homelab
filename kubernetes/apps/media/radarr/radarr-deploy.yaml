@@ -83,7 +83,7 @@ metadata:
   name: radarr-ingress
   namespace: media
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-external
   rules:
   - host: media.${DOMAIN_NAME}
     http:

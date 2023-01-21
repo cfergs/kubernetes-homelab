@@ -46,11 +46,11 @@ data:
     # Add value for each new domain. service will be to ingress allowing external access
     ingress:
     - hostname: calibre.${DOMAIN_NAME}
-      service: https://ingress-nginx-controller.ingress-nginx
+      service: https://ingress-nginx-external-controller.nginx-external
     - hostname: jdownloader.${DOMAIN_NAME}
-      service: https://ingress-nginx-controller.ingress-nginx
+      service: https://ingress-nginx-external-controller.nginx-external
     - hostname: media.${DOMAIN_NAME}
-      service: https://ingress-nginx-controller.ingress-nginx
+      service: https://ingress-nginx-external-controller.nginx-external
 
     # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
     - service: http_status:404

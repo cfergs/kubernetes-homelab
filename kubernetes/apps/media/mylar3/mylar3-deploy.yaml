@@ -95,7 +95,7 @@ metadata:
   name: mylar3-ingress
   namespace: media
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-external
   rules:
   - host: media.${DOMAIN_NAME}
     http:
