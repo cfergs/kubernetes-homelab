@@ -2,8 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - reloader
-- csi-secrets-driver  # cannot get consistent install via k8s manifests & helm wont work
-- azure-secrets
+- kube-system
 - secrets-sync # central location of creds and synced to where needed
 - cert-manager
 - metallb
