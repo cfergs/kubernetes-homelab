@@ -2,8 +2,12 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: nginx-internal
+  annotations:
+    splunk.com/index: ingress
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: nginx-external
+  annotations:
+    splunk.com/index: ingress
