@@ -6,7 +6,7 @@ k3s_server:
     - servicelb
     - traefik
 k3s_server_manifests_urls:
-  - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.3.2/deploy/longhorn.yaml
+  - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.0/deploy/longhorn.yaml
     filename: longhorn.yml
   - url: https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
     filename: metallb-native.yaml
