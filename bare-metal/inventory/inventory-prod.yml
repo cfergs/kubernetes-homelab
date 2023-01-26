@@ -3,6 +3,7 @@ localhost:
   hosts:
     127.0.0.1
   vars:
+    flux_version: 0.38.3
     ansible_connection: local
     branch: main
     target_path: kubernetes/clusters/production
@@ -20,6 +21,7 @@ k3s_cluster:
     mindy:
       ansible_host: 192.168.0.227
   vars:
+    k3s_release_version: v1.24.6+k3s1
     ansible_connection: paramiko # don't need to apt-get sshpass
     ansible_user: ubuntu
     ansible_python_interpreter: /usr/bin/python3

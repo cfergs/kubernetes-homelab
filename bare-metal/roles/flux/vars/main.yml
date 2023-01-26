@@ -1,6 +1,6 @@
 ---
 # flux setup
-app_ver: 0.34.0
+app_ver: "{{ flux_version }}"
 
 # flux deploy
 github_owner: cfergs
