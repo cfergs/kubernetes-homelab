@@ -25,6 +25,9 @@ spec:
         registry: registry.k8s.io
         tag: v1.5.1
 
+      ingressClass: nginx-internal
+      ingressClassByName: true
+
       ingressClassResource:
         name: nginx-internal
         enabled: true
@@ -34,3 +37,6 @@ spec:
       service:
         annotations:
           metallb.universe.tf/loadBalancerIPs: ${INGRESS_INTERNAL_IP}
+        externalTrafficPolicy: Local
+
+      watchIngressWithoutClass: false
