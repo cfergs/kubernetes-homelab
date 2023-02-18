@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: openbooks
+  namespace: media
+spec:
+  serviceName: openbooks
+  replicas: 1
+  selector:
+    matchLabels:
+      name: openbooks
+  template:
+    metadata:
+      labels:
+        name: openbooks
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+      volumes:
+        - name: books-volume
+          persistentVolumeClaim:
+            claimName: openbooks-books-pvc
+      containers:
+        - name: openbooks
+          image: evanbuss/openbooks:4.5.0
+          ports:
+            - containerPort: 5228
+          args:
+            - --port
+            - "5228"
+            - --name
+            - cheesycheese
+            - --searchbot
+            - searchook
+            - --tls
+            - --no-browser-downloads
+          env:
+            - name: BASE_PATH
+              value: /openbooks/
+          volumeMounts:
+            - name: books-volume
+              mountPath: /books
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openbooks
+  namespace: media
+spec:
+  ports:
+    - name: openbooks-webui
+      port: 5228
+      protocol: TCP
+      targetPort: 5228
+  selector:
+    name: openbooks
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+  name: openbooks-ingress
+  namespace: media
+spec:
+  ingressClassName: nginx-external
+  rules:
+    - host: media.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /openbooks
+            pathType: Prefix
+            backend:
+              service:
+                name: openbooks
+                port:
+                  name: openbooks-webui

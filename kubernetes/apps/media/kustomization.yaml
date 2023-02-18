@@ -4,8 +4,9 @@ kind: Kustomization
 resources:
   - media-network-policy.yaml
   - bazarr
+  - jellyfin
   - mylar3
+  - openbooks
   - prowlarr
   - radarr
   - sonarr
-  - jellyfin
