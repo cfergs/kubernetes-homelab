@@ -1,3 +1,4 @@
-ansible-lint==6.10.0
-pre-commit==2.21.0
-pre-commit-hooks==4.4.0
+ansible-lint
+pre-commit
+pre-commit-hooks
+yamllint

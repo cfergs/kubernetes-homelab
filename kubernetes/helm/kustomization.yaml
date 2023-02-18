@@ -2,12 +2,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- csi-secrets-store-provider-azure.yaml
-- ingress-nginx.yaml
-- k8s-at-home-charts.yaml
-- k8s-at-home-library.yaml
-- kubernetes-reflector.yaml
-- reloader.yaml
-- splunk-operator.yaml
-- splunk-otel-collector.yaml
-- splunk-connect-for-syslog.yaml
+  - csi-secrets-store-provider-azure.yaml
+  - ingress-nginx.yaml
+  - k8s-at-home-charts.yaml
+  - k8s-at-home-library.yaml
+  - kubernetes-reflector.yaml
+  - reloader.yaml
+  - splunk-operator.yaml
+  - splunk-otel-collector.yaml
+  - splunk-connect-for-syslog.yaml

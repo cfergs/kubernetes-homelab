@@ -21,42 +21,42 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: sonarr-volume
-        persistentVolumeClaim:
-          claimName: sonarr-volume-pvc
-      - name: downloads-volume
-        persistentVolumeClaim:
-          claimName: sonarr-downloads-pvc
-      - name: tvshows-volume
-        persistentVolumeClaim:
-          claimName: sonarr-tvshows-pvc
-      - emptyDir: {}
-        name: tmpvol
-      containers:
-      - name: sonarr
-        image: ghcr.io/onedr0p/sonarr:3.0.9.1549@sha256:7b121038c6e78b3035d45c312bf4aa32c99ae72e0985c14b464e8c032166b4bf
-        ports:
-        - containerPort: 8989
-        env:
-        - name: SONARR__ANALYTICS_ENABLED
-          value: "False"
-        - name: SONARR__URL_BASE
-          value: /sonarr
-        volumeMounts:
         - name: sonarr-volume
-          mountPath: /config
+          persistentVolumeClaim:
+            claimName: sonarr-volume-pvc
         - name: downloads-volume
-          mountPath: /media/downloads
+          persistentVolumeClaim:
+            claimName: sonarr-downloads-pvc
         - name: tvshows-volume
-          mountPath: /media/tvshows
-        - name: tmpvol
-          mountPath: /tmp # Resolve error when using ReadOnly FS: "Failed to create CoreCLR, HRESULT: 0x80004005" - https://github.com/Azure/azure-functions-host/issues/8181 && https://github.com/dotnet/runtime/issues/3168
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+          persistentVolumeClaim:
+            claimName: sonarr-tvshows-pvc
+        - emptyDir: {}
+          name: tmpvol
+      containers:
+        - name: sonarr
+          image: ghcr.io/onedr0p/sonarr:3.0.9.1549@sha256:7b121038c6e78b3035d45c312bf4aa32c99ae72e0985c14b464e8c032166b4bf
+          ports:
+            - containerPort: 8989
+          env:
+            - name: SONARR__ANALYTICS_ENABLED
+              value: "False"
+            - name: SONARR__URL_BASE
+              value: /sonarr
+          volumeMounts:
+            - name: sonarr-volume
+              mountPath: /config
+            - name: downloads-volume
+              mountPath: /media/downloads
+            - name: tvshows-volume
+              mountPath: /media/tvshows
+            - name: tmpvol
+              mountPath: /tmp # Resolve error when using ReadOnly FS: "Failed to create CoreCLR, HRESULT: 0x80004005" - https://github.com/Azure/azure-functions-host/issues/8181 && https://github.com/dotnet/runtime/issues/3168
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: v1
 kind: Service
@@ -65,9 +65,9 @@ metadata:
   namespace: media
 spec:
   ports:
-  - port: 8989
-    protocol: TCP
-    targetPort: 8989
+    - port: 8989
+      protocol: TCP
+      targetPort: 8989
   selector:
     app: sonarr
 ---
@@ -81,13 +81,13 @@ metadata:
 spec:
   ingressClassName: nginx-external
   rules:
-  - host: media.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /sonarr
-        pathType: Prefix
-        backend:
-          service:
-            name: sonarr
-            port:
-              number: 8989
+    - host: media.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /sonarr
+            pathType: Prefix
+            backend:
+              service:
+                name: sonarr
+                port:
+                  number: 8989

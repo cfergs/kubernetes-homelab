@@ -2,7 +2,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- mosquitto.yaml
-- ser2sock.yaml
-- zigbee2mqtt
-- home-assistant
+  - mosquitto.yaml
+  - ser2sock.yaml
+  - zigbee2mqtt
+  - home-assistant

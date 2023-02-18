@@ -7,16 +7,16 @@ metadata:
 spec:
   provider: azure
   secretObjects:
-  - secretName: splunk-enterprise-license # k8s-secret-name
-    type: Opaque
-    annotations:
-      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: monitor
-      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
-      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: monitor
-    data:
-    - objectName: splunk-enterprise-license # azure-key-name
-      key: license.lic # k8s-key
+    - secretName: splunk-enterprise-license # k8s-secret-name
+      type: Opaque
+      annotations:
+        reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+        reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: monitor
+        reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+        reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: monitor
+      data:
+        - objectName: splunk-enterprise-license # azure-key-name
+          key: license.lic # k8s-key
   parameters:
     usePodIdentity: "false" # dont unhash or you get boolean errors!
     keyvaultName: ${AZURE_VAULT_NAME}
@@ -44,23 +44,23 @@ spec:
         name: splunk-license-secret
     spec:
       volumes:
-      - name: splunk-license-secret
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: azure-splunk-license-secret
-          nodePublishSecretRef:
-            name: azure-secrets-store-cred
-      containers:
-      - name: azure-splunk-license-secret
-        image: busybox:1.35.0
-        command:
-          - "/bin/sleep"
-          - "10000"
-        volumeMounts:
         - name: splunk-license-secret
-          mountPath: /mnt/secrets-store
-          readOnly: true
-        securityContext:
-          allowPrivilegeEscalation: false
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: azure-splunk-license-secret
+            nodePublishSecretRef:
+              name: azure-secrets-store-cred
+      containers:
+        - name: azure-splunk-license-secret
+          image: busybox:1.35.0
+          command:
+            - "/bin/sleep"
+            - "10000"
+          volumeMounts:
+            - name: splunk-license-secret
+              mountPath: /mnt/secrets-store
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false

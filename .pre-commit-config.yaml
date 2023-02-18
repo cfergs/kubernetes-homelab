@@ -30,3 +30,8 @@ repos:
         entry: .venv/bin/trailing-whitespace-fixer
         language: python
         types: [text]
+      - id: yamllint
+        name: yamllint
+        entry: .venv/bin/yamllint
+        language: python
+        types: [yaml]

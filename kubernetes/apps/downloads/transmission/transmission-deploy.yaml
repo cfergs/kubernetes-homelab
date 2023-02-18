@@ -22,55 +22,55 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: transmission-volume
-        persistentVolumeClaim:
-          claimName: transmission-volume-pvc
-      - name: downloads-volume
-        persistentVolumeClaim:
-          claimName: transmission-downloads-pvc
-      - name: tmpvol
-        emptyDir: {}
-      containers:
-      - name: transmission
-        image: ghcr.io/onedr0p/transmission:3.00@sha256:05ac0f144072e49d3b1d116483d99c74609493793799a0cd605a1115b115373d
-        ports:
-        - name: webui
-          containerPort: 9091
-          protocol: TCP
-        env:
-        - name: TRANSMISSION__DOWNLOAD_DIR
-          value: /media/downloads/torrents/complete
-        - name: TRANSMISSION__DOWNLOAD_QUEUE_SIZE
-          value: "10"
-        - name: TRANSMISSION__INCOMPLETE_DIR
-          value: /media/downloads/torrents/incomplete
-        - name: TRANSMISSION__INCOMPLETE_DIR_ENABLED
-          value: "true"
-        - name: TRANSMISSION__RATIO_LIMIT
-          value: "0"
-        - name: TRANSMISSION__RATIO_LIMIT_ENABLED
-          value: "true"
-        - name: TRANSMISSION__RPC_HOST_WHITELIST_ENABLED
-          value: "false"
-        - name: TRANSMISSION__SCRAPE_PAUSED_TORRENTS_ENABLED
-          value: "false"
-        - name: TRANSMISSION__SPEED_LIMIT_UP
-          value: "50"
-        - name: TRANSMISSION__SPEED_LIMIT_UP_ENABLED
-          value: "true"
-        volumeMounts:
         - name: transmission-volume
-          mountPath: /config
+          persistentVolumeClaim:
+            claimName: transmission-volume-pvc
         - name: downloads-volume
-          mountPath: /media/downloads/torrents
+          persistentVolumeClaim:
+            claimName: transmission-downloads-pvc
         - name: tmpvol
-          mountPath: /tmp # fix issue "Unable to create session lock file (30)" when using ReadOnly FileSystem
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+          emptyDir: {}
+      containers:
+        - name: transmission
+          image: ghcr.io/onedr0p/transmission:3.00@sha256:05ac0f144072e49d3b1d116483d99c74609493793799a0cd605a1115b115373d
+          ports:
+            - name: webui
+              containerPort: 9091
+              protocol: TCP
+          env:
+            - name: TRANSMISSION__DOWNLOAD_DIR
+              value: /media/downloads/torrents/complete
+            - name: TRANSMISSION__DOWNLOAD_QUEUE_SIZE
+              value: "10"
+            - name: TRANSMISSION__INCOMPLETE_DIR
+              value: /media/downloads/torrents/incomplete
+            - name: TRANSMISSION__INCOMPLETE_DIR_ENABLED
+              value: "true"
+            - name: TRANSMISSION__RATIO_LIMIT
+              value: "0"
+            - name: TRANSMISSION__RATIO_LIMIT_ENABLED
+              value: "true"
+            - name: TRANSMISSION__RPC_HOST_WHITELIST_ENABLED
+              value: "false"
+            - name: TRANSMISSION__SCRAPE_PAUSED_TORRENTS_ENABLED
+              value: "false"
+            - name: TRANSMISSION__SPEED_LIMIT_UP
+              value: "50"
+            - name: TRANSMISSION__SPEED_LIMIT_UP_ENABLED
+              value: "true"
+          volumeMounts:
+            - name: transmission-volume
+              mountPath: /config
+            - name: downloads-volume
+              mountPath: /media/downloads/torrents
+            - name: tmpvol
+              mountPath: /tmp # fix issue "Unable to create session lock file (30)" when using ReadOnly FileSystem
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: v1
 kind: Service
@@ -79,10 +79,10 @@ metadata:
   namespace: downloads
 spec:
   ports:
-  - name: webui
-    port: 9091
-    protocol: TCP
-    targetPort: 9091
+    - name: webui
+      port: 9091
+      protocol: TCP
+      targetPort: 9091
   selector:
     name: transmission
 ---
@@ -96,13 +96,13 @@ metadata:
 spec:
   ingressClassName: nginx-external
   rules:
-  - host: media.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /transmission
-        pathType: Prefix
-        backend:
-          service:
-            name: transmission
-            port:
-              name: webui
+    - host: media.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /transmission
+            pathType: Prefix
+            backend:
+              service:
+                name: transmission
+                port:
+                  name: webui

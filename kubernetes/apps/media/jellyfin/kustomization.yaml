@@ -2,9 +2,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- jellyfin-volume.yaml
-- jellyfin-volume-cache.yaml
-- jellyfin-volume-transcode.yaml
-- jellyfin-nfs-movies.yaml
-- jellyfin-nfs-tvshows.yaml
-- jellyfin-deployment.yaml
+  - jellyfin-volume.yaml
+  - jellyfin-volume-cache.yaml
+  - jellyfin-volume-transcode.yaml
+  - jellyfin-nfs-movies.yaml
+  - jellyfin-nfs-tvshows.yaml
+  - jellyfin-deployment.yaml

@@ -8,6 +8,6 @@ spec:
   cron: "0 2/12 * * ?"
   task: "backup"
   groups:
-  - default
+    - default
   retain: 20
   concurrency: 2

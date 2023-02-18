@@ -6,7 +6,7 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-  - ${METAL_LB_RANGE}
+    - ${METAL_LB_RANGE}
   autoAssign: false
 ---
 # yaml-language-server: $schema=../../../schemas/l2advertisement_v1beta1.json

@@ -22,44 +22,44 @@ spec:
         fsGroup: 999
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: unifi-volume
-        persistentVolumeClaim:
-          claimName: unifi-volume-pvc
-      - name: tmpvol
-        emptyDir: {}
-      containers:
-      - name: unifi
-        image: jacobalberty/unifi:v7.2.94
-        ports:
-        - containerPort: 3478 # used for STUN
-          name: ubnt-3478
-          protocol: UDP
-        - containerPort: 5514 # Remote Syslog
-          name: ubnt-5514
-          protocol: UDP
-        - containerPort: 8080 # device and application communication
-          name: ubnt-8080
-          protocol: TCP
-        - containerPort: 8443 # application GUI/API as seen in a web browser - Non Appliance
-          name: ubnt-8443
-          protocol: TCP
-        - containerPort: 10001 # device discovery
-          name: ubnt-10001
-          protocol: UDP
-        env:
-        - name: TZ
-          value: ${TIMEZONE}
-        volumeMounts:
         - name: unifi-volume
-          mountPath: /unifi
+          persistentVolumeClaim:
+            claimName: unifi-volume-pvc
         - name: tmpvol
-          mountPath: /tmp # needed for creating backups
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+          emptyDir: {}
+      containers:
+        - name: unifi
+          image: jacobalberty/unifi:v7.2.94
+          ports:
+            - containerPort: 3478 # used for STUN
+              name: ubnt-3478
+              protocol: UDP
+            - containerPort: 5514 # Remote Syslog
+              name: ubnt-5514
+              protocol: UDP
+            - containerPort: 8080 # device and application communication
+              name: ubnt-8080
+              protocol: TCP
+            - containerPort: 8443 # application GUI/API as seen in a web browser - Non Appliance
+              name: ubnt-8443
+              protocol: TCP
+            - containerPort: 10001 # device discovery
+              name: ubnt-10001
+              protocol: UDP
+          env:
+            - name: TZ
+              value: ${TIMEZONE}
+          volumeMounts:
+            - name: unifi-volume
+              mountPath: /unifi
+            - name: tmpvol
+              mountPath: /tmp # needed for creating backups
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 ---
 kind: Service
 apiVersion: v1
@@ -86,9 +86,9 @@ metadata:
 spec:
   externalTrafficPolicy: Local
   ports:
-  - port: 8080
-    name: uap-inform
-    targetPort: 8080
+    - port: 8080
+      name: uap-inform
+      targetPort: 8080
   selector:
     name: unifi
   type: LoadBalancer
@@ -104,18 +104,18 @@ metadata:
 spec:
   externalTrafficPolicy: Local
   ports:
-  - port: 3478
-    name: stun-port
-    targetPort: 3478
-    protocol: UDP
-  - port: 5514
-    name: syslog-port
-    targetPort: 5514
-    protocol: UDP
-  - port: 10001
-    name: discovery
-    targetPort: 10001
-    protocol: UDP
+    - port: 3478
+      name: stun-port
+      targetPort: 3478
+      protocol: UDP
+    - port: 5514
+      name: syslog-port
+      targetPort: 5514
+      protocol: UDP
+    - port: 10001
+      name: discovery
+      targetPort: 10001
+      protocol: UDP
   selector:
     name: unifi
   type: LoadBalancer
@@ -132,13 +132,13 @@ metadata:
 spec:
   ingressClassName: nginx-internal
   rules:
-  - host: unifi.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: unifi-ingress
-            port:
-              name: ubnt-8443
+    - host: unifi.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: unifi-ingress
+                port:
+                  name: ubnt-8443

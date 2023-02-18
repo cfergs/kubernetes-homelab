@@ -2,7 +2,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- cloudflared-config.yaml
-- cloudflared-deploy.yaml
-- external-dns-deploy.yaml
-- external-dns-records.yaml
+  - cloudflared-config.yaml
+  - cloudflared-deploy.yaml
+  - external-dns-deploy.yaml
+  - external-dns-records.yaml

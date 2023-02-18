@@ -92,10 +92,10 @@ spec:
       service:
         type: ClusterIP
         ports:
-        - name: http
-          port: 80
-          protocol: TCP
-          targetPort: http
+          - name: http
+            port: 80
+            protocol: TCP
+            targetPort: http
 
       # Set resource requests and limits for manager container
       resources:
@@ -125,10 +125,10 @@ spec:
       # Specify volumes for Splunk Operator pod, append additional volumes to list
       # reference: https://kubernetes.io/docs/concepts/storage/volumes/
       volumes:
-      - name: app-staging
-        persistentVolumeClaim:
-          claimName: splunk-operator-app-download
+        - name: app-staging
+          persistentVolumeClaim:
+            claimName: splunk-operator-app-download
 
       volumeMounts:
-      - mountPath: /opt/splunk/appframework/
-        name: app-staging
+        - mountPath: /opt/splunk/appframework/
+          name: app-staging

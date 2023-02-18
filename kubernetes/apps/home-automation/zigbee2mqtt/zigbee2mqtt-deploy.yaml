@@ -22,42 +22,42 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: zigbee2mqtt-volume
-        persistentVolumeClaim:
-          claimName: zigbee2mqtt-volume-pvc
-      containers:
-      - name: zigbee2mqtt
-        image: koenkk/zigbee2mqtt:1.28.0
-        ports:
-        - containerPort: 8080
-        env:
-        - name: TZ
-          value: ${TIMEZONE}
-        - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PORT
-          value: '8080'
-        - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
-          value: mqtt://mosquitto.home-automation:1883
-        - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
-          value: 'true'
-        - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
-          value: tcp://zigbee-ser2sock:10000
-        - name: ZIGBEE2MQTT_CONFIG_ADVANCED_CHANNEL
-          value: '20'
-        - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT
-          value: 'true'
-        - name: ZIGBEE2MQTT_CONFIG_ADVANCED_IKEA_OTA_USE_TEST_URL
-          value: 'false'
-        - name: ZIGBEE2MQTT_CONFIG_LOG_OUTPUT
-          value: 'console'
-        volumeMounts:
         - name: zigbee2mqtt-volume
-          mountPath: /app/data
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+          persistentVolumeClaim:
+            claimName: zigbee2mqtt-volume-pvc
+      containers:
+        - name: zigbee2mqtt
+          image: koenkk/zigbee2mqtt:1.28.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TZ
+              value: ${TIMEZONE}
+            - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PORT
+              value: '8080'
+            - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
+              value: mqtt://mosquitto.home-automation:1883
+            - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
+              value: 'true'
+            - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
+              value: tcp://zigbee-ser2sock:10000
+            - name: ZIGBEE2MQTT_CONFIG_ADVANCED_CHANNEL
+              value: '20'
+            - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT
+              value: 'true'
+            - name: ZIGBEE2MQTT_CONFIG_ADVANCED_IKEA_OTA_USE_TEST_URL
+              value: 'false'
+            - name: ZIGBEE2MQTT_CONFIG_LOG_OUTPUT
+              value: 'console'
+          volumeMounts:
+            - name: zigbee2mqtt-volume
+              mountPath: /app/data
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: v1
 kind: Service
@@ -66,9 +66,9 @@ metadata:
   namespace: home-automation
 spec:
   ports:
-  - port: 8080
-    protocol: TCP
-    targetPort: 8080
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
   selector:
     app: zigbee2mqtt
 ---
@@ -83,13 +83,13 @@ metadata:
 spec:
   ingressClassName: nginx-internal
   rules:
-  - host: hass.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /zigbee2mqtt(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: zigbee2mqtt
-            port:
-              number: 8080
+    - host: hass.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /zigbee2mqtt(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: zigbee2mqtt
+                port:
+                  number: 8080

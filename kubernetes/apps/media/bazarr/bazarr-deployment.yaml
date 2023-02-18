@@ -52,62 +52,62 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: bazarr-volume
-        persistentVolumeClaim:
-          claimName: bazarr-volume-pvc
-      - name: bazarr-config-ini
-        configMap:
-          name: init-bazarr-files
-          items:
-          - key: config.ini
-            path: config.ini
-          defaultMode: 0644
-      - name: bazarr-entrypoint-sh
-        configMap:
-          name: init-bazarr-files
-          items:
-          - key: entrypoint.sh
-            path: entrypoint.sh
-          defaultMode: 0755
-      - name: movies-volume
-        persistentVolumeClaim:
-          claimName: bazarr-movies-pvc
-      - name: tvshows-volume
-        persistentVolumeClaim:
-          claimName: bazarr-tvshows-pvc
-      - name: tmpvol
-        emptyDir: {}
-      containers:
-      - name: bazarr
-        image: ghcr.io/onedr0p/bazarr:1.1.4@sha256:f64eb8f75ea5959409fdf44e83bcd77eea3fe0a841814768289a1a0775434ef5
-        command: ["/bin/sh"]
-        args: ["-c", "/app/entrypoint.sh"]
-        ports:
-        - containerPort: 6767
-        env:
-        - name: TZ
-          value: ${TIMEZONE}
-        volumeMounts:
         - name: bazarr-volume
-          mountPath: /config
+          persistentVolumeClaim:
+            claimName: bazarr-volume-pvc
         - name: bazarr-config-ini
-          mountPath: /app/config.ini
-          subPath: config.ini
+          configMap:
+            name: init-bazarr-files
+            items:
+              - key: config.ini
+                path: config.ini
+            defaultMode: 0644
         - name: bazarr-entrypoint-sh
-          mountPath: /app/entrypoint.sh
-          subPath: entrypoint.sh
+          configMap:
+            name: init-bazarr-files
+            items:
+              - key: entrypoint.sh
+                path: entrypoint.sh
+            defaultMode: 0755
         - name: movies-volume
-          mountPath: /media/movies
+          persistentVolumeClaim:
+            claimName: bazarr-movies-pvc
         - name: tvshows-volume
-          mountPath: /media/tvshows
+          persistentVolumeClaim:
+            claimName: bazarr-tvshows-pvc
         - name: tmpvol
-          mountPath: /tmp
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+          emptyDir: {}
+      containers:
+        - name: bazarr
+          image: ghcr.io/onedr0p/bazarr:1.1.4@sha256:f64eb8f75ea5959409fdf44e83bcd77eea3fe0a841814768289a1a0775434ef5
+          command: ["/bin/sh"]
+          args: ["-c", "/app/entrypoint.sh"]
+          ports:
+            - containerPort: 6767
+          env:
+            - name: TZ
+              value: ${TIMEZONE}
+          volumeMounts:
+            - name: bazarr-volume
+              mountPath: /config
+            - name: bazarr-config-ini
+              mountPath: /app/config.ini
+              subPath: config.ini
+            - name: bazarr-entrypoint-sh
+              mountPath: /app/entrypoint.sh
+              subPath: entrypoint.sh
+            - name: movies-volume
+              mountPath: /media/movies
+            - name: tvshows-volume
+              mountPath: /media/tvshows
+            - name: tmpvol
+              mountPath: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: v1
 kind: Service
@@ -118,9 +118,9 @@ metadata:
     app: bazarr
 spec:
   ports:
-  - port: 6767
-    protocol: TCP
-    targetPort: 6767
+    - port: 6767
+      protocol: TCP
+      targetPort: 6767
   selector:
     app: bazarr
 ---
@@ -134,13 +134,13 @@ metadata:
 spec:
   ingressClassName: nginx-external
   rules:
-  - host: media.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /bazarr
-        pathType: Prefix
-        backend:
-          service:
-            name: bazarr
-            port:
-              number: 6767
+    - host: media.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /bazarr
+            pathType: Prefix
+            backend:
+              service:
+                name: bazarr
+                port:
+                  number: 6767

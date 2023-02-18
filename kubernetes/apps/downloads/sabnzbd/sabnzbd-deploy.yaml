@@ -23,37 +23,37 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: sabnzbd-volume
-        persistentVolumeClaim:
-          claimName: sabnzbd-volume-pvc
-      - name: download-volume
-        persistentVolumeClaim:
-          claimName: sabnzbd-downloads-pvc
-      - name: tmpvol
-        emptyDir: {}
-      containers:
-      - name: sabnzbd
-        image: ghcr.io/onedr0p/sabnzbd:3.7.1@sha256:dcb68eda221b59dcce3a2b297f6d1b2228964d83799b24cb001671890e7d7a10
-        ports:
-        - containerPort: 8080
-        env:
-        - name: TZ
-          value: ${TIMEZONE}
-        - name: SABNZBD__HOST_WHITELIST_ENTRIES # fix "hostname verification failed" error
-          value: media.${DOMAIN_NAME}
-        volumeMounts:
         - name: sabnzbd-volume
-          mountPath: /config
+          persistentVolumeClaim:
+            claimName: sabnzbd-volume-pvc
         - name: download-volume
-          mountPath: /media/downloads/usenet
+          persistentVolumeClaim:
+            claimName: sabnzbd-downloads-pvc
         - name: tmpvol
-          mountPath: /tmp # needed to download nzbs
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+          emptyDir: {}
+      containers:
+        - name: sabnzbd
+          image: ghcr.io/onedr0p/sabnzbd:3.7.1@sha256:dcb68eda221b59dcce3a2b297f6d1b2228964d83799b24cb001671890e7d7a10
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TZ
+              value: ${TIMEZONE}
+            - name: SABNZBD__HOST_WHITELIST_ENTRIES # fix "hostname verification failed" error
+              value: media.${DOMAIN_NAME}
+          volumeMounts:
+            - name: sabnzbd-volume
+              mountPath: /config
+            - name: download-volume
+              mountPath: /media/downloads/usenet
+            - name: tmpvol
+              mountPath: /tmp # needed to download nzbs
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: v1
 kind: Service
@@ -64,9 +64,9 @@ metadata:
     app: sabnzbd
 spec:
   ports:
-  - port: 8080
-    protocol: TCP
-    targetPort: 8080
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
   selector:
     app: sabnzbd
 ---
@@ -80,13 +80,13 @@ metadata:
 spec:
   ingressClassName: nginx-external
   rules:
-  - host: media.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /sabnzbd
-        pathType: Prefix
-        backend:
-          service:
-            name: sabnzbd
-            port:
-              number: 8080
+    - host: media.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /sabnzbd
+            pathType: Prefix
+            backend:
+              service:
+                name: sabnzbd
+                port:
+                  number: 8080

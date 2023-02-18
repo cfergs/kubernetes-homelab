@@ -2,13 +2,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- downloads.yaml
-- downloads-vpn.yaml
-- external.yaml
-- home-automation.yaml
-- ingress.yaml
-- media.yaml
-- monitor.yaml
-- reloader.yaml
-- secrets-sync.yaml
-- unifi.yaml
+  - downloads.yaml
+  - downloads-vpn.yaml
+  - external.yaml
+  - home-automation.yaml
+  - ingress.yaml
+  - media.yaml
+  - monitor.yaml
+  - reloader.yaml
+  - secrets-sync.yaml
+  - unifi.yaml

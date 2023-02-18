@@ -9,16 +9,13 @@ metadata:
 spec:
   ingressClassName: nginx-internal
   rules:
-  - host: mgmt.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /longhorn(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: longhorn-frontend
-            port:
-              number: 80
-  tls:
-  - hosts:
-    - mgmt.${DOMAIN_NAME}
+    - host: mgmt.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /longhorn(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: longhorn-frontend
+                port:
+                  number: 80

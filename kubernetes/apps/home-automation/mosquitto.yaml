@@ -37,24 +37,24 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: mosquitto-config
-        configMap:
-          name: mosquitto-config
-      containers:
-      - name: mosquitto
-        image: eclipse-mosquitto:2.0.15-openssl
-        ports:
-        - containerPort: 1883
-        volumeMounts:
         - name: mosquitto-config
-          mountPath: /mosquitto/config/mosquitto.conf
-          subPath: mosquitto.conf
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+          configMap:
+            name: mosquitto-config
+      containers:
+        - name: mosquitto
+          image: eclipse-mosquitto:2.0.15-openssl
+          ports:
+            - containerPort: 1883
+          volumeMounts:
+            - name: mosquitto-config
+              mountPath: /mosquitto/config/mosquitto.conf
+              subPath: mosquitto.conf
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: v1
 kind: Service
@@ -68,8 +68,8 @@ metadata:
 spec:
   externalTrafficPolicy: Local
   ports:
-  - port: 1883
-    targetPort: 1883
+    - port: 1883
+      targetPort: 1883
   selector:
     app: mosquitto
   type: LoadBalancer

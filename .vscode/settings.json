@@ -6,7 +6,7 @@
     "files.associations": {
         "**/bare-metal/**/*.yml": "ansible"
     },
-    "files.eol": "\r\n",
+    "files.eol": "\n",
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
     "redhat.telemetry.enabled": false,

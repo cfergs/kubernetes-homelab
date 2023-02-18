@@ -2,6 +2,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- transmission-volume.yaml
-- transmission-nfs-downloads.yaml
-- transmission-deploy.yaml
+  - transmission-volume.yaml
+  - transmission-nfs-downloads.yaml
+  - transmission-deploy.yaml

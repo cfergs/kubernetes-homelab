@@ -8,6 +8,6 @@ spec:
   cron: "0 1 * * *"
   task: "snapshot"
   groups:
-  - default
+    - default
   retain: 2
   concurrency: 2

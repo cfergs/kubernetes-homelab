@@ -15,37 +15,37 @@ spec:
         name: jdownloader
     spec:
       volumes:
-      - name: jdownloader-volume
-        persistentVolumeClaim:
-          claimName: jdownloader-volume-pvc
-      - name: download-volume
-        persistentVolumeClaim:
-          claimName: jdownloader-downloads-pvc
-      containers:
-      - name: jdownloader
-        image: jlesage/jdownloader-2:v1.7.2
-        ports:
-        - containerPort: 5800
-        env:
-        - name: USER_ID
-          value: "568"
-        - name: GROUP_ID
-          value: "568"
-        - name: CLEAN_TMP_DIR
-          value: "1"
-        - name: KEEP_APP_RUNNING
-          value: "1"
-        - name: SECURE_CONNECTION
-          value: "1"
-        - name: TZ
-          value: ${TIMEZONE}
-        volumeMounts:
         - name: jdownloader-volume
-          mountPath: /config
+          persistentVolumeClaim:
+            claimName: jdownloader-volume-pvc
         - name: download-volume
-          mountPath: /output
-        securityContext:
-          allowPrivilegeEscalation: false
+          persistentVolumeClaim:
+            claimName: jdownloader-downloads-pvc
+      containers:
+        - name: jdownloader
+          image: jlesage/jdownloader-2:v1.7.2
+          ports:
+            - containerPort: 5800
+          env:
+            - name: USER_ID
+              value: "568"
+            - name: GROUP_ID
+              value: "568"
+            - name: CLEAN_TMP_DIR
+              value: "1"
+            - name: KEEP_APP_RUNNING
+              value: "1"
+            - name: SECURE_CONNECTION
+              value: "1"
+            - name: TZ
+              value: ${TIMEZONE}
+          volumeMounts:
+            - name: jdownloader-volume
+              mountPath: /config
+            - name: download-volume
+              mountPath: /output
+          securityContext:
+            allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
@@ -54,10 +54,10 @@ metadata:
   namespace: downloads
 spec:
   ports:
-  - name: webui
-    port: 5800
-    protocol: TCP
-    targetPort: 5800
+    - name: webui
+      port: 5800
+      protocol: TCP
+      targetPort: 5800
   selector:
     name: jdownloader
 ---
@@ -73,13 +73,13 @@ metadata:
 spec:
   ingressClassName: nginx-external
   rules:
-  - host: jdownloader.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: jdownloader
-            port:
-              name: webui
+    - host: jdownloader.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jdownloader
+                port:
+                  name: webui

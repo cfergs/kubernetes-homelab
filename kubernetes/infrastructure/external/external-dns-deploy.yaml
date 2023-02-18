@@ -9,15 +9,15 @@ kind: ClusterRole
 metadata:
   name: external-dns
 rules:
-- apiGroups: [""]
-  resources: ["services","endpoints","pods"]
-  verbs: ["get","watch","list"]
-- apiGroups: ["extensions","networking.k8s.io"]
-  resources: ["ingresses"]
-  verbs: ["get","watch","list"]
-- apiGroups: [""]
-  resources: ["nodes"]
-  verbs: ["list", "watch"]
+  - apiGroups: [""]
+    resources: ["services", "endpoints", "pods"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["extensions", "networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -28,9 +28,9 @@ roleRef:
   kind: ClusterRole
   name: external-dns
 subjects:
-- kind: ServiceAccount
-  name: external-dns
-  namespace: external
+  - kind: ServiceAccount
+    name: external-dns
+    namespace: external
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -54,26 +54,26 @@ spec:
         runAsGroup: 1000
       serviceAccountName: external-dns
       containers:
-      - name: external-dns
-        image: k8s.gcr.io/external-dns/external-dns:v0.13.1
-        args:
-        - --log-level=info
-        - --source=service # ingress is also possible
-        - --provider=cloudflare
-        - --txt-owner-id=k8s-extdns
-        - --label-filter=external-dns-create in (true) # from https://github.com/kubernetes-sigs/external-dns/issues/2939
-        - --interval=60m # Otherwise polls every 1m and checks EVERY dns record https://github.com/kubernetes-sigs/external-dns/issues/484#issuecomment-467956869
-        - --events # detects any new services so we dont need to wait 60mins (refer above url)
-        - --cloudflare-proxied # enable the proxy feature of Cloudflare (DDOS protection, CDN...)
-        env:
-        - name: CF_API_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: cloudflare-api-token
-              key: CF_API_TOKEN
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+        - name: external-dns
+          image: k8s.gcr.io/external-dns/external-dns:v0.13.1
+          args:
+            - --log-level=info
+            - --source=service # ingress is also possible
+            - --provider=cloudflare
+            - --txt-owner-id=k8s-extdns
+            - --label-filter=external-dns-create in (true) # from https://github.com/kubernetes-sigs/external-dns/issues/2939
+            - --interval=60m # Otherwise polls every 1m and checks EVERY dns record https://github.com/kubernetes-sigs/external-dns/issues/484#issuecomment-467956869
+            - --events # detects any new services so we dont need to wait 60mins (refer above url)
+            - --cloudflare-proxied # enable the proxy feature of Cloudflare (DDOS protection, CDN...)
+          env:
+            - name: CF_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-api-token
+                  key: CF_API_TOKEN
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL

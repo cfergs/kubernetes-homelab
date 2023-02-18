@@ -7,18 +7,18 @@ metadata:
 spec:
   provider: azure
   secretObjects:
-  - secretName: azure-blob-splunk-secret # k8s-secret-name
-    type: Opaque
-    annotations:
-      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: monitor
-      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
-      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: monitor
-    data:
-    - objectName: splunk-blob-storage-account
-      key: azure_sa_name # k8s-key
-    - objectName: splunk-blob-storage-secret
-      key: azure_sa_secret_key
+    - secretName: azure-blob-splunk-secret # k8s-secret-name
+      type: Opaque
+      annotations:
+        reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+        reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: monitor
+        reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+        reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: monitor
+      data:
+        - objectName: splunk-blob-storage-account
+          key: azure_sa_name # k8s-key
+        - objectName: splunk-blob-storage-secret
+          key: azure_sa_secret_key
   parameters:
     usePodIdentity: "false" # dont unhash or you get boolean errors!
     keyvaultName: ${AZURE_VAULT_NAME}
@@ -50,23 +50,23 @@ spec:
         name: azure-splunk-blob
     spec:
       volumes:
-      - name: azure-splunk-blob
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: azure-splunk-blob
-          nodePublishSecretRef:
-            name: azure-secrets-store-cred
-      containers:
-      - name: azure-splunk-blob
-        image: busybox:1.35.0
-        command:
-          - "/bin/sleep"
-          - "10000"
-        volumeMounts:
         - name: azure-splunk-blob
-          mountPath: /mnt/secrets-store
-          readOnly: true
-        securityContext:
-          allowPrivilegeEscalation: false
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: azure-splunk-blob
+            nodePublishSecretRef:
+              name: azure-secrets-store-cred
+      containers:
+        - name: azure-splunk-blob
+          image: busybox:1.35.0
+          command:
+            - "/bin/sleep"
+            - "10000"
+          volumeMounts:
+            - name: azure-splunk-blob
+              mountPath: /mnt/secrets-store
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false

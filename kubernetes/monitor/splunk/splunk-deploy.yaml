@@ -67,20 +67,20 @@ metadata:
 spec:
   ingressClassName: nginx-internal
   rules:
-  - host: splunk.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: splunk-s1-standalone-service
-            port:
-              number: 8000
-      - path: /services/collector
-        pathType: Prefix
-        backend:
-          service:
-            name: splunk-s1-standalone-headless
-            port:
-              number: 8088
+    - host: splunk.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: splunk-s1-standalone-service
+                port:
+                  number: 8000
+          - path: /services/collector
+            pathType: Prefix
+            backend:
+              service:
+                name: splunk-s1-standalone-headless
+                port:
+                  number: 8088

@@ -21,34 +21,34 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
       volumes:
-      - name: prowlarr-volume
-        persistentVolumeClaim:
-          claimName: prowlarr-volume-pvc
-      - emptyDir: {}
-        name: tmpvol
-      containers:
-      - name: prowlarr
-        image: ghcr.io/onedr0p/prowlarr-develop:1.1.2.2453@sha256:2a525557cd5fe461e2aaa45613dee12069841efc748404d4176f5b5948ee95af
-        ports:
-        - containerPort: 9696
-        env:
-        - name: PROWLARR__AUTHENTICATION_METHOD
-          value: External
-        - name: PROWLARR__ANALYTICS_ENABLED
-          value: "False"
-        - name: PROWLARR__URL_BASE
-          value: /prowlarr
-        volumeMounts:
         - name: prowlarr-volume
-          mountPath: /config
-        - name: tmpvol
-          mountPath: /tmp # Resolve error when using ReadOnly FS: "Failed to create CoreCLR, HRESULT: 0x80004005" - https://github.com/Azure/azure-functions-host/issues/8181 && https://github.com/dotnet/runtime/issues/3168
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
+          persistentVolumeClaim:
+            claimName: prowlarr-volume-pvc
+        - emptyDir: {}
+          name: tmpvol
+      containers:
+        - name: prowlarr
+          image: ghcr.io/onedr0p/prowlarr-develop:1.1.2.2453@sha256:2a525557cd5fe461e2aaa45613dee12069841efc748404d4176f5b5948ee95af
+          ports:
+            - containerPort: 9696
+          env:
+            - name: PROWLARR__AUTHENTICATION_METHOD
+              value: External
+            - name: PROWLARR__ANALYTICS_ENABLED
+              value: "False"
+            - name: PROWLARR__URL_BASE
+              value: /prowlarr
+          volumeMounts:
+            - name: prowlarr-volume
+              mountPath: /config
+            - name: tmpvol
+              mountPath: /tmp # Resolve error when using ReadOnly FS: "Failed to create CoreCLR, HRESULT: 0x80004005" - https://github.com/Azure/azure-functions-host/issues/8181 && https://github.com/dotnet/runtime/issues/3168
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
 ---
 apiVersion: v1
 kind: Service
@@ -57,9 +57,9 @@ metadata:
   namespace: media
 spec:
   ports:
-  - port: 9696
-    protocol: TCP
-    targetPort: 9696
+    - port: 9696
+      protocol: TCP
+      targetPort: 9696
   selector:
     name: prowlarr
 ---
@@ -73,13 +73,13 @@ metadata:
 spec:
   ingressClassName: nginx-external
   rules:
-  - host: media.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /prowlarr
-        pathType: Prefix
-        backend:
-          service:
-            name: prowlarr
-            port:
-              number: 9696
+    - host: media.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /prowlarr
+            pathType: Prefix
+            backend:
+              service:
+                name: prowlarr
+                port:
+                  number: 9696

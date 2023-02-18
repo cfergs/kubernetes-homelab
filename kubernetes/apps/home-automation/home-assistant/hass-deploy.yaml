@@ -18,26 +18,26 @@ spec:
         name: hass
     spec:
       volumes:
-      - name: hass-config
-        configMap:
-          name: hass-config
-      - name: hass-volume
-        persistentVolumeClaim:
-          claimName: hass-volume-pvc
-      containers:
-      - name: homeassistant
-        image: homeassistant/home-assistant:2022.10.4
-        ports:
-        - containerPort: 8123
-        env:
-        - name: TZ
-          value: ${TIMEZONE}
-        volumeMounts:
-        - name: hass-volume
-          mountPath: /config
         - name: hass-config
-          mountPath: /config/configuration.yaml
-          subPath: configuration.yaml
+          configMap:
+            name: hass-config
+        - name: hass-volume
+          persistentVolumeClaim:
+            claimName: hass-volume-pvc
+      containers:
+        - name: homeassistant
+          image: homeassistant/home-assistant:2022.10.4
+          ports:
+            - containerPort: 8123
+          env:
+            - name: TZ
+              value: ${TIMEZONE}
+          volumeMounts:
+            - name: hass-volume
+              mountPath: /config
+            - name: hass-config
+              mountPath: /config/configuration.yaml
+              subPath: configuration.yaml
 ---
 apiVersion: v1
 kind: Service
@@ -46,10 +46,10 @@ metadata:
   namespace: home-automation
 spec:
   ports:
-  - name: hass-8123
-    port: 8123
-    protocol: TCP
-    targetPort: 8123
+    - name: hass-8123
+      port: 8123
+      protocol: TCP
+      targetPort: 8123
   selector:
     name: hass
 ---
@@ -63,13 +63,13 @@ metadata:
 spec:
   ingressClassName: nginx-internal
   rules:
-  - host: hass.${DOMAIN_NAME}
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: hass
-            port:
-              name: hass-8123
+    - host: hass.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hass
+                port:
+                  name: hass-8123
