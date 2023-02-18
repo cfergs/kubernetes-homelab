@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../../schemas/standalone_v4.json
 apiVersion: enterprise.splunk.com/v4
 kind: Standalone
 metadata:

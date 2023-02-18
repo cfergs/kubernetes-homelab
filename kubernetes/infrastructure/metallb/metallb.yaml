@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../../schemas/ipaddresspool_v1beta1.json
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -8,6 +9,7 @@ spec:
   - ${METAL_LB_RANGE}
   autoAssign: false
 ---
+# yaml-language-server: $schema=../../../schemas/l2advertisement_v1beta1.json
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
