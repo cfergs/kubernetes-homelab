@@ -33,7 +33,7 @@ spec:
           emptyDir: {}
       containers:
         - name: sabnzbd
-          image: ghcr.io/onedr0p/sabnzbd:3.7.1@sha256:dcb68eda221b59dcce3a2b297f6d1b2228964d83799b24cb001671890e7d7a10
+          image: ghcr.io/onedr0p/sabnzbd:3.7.2@sha256:04d0792901455b5960dd4bd7d3aeaee79dd5e8e5aaeeb93d937de89790d5a73f
           ports:
             - containerPort: 8080
           env:

@@ -22,7 +22,7 @@ spec:
 
     additionalContainers:
       gluetun:
-        image: qmcgaw/gluetun:v3.31.1@sha256:d9dfeb8ef4409f93fe4caae0781c038fb3eeaffe80f6ac83e0f3a450ed2a3241
+        image: qmcgaw/gluetun:v3.32@sha256:bb2915294ed4d3d5ef29e1423f4ff751f861a871dd64ef3e662dc4c2279a34b3
         env:
           - name: VPN_TYPE
             value: openvpn
@@ -68,4 +68,4 @@ spec:
       gatewayLabel: setGateway
       image:
         repository: ghcr.io/angelnu/gateway-admision-controller
-        tag: v3.7.0
+        tag: v3.8.0

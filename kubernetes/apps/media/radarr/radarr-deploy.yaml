@@ -36,7 +36,7 @@ spec:
           name: tmpvol
       containers:
         - name: radarr
-          image: ghcr.io/onedr0p/radarr:4.3.2.6857@sha256:b24ddbcef186fa0e08ddf6065d5730378ad122566a50b76fc44a950fa5d2614d
+          image: ghcr.io/onedr0p/radarr:4.3.2.6857@sha256:9e033648ff60e1fbf3c2e6566e14d375a8bd98eb59636554f93c3834bf6bf9c4
           ports:
             - containerPort: 7878
           env:
