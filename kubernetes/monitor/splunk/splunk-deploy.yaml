@@ -77,6 +77,26 @@ spec:
                 name: splunk-s1-standalone-service
                 port:
                   number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: splunk-ingestion
+  namespace: monitor
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+    nginx.ingress.kubernetes.io/client-body-buffer-size: 10M
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: logging-nginx-internal
+  rules:
+    - host: splunk-hec.${DOMAIN_NAME}
+      http:
+        paths:
           - path: /services/collector
             pathType: Prefix
             backend:

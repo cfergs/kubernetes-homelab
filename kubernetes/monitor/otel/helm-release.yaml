@@ -20,12 +20,13 @@ spec:
     environment: production
     logsEngine: otel
     splunkPlatform:
-      endpoint: https://splunk.${DOMAIN_NAME}/services/collector/event
+      endpoint: https://splunk-hec.${DOMAIN_NAME}/services/collector/event
       index: k8s_events
       metricsEnabled: false
       logsEnabled: true
     logsCollection:
       containers:
         enabled: true
+        excludePaths: ["/var/log/pods/nginx-internal_logging-nginx-internal-controller*/*/*.log"]
     secret:
       create: false
