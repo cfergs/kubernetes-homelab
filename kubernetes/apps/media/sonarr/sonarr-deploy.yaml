@@ -34,7 +34,7 @@ spec:
           name: tmpvol
       containers:
         - name: sonarr
-          image: ghcr.io/onedr0p/sonarr:3.0.10.1566@sha256:04a6d31d7acca80b2af598aea019e19b4ac10cf40da04f2b46183e53c064a698
+          image: ghcr.io/onedr0p/sonarr:3.0.9.1549@sha256:2f201164124acd2e5a56d1598f101886c0d82fe0f16d540e07e4ff540d70002b
           ports:
             - containerPort: 8989
           env:
