@@ -27,6 +27,9 @@ spec:
     logsCollection:
       containers:
         enabled: true
-        excludePaths: ["/var/log/pods/nginx-internal_logging-nginx-internal-controller*/*/*.log"]
+        excludePaths:
+          - "/var/log/pods/nginx-internal_logging-nginx-internal-controller*/*/*.log"
+          - "/var/log/pods/longhorn-system_longhorn-manager*/*/*.log"
+          - "/var/log/pods/downloads-vpn_downloads-gateway-pod-gateway*/*/*.log" # longhorn and vpn generate too many events to make them useful
     secret:
       create: false
