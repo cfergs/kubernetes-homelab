@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    configmap.reloader.stakater.com/reload: qbittorrent-config
+  name: qbittorrent
+  namespace: downloads
+spec:
+  serviceName: qbittorrent
+  replicas: 1
+  selector:
+    matchLabels:
+      name: qbittorrent
+  template:
+    metadata:
+      labels:
+        name: qbittorrent
+    spec:
+      volumes:
+        - name: qbittorrent-config
+          configMap:
+            name: qbittorrent-config
+        - name: qbittorrent-in-progress
+          persistentVolumeClaim:
+            claimName: qbittorrent-volume-pvc
+        - name: tmpvol
+          emptyDir:
+            medium: Memory
+            sizeLimit: 128Mi
+        - name: downloads-volume
+          persistentVolumeClaim:
+            claimName: qbittorrent-downloads-pvc
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+        - name: qbittorrent
+          image: ghcr.io/onedr0p/qbittorrent:4.5.2@sha256:0825e85e54afd74bf052ce39d3e67b6d0bc4b4c11b52b05cd8bc017e68261e5d
+          ports:
+            - name: webui
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: TZ
+              value: ${TIMEZONE}
+          volumeMounts:
+            - name: tmpvol # temp FS + stops overwriting qBittorrent.conf with qBittorrent_new.conf file
+              mountPath: /config/qBittorrent
+            - name: qbittorrent-in-progress # stores in-progress torrent metadata
+              mountPath: /config/qBittorrent/BT_backup
+            - name: qbittorrent-config
+              mountPath: /config/qBittorrent/qBittorrent.conf
+              subPath: qBittorrent.conf
+            - name: downloads-volume
+              mountPath: /media/downloads/torrents
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent
+  namespace: downloads
+spec:
+  ports:
+    - name: webui
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    name: qbittorrent
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: qbittorrent-ingress
+  namespace: downloads
+spec:
+  ingressClassName: nginx-external
+  rules:
+    - host: media.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /qbt(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: qbittorrent
+                port:
+                  name: webui

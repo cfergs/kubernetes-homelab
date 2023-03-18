@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../../../schemas/volume_v1beta2.json
+apiVersion: longhorn.io/v1beta2
+kind: Volume
+metadata:
+  name: qbittorrent-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwo
+  engineImage: longhornio/longhorn-engine:v1.4.0
+  frontend: blockdev
+  replicaAutoBalance: best-effort
+  size: "256000000" # 256MB
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: qbittorrent-volume-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 256Mi
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: qbittorrent-volume
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: qbittorrent-volume-pvc
+  namespace: downloads
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: qbittorrent-volume-pv
