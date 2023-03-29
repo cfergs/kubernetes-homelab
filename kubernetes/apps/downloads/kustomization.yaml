@@ -5,5 +5,4 @@ resources:
   - downloads-network-policy.yaml
   - jdownloader
   - sabnzbd
-  - transmission
   - qbittorrent
