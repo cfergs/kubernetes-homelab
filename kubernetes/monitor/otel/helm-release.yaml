@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: splunk-otel-collector
-      version: 0.67.0
+      version: 0.72.0
       interval: 5m
       sourceRef:
         kind: HelmRepository
@@ -31,5 +31,6 @@ spec:
           - "/var/log/pods/nginx-internal_logging-nginx-internal-controller*/*/*.log"
           - "/var/log/pods/longhorn-system_longhorn-manager*/*/*.log"
           - "/var/log/pods/downloads-vpn_downloads-gateway-pod-gateway*/*/*.log" # longhorn and vpn generate too many events to make them useful
+          - "/var/log/pods/kube-system_snapshot-controller*/*/*.log"
     secret:
       create: false
