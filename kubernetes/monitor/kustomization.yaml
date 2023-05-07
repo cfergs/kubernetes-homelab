@@ -5,3 +5,4 @@ resources:
   - splunk-operator
   - splunk
   - otel
+  - splunk-syslog
