@@ -30,7 +30,7 @@ metadata:
   namespace: monitor
   annotations:
     metallb.universe.tf/allow-shared-ip: "splunk-connect"
-    metallb.universe.tf/loadBalancerIPs: 192.168.0.254
+    metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}
   labels:
     helm.sh/chart: splunk-connect-for-syslog-2.49.3
     app.kubernetes.io/name: splunk-connect-for-syslog
@@ -72,7 +72,7 @@ metadata:
   namespace: monitor
   annotations:
     metallb.universe.tf/allow-shared-ip: "splunk-connect"
-    metallb.universe.tf/loadBalancerIPs: 192.168.0.254
+    metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}
   labels:
     helm.sh/chart: splunk-connect-for-syslog-2.49.3
     app.kubernetes.io/name: splunk-connect-for-syslog
@@ -148,7 +148,7 @@ spec:
           - name: SC4S_RUNTIME_ENV
             value: "k8s"
           - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_URL
-            value: "https://splunk-hec.chickenwaffles.net/services/collector/event"
+            value: "https://splunk-hec.${DOMAIN_NAME}/services/collector/event"
           - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_TOKEN
             valueFrom:
               secretKeyRef:

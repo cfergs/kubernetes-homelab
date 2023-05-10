@@ -14,6 +14,7 @@ data:
   LOGGING_INGRESS_INTERNAL_IP: 192.168.0.250
   UNIFI_IP: 192.168.0.243
   MQTT_IP: 192.168.0.244
+  SYSLOG_IP: 192.168.0.254
 
   AZURE_VAULT_NAME: chickenwaffles-keyvault
   AZURE_TENANT_ID: e6d53a80-38c0-45ee-8b0e-ff7db3484ad5 # https://petri.com/finding-identifier-azure-office-365-tenants/ , https://stackoverflow.com/questions/45661109/are-azure-subscription-id-aad-tenant-id-and-aad-app-client-id-considered-secre
