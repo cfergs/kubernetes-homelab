@@ -29,7 +29,7 @@ spec:
           emptyDir: {}
       containers:
         - name: unifi
-          image: jacobalberty/unifi:v7.2.94
+          image: ghcr.io/jacobalberty/unifi-docker:v7.3.83@sha256:b2c58b67e8a63d34dab649cd19316c56cf024fa5a76cb224a0fc258b239a14c8
           ports:
             - containerPort: 3478 # used for STUN
               name: ubnt-3478

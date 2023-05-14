@@ -23,7 +23,7 @@ spec:
             claimName: jdownloader-downloads-pvc
       containers:
         - name: jdownloader
-          image: jlesage/jdownloader-2:v23.02.2
+          image: jlesage/jdownloader-2:v23.04.1
           ports:
             - containerPort: 5800
           env:

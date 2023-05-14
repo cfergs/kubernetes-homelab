@@ -42,7 +42,7 @@ spec:
             name: mosquitto-config
       containers:
         - name: mosquitto
-          image: eclipse-mosquitto:2.0.15-openssl
+          image: eclipse-mosquitto:2.0.15-openssl@sha256:6c446a2f68b04310e0765ae1ba625f64c7581af70051f4273e7aa291fe843f67
           ports:
             - containerPort: 1883
           volumeMounts:

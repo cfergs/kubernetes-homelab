@@ -45,7 +45,7 @@ spec:
           emptyDir: {}
       containers:
         - name: mylar3
-          image: ghcr.io/cdloh/mylar3:0.7.0@sha256:7867eed94a3dde65051c53306aa63b3f97d18f8799e8974898e8f70957490cab
+          image: ghcr.io/cdloh/mylar3:0.7.2@sha256:05ed542e48df9aa722fc20472d2b34818a7848f87b3f11b8463435a2181f1d8b
           command: ["/bin/sh"]
           args: ["-c", "/app/entrypoint.sh"]
           ports:

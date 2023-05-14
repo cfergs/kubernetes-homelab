@@ -21,7 +21,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2023.2.1-amd64
+          image: cloudflare/cloudflared:2023.5.0-amd64
           args:
             - tunnel
             - --config
