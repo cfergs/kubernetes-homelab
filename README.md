@@ -16,3 +16,6 @@ Needed every 6months
 * az account set --subscription "Pay-As-You-Go"
 * az keyvault list
 * az keyvault secret set --vault-name "chickenwaffles-keyvault" --name splunk-enterprise-license --file license.lic
+
+## Convert helm to yaml
+* helm template splunk-connect-for-syslog/splunk-connect-for-syslog -f values.yaml
