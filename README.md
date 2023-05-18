@@ -19,3 +19,10 @@ Needed every 6months
 
 ## Convert helm to yaml
 * helm template splunk-connect-for-syslog/splunk-connect-for-syslog -f values.yaml
+
+## Longhorn Upgrade
+* Read doco for any changes
+* Upgrade longhorn **k3s_server_manifests_urls** value in k3s/vars
+* Deploy
+* When complete update **engineImage** value
+* Re-deploy
