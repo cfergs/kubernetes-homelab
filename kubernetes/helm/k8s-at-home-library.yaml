@@ -1,9 +1,0 @@
-# yaml-language-server: $schema=../../schemas/helmrepository_v1beta2.json
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
-  name: k8s-at-home-library
-  namespace: flux-system
-spec:
-  url: https://library-charts.k8s-at-home.com
-  interval: 10m
