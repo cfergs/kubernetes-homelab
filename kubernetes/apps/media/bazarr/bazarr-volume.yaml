@@ -9,7 +9,7 @@ spec:
   engineImage: longhornio/longhorn-engine:v1.4.2
   frontend: blockdev
   replicaAutoBalance: best-effort
-  size: "512000000" # 512MB
+  size: "513802240" # 512MB
 ---
 kind: PersistentVolume
 apiVersion: v1
