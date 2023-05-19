@@ -31,7 +31,9 @@ spec:
           persistentVolumeClaim:
             claimName: jellyfin-transcode-volume-pvc
         - name: tmpvol
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
         - name: movies-volume
           persistentVolumeClaim:
             claimName: jellyfin-movies-pvc

@@ -26,7 +26,9 @@ spec:
           persistentVolumeClaim:
             claimName: unifi-volume-pvc
         - name: tmpvol
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
       containers:
         - name: unifi
           image: ghcr.io/jacobalberty/unifi-docker:v7.3.83@sha256:b2c58b67e8a63d34dab649cd19316c56cf024fa5a76cb224a0fc258b239a14c8

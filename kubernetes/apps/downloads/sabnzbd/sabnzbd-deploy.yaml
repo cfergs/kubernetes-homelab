@@ -30,7 +30,9 @@ spec:
           persistentVolumeClaim:
             claimName: sabnzbd-downloads-pvc
         - name: tmpvol
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
       containers:
         - name: sabnzbd
           image: ghcr.io/onedr0p/sabnzbd:4.0.1@sha256:9a4b801a0c1bc8b9b6b7c24638a2df704dd98f40acd7150dce4254b5c355871f

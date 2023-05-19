@@ -30,8 +30,10 @@ spec:
         - name: tvshows-volume
           persistentVolumeClaim:
             claimName: sonarr-tvshows-pvc
-        - emptyDir: {}
-          name: tmpvol
+        - name: tmpvol
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
       containers:
         - name: sonarr
           image: ghcr.io/onedr0p/sonarr:3.0.10.1567@sha256:70d81e2bba8f7ae0aaf43f6592a333f252b6a26fa2f34c9fb7271ebfae296acf

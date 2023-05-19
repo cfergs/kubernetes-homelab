@@ -42,7 +42,9 @@ spec:
                 path: entrypoint.sh
             defaultMode: 0755
         - name: scratch-volume
-          emptyDir: {}
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
       containers:
         - name: mylar3
           image: ghcr.io/cdloh/mylar3:0.7.2@sha256:05ed542e48df9aa722fc20472d2b34818a7848f87b3f11b8463435a2181f1d8b
