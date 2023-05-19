@@ -9,7 +9,7 @@ spec:
   engineImage: longhornio/longhorn-engine:v1.4.2
   frontend: blockdev
   replicaAutoBalance: best-effort
-  size: "513802240" # 512MB
+  size: "1073741824" # 1GB
 ---
 kind: PersistentVolume
 apiVersion: v1
@@ -19,7 +19,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   capacity:
-    storage: 512Mi
+    storage: 1Gi
   csi:
     driver: driver.longhorn.io
     fsType: ext4
@@ -38,7 +38,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 512Mi
+      storage: 1Gi
   storageClassName: longhorn-static
   volumeMode: Filesystem
   volumeName: prowlarr-volume-pv
