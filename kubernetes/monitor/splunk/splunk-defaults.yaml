@@ -41,34 +41,24 @@ data:
                 path : azure://indexes
                 remote.azure.access_key : "{{ lookup('env','AZURE_BLOB_STORAGE_ACCOUNT', no_log='True') }}"
                 remote.azure.secret_key : "{{ lookup('env','AZURE_BLOB_STORAGE_SECRET', no_log='True') }}"
-              k8s_events:
-                disabled : false
-              k8s_apps:
-                disabled : false
               ingress:
                 disabled : false
-              netops:
-                # hpeprocurve
+                frozenTimePeriodInSecs : 15552000 # 6months
+              k8s_events:
                 disabled : false
+                frozenTimePeriodInSecs : 7776000 # 3months
+              k8s_apps:
+                disabled : false
+                frozenTimePeriodInSecs : 15552000 # 6months
+              netfw: # mikrotik
+                disabled : false
+                frozenTimePeriodInSecs : 15552000 # 6months
+              netops: # hpeprocurve, mikrotik
+                disabled : false
+                frozenTimePeriodInSecs : 15552000 # 6months
               osnix:
                 disabled : false
-              netipam:
-                disabled : false
-              netauth:
-                # opnsense:access
-                disabled : false
-              netdhcp:
-                # opnsense:dhcpd
-                disabled : false
-              netfw:
-                # opnsense:filterlog
-                disabled : false
-              netfwsystem:
-                # opnsense, opnsense:cron, opnsense:system, opnsense:syslog
-                disabled : false
-              netids:
-                # opnsense:suricata, opnsense:suricata:json
-                disabled : false
+                frozenTimePeriodInSecs : 15552000 # 6months
         - key: telemetry
           value:
             directory: /opt/splunk/etc/apps/splunk_instrumentation/local
