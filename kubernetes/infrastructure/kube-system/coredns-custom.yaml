@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  override.server: |
+    # dummy file
+    # Otherwise coredns will every minute log error:
+    # "[WARNING] No files matching import glob pattern: /etc/coredns/custom/*.server" errors
+    # https://github.com/k3s-io/k3s/issues/4919
