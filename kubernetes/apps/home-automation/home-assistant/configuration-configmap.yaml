@@ -8,6 +8,7 @@ data:
     # Configure a default setup of Home Assistant (frontend, api, etc)
     homeassistant:
       currency: AUD
+      country: AU
 
     default_config:
 
@@ -29,8 +30,3 @@ data:
         title: zigbee2mqtt
         url: https://hass.${DOMAIN_NAME}/zigbee2mqtt/
         icon: mdi:zigbee
-
-    binary_sensor:
-      - platform: workday
-        country: AU
-        province: WA
