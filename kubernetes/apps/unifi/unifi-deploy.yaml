@@ -51,6 +51,8 @@ spec:
           env:
             - name: TZ
               value: ${TIMEZONE}
+            - name: UNIFI_STDOUT # Controller outputs logs to stdout in addition to server.log - needed for splunk
+              value: "true"
           volumeMounts:
             - name: unifi-volume
               mountPath: /unifi
