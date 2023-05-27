@@ -6,11 +6,24 @@ metadata:
   namespace: longhorn-system
 data:
   default-setting.yaml: |-
+    # only specify values that deviate from defaults
+
+    # general
     allow-node-drain-with-last-healthy-replica: "true" # deprecate in v1.5.0
-    node-drain-policy: always-allow
     default-data-locality: best-effort
-    allow-volume-creation-with-degraded-availability: "false"
-    replica-auto-balance: best-effort
     node-down-pod-deletion-policy: delete-both-statefulset-and-deployment-pod
+    node-drain-policy: always-allow
+    remove-snapshots-during-filesystem-trim: "true"
+
+    # snapshot checks
+    snapshot-data-integrity: enabled
+    snapshot-data-integrity-immediate-check-after-snapshot-creation: "false"
+    snapshot-data-integrity-cronjob: "0 0 */2 * *" # every 2 days
+
+    # backup
     backup-target-credential-secret: s3-backup-secret
     backup-target: ${LONGHORN_S3_BUCKET}
+
+    # scheduling
+    allow-volume-creation-with-degraded-availability: "false"
+    replica-auto-balance: best-effort
