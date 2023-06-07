@@ -4,6 +4,7 @@
     name: NUT_VALUES
     controller_password: "{{ nut_user_controller_password }}"
     subscriber_password: "{{ nut_user_subscriber_password }}"
+  changed_when: false
 
 # Get values specific to whether NUT instance is a controller or subscriber
 - name: NUT Controller | Get custom variables

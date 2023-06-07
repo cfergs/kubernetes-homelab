@@ -99,6 +99,7 @@
   become: true
   ansible.builtin.command: "kubectl get secret {{ user_account }}-token -o jsonpath={.data.token} --kubeconfig={{ kube_file }}"
   register: token_encrypted
+  changed_when: false
 
 - name: Decrypt Token
   ansible.builtin.set_fact:
@@ -108,12 +109,14 @@
   become: true
   ansible.builtin.command: "kubectl config view --minify --raw --output jsonpath={..cluster.certificate-authority-data} --kubeconfig={{ kube_file }}"
   register: kube_ca
+  changed_when: false
 
 - name: Add K8S Token to dummy host # needed when using host specific variable on another host
   ansible.builtin.add_host:
     name: K8S_NODE_DRAIN
     token: "{{ token_encrypted.stdout | b64decode }}"
     ca: "{{ kube_ca.stdout }}"
+  changed_when: false
 
 - name: Kubectl Deploy config file
   become: true

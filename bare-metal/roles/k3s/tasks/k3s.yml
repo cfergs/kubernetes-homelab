@@ -70,3 +70,4 @@
   when:
     - k3s_control_node is defined
     - k3s_control_node
+  changed_when: false

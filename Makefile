@@ -58,11 +58,11 @@ ansible-env: ci-environment
 ansible-k3s-dev: ansible-env
 	cd bare-metal; make ansible-k3s-dev
 
-ansible-k3s-prod: ansible-env
+ansible-k3s-prod:
 	cd bare-metal; make ansible-k3s-prod
 
 ansible-flux-dev: ansible-env
 	cd bare-metal; make ansible-flux-dev
 
-ansible-flux-prod: ansible-env
+ansible-flux-prod:
 	cd bare-metal; make ansible-flux-prod
