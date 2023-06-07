@@ -1,11 +1,3 @@
-- name: Fix KeyvaultErrorException not defined error # https://github.com/Azure/azure_preview_modules/issues/324
-  ansible.builtin.replace:
-    path: ../.venv/lib64/python3.11/site-packages/azure/keyvault/key_vault_authentication.py
-    regexp: 'inspect\.getargspec'
-    replace: 'inspect.getfullargspec'
-  when:
-    - ansible_python_version is version('3.11.0', '>=')
-
 - name: Kubernetes Role Create
   ansible.builtin.include_tasks: kubernetes.yml
   when:
