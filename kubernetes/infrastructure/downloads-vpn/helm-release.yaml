@@ -52,6 +52,11 @@ spec:
       netshoot:
         enabled: true
 
+    dnsConfig:
+      options:
+        - name: ndots
+          value: "1"
+
     routed_namespaces:
       - downloads
       - media

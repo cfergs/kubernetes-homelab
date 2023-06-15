@@ -38,6 +38,10 @@ spec:
             - name: hass-config
               mountPath: /config/configuration.yaml
               subPath: configuration.yaml
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
 ---
 apiVersion: v1
 kind: Service

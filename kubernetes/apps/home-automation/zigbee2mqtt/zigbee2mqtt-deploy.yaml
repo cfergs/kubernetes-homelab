@@ -36,11 +36,11 @@ spec:
             - name: ZIGBEE2MQTT_CONFIG_FRONTEND_PORT
               value: '8080'
             - name: ZIGBEE2MQTT_CONFIG_MQTT_SERVER
-              value: mqtt://mosquitto.home-automation:1883
+              value: mqtt://mosquitto.home-automation.svc.cluster.local:1883
             - name: ZIGBEE2MQTT_CONFIG_PERMIT_JOIN
               value: 'true'
             - name: ZIGBEE2MQTT_CONFIG_SERIAL_PORT
-              value: tcp://zigbee-ser2sock:10000
+              value: tcp://zigbee-ser2sock.home-automation.svc.cluster.local:10000
             - name: ZIGBEE2MQTT_CONFIG_ADVANCED_CHANNEL
               value: '20'
             - name: ZIGBEE2MQTT_CONFIG_HOMEASSISTANT
@@ -58,6 +58,10 @@ spec:
             capabilities:
               drop:
                 - ALL
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
 ---
 apiVersion: v1
 kind: Service

@@ -36,6 +36,10 @@ spec:
           volumeMounts:
             - name: ttyusb
               mountPath: /dev/ttyUSB0
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

@@ -36,7 +36,7 @@ data:
                 remotePath : 'volume:azure_smartstore/$_index_name'
               'volume:azure_smartstore':
                 storageType : remote
-                remote.azure.endpoint : https://chickenwafflesprodstore.blob.core.windows.net
+                remote.azure.endpoint : https://chickenwafflesprodstore.blob.core.windows.net.
                 remote.azure.container_name : splunk
                 path : azure://indexes
                 remote.azure.access_key : "{{ lookup('env','AZURE_BLOB_STORAGE_ACCOUNT', no_log='True') }}"
