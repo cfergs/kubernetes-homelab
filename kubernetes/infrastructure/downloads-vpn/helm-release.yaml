@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: downloads-gateway
+  name: vpn
   namespace: downloads-vpn
 spec:
   chart:
@@ -11,29 +11,38 @@ spec:
       interval: 15m
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home-charts
+        name: angelnu
         namespace: flux-system
-      version: 5.6.2
+      version: 6.5.1
   interval: 15m
   values:
     image:
       repository: ghcr.io/angelnu/pod-gateway
       tag: v1.8.1@sha256:baba1f27d821e8cbd27be115156425041455d1281115a8ca8d3bca9379a3ee24
 
-    additionalContainers:
-      gluetun:
-        image: qmcgaw/gluetun:v3.33@sha256:b5e8048b58c88e32ae307d0f0a0dea5605b9f17390350ef2422da2a4782cf3c6
+    webhook:
+      image:
+        repository: ghcr.io/angelnu/gateway-admision-controller
+        tag: v3.9.0@sha256:87afaa7c6d7b4fcce44091da790f92035f5e8a1f455e3df8dc61abf94e822128
+
+    addons:
+      vpn:
+        enabled: true
+        type: gluetun
+        gluetun:
+          image:
+            repository: ghcr.io/qdm12/gluetun
+            tag: v3.34.3@sha256:55f6c5b9cd2646b7d3f95c48f2d35e9e01fefa5d927f8636392e104f6d86639b
+
         env:
-          - name: VPN_TYPE
-            value: openvpn
-          - name: FIREWALL
-            value: "off"
           - name: DOT
             value: "off" # unable to bind to 127.0.0.1:53 as used by host OS
-          - name: VPN_SERVICE_PROVIDER
-            value: nordvpn
-          - name: SERVER_REGIONS
-            value: Australia
+          - name: FIREWALL
+            value: "off"
+          #- name: FIREWALL_OUTBOUND_SUBNETS
+          #  value: 172.16.0.0/24,10.42.0.0/16,10.43.0.0/16
+          #- name: FIREWALL_INPUT_PORTS
+          #  value: 443
           - name: OPENVPN_USER
             valueFrom:
               secretKeyRef:
@@ -44,13 +53,53 @@ spec:
               secretKeyRef:
                 name: nordvpn
                 key: password
+          - name: SERVER_REGIONS
+            value: Australia
+          - name: VPN_SERVICE_PROVIDER
+            value: nordvpn
+          - name: VPN_TYPE
+            value: openvpn
+
+        #scripts:
+        #  up:
+        #    |-
+        #      # !/bin/sh
+        #      echo "add iptable routes"
+        #      iptables -I INPUT -i vxlan0 -p icmp -j ACCEPT
+        #      iptables -I INPUT -i vxlan0 -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+
         securityContext:
           capabilities:
             add:
               - NET_ADMIN
-    addons:
-      netshoot:
-        enabled: true
+
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - if [ $(wget -q -O- https://ipinfo.io/country) == 'AU' ]; then exit 0; else exit $?; fi
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          failureThreshold: 3
+
+        networkPolicy:
+          enabled: true
+          policyTypes:
+            - Egress
+
+          egress:
+            # Allow only VPN traffic to Internet
+            - to:
+              - ipBlock:
+                  cidr: 0.0.0.0/0
+              ports:
+              - port: 1194 # VPN traffic (default OpenVPN)
+                protocol: UDP
+            # Allow any traffic within k8s
+            - to:
+              - ipBlock:
+                  cidr: 10.0.0.0/8 # Cluster IPs (default k3s)
 
     dnsConfig:
       options:
@@ -62,15 +111,10 @@ spec:
       - media
 
     settings:
-      NOT_ROUTED_TO_GATEWAY_CIDRS: "10.42.0.0/16 10.43.0.0/16"
+      NOT_ROUTED_TO_GATEWAY_CIDRS: "10.42.0.0/16 10.43.0.0/16" # https://github.com/angelnu/pod-gateway/issues/15#issuecomment-1427126773
       VPN_BLOCK_OTHER_TRAFFIC: true
       VPN_INTERFACE: tun0
       VPN_LOCAL_CIDRS: 10.0.0.0/8 192.168.0.0/16
       VPN_TRAFFIC_PORT: 1194
-
-    webhook:
-      gatewayAnnotation: setGateway
-      gatewayLabel: setGateway
-      image:
-        repository: ghcr.io/angelnu/gateway-admision-controller
-        tag: v3.8.0
+      VXLAN_ID: 42
+      VXLAN_IP_NETWORK: 172.16.0

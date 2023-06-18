@@ -2,9 +2,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - angelnu-charts.yaml
   - csi-secrets-store-provider-azure.yaml
   - ingress-nginx.yaml
-  - k8s-at-home-charts.yaml
   - kubernetes-reflector.yaml
   - reloader.yaml
   - splunk-operator.yaml
