@@ -6,6 +6,7 @@ resources:
   - csi-secrets-store-provider-azure.yaml
   - ingress-nginx.yaml
   - kubernetes-reflector.yaml
+  - prometheus-community.yaml
   - reloader.yaml
   - splunk-operator.yaml
   - splunk-otel-collector.yaml
