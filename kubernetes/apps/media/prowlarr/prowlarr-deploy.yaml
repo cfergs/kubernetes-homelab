@@ -30,7 +30,7 @@ spec:
             sizeLimit: 64Mi
       containers:
         - name: prowlarr
-          image: ghcr.io/onedr0p/prowlarr-develop:1.6.0.3527@sha256:60f5996d5ddb8be85e1f1dba170fc5d7a6f043eb33aeb2614d7f958d2e6c5639
+          image: ghcr.io/onedr0p/prowlarr-develop:1.6.3.3608@sha256:6b6a06839106cebfc0260bee61dfbcc7bf6c6d1b2a65270d3b079f57d372fdc1
           ports:
             - containerPort: 9696
           env:

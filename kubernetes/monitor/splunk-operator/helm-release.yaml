@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: splunk-operator
-      version: 2.2.1
+      version: 2.3.0
       interval: 5m
       sourceRef:
         kind: HelmRepository
@@ -18,7 +18,7 @@ spec:
   values:
     # Splunk image
     image:
-      repository: docker.io/splunk/splunk:9.0.3-a2
+      repository: docker.io/splunk/splunk:9.0.5
 
     # The kube-rbac-proxy is a small HTTP proxy for a single upstream, that can perform RBAC
     # authorization against the Kubernetes API.
@@ -29,7 +29,7 @@ spec:
       image:
         repository: gcr.io/kubebuilder/kube-rbac-proxy
         pullPolicy: IfNotPresent
-        tag: "v0.11.0"
+        tag: "v0.13.1"
 
       # Set resource requests and limits for kube-rbac-proxy container
       resources:
@@ -43,7 +43,7 @@ spec:
     # Splunk Operator configurations
     splunkOperator:
       image:
-        repository: docker.io/splunk/splunk-operator:2.2.1
+        repository: docker.io/splunk/splunk-operator:2.3.0
         pullPolicy: IfNotPresent
 
       # Set image pull secrets to pull image from a private registry

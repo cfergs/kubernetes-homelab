@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: splunk-otel-collector
-      version: 0.76.0
+      version: 0.80.0
       interval: 5m
       sourceRef:
         kind: HelmRepository
