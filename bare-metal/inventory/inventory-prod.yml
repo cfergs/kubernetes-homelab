@@ -34,3 +34,6 @@ k3s_cluster:
     PUSHOVER_USER_TOKEN: "{{ lookup('azure_keyvault_secret', 'pushover-user-token', vault_url=kv_url) }}"
     nut_user_controller_password: "{{ lookup('azure_keyvault_secret', 'nut-user-controller-password', vault_url=kv_url) }}"
     nut_user_subscriber_password: "{{ lookup('azure_keyvault_secret', 'nut-user-subscriber-password', vault_url=kv_url) }}"
+    HOMELAB_DOMAIN_NAME: "{{ lookup('azure_keyvault_secret', 'homelab-domain-name', vault_url=kv_url) }}"
+    WEAVE_GITOPS_APP_CLIENTID: "{{ lookup('azure_keyvault_secret', 'weave-gitops-app-clientid', vault_url=kv_url) }}"
+    WEAVE_GITOPS_APP_CLIENTSECRET: "{{ lookup('azure_keyvault_secret', 'weave-gitops-app-clientsecret', vault_url=kv_url) }}"
