@@ -1,4 +1,12 @@
 ---
+- name: Weave GitOps | Download Binary
+  ansible.builtin.unarchive:
+    src: 'https://github.com/weaveworks/weave-gitops/releases/download/v{{ weave_gitops_version }}/gitops-linux-x86_64.tar.gz'
+    dest: /usr/local/bin
+    remote_src: yes
+    include: gitops
+    mode: 0755
+
 - name: Flux | Setup | Binary
   ansible.builtin.include_role:
     name: nicholaswilde.flux2
@@ -18,5 +26,6 @@
     --branch={{ branch }} \
     --personal={{ personal }} \
     --private={{ private }} \
-    --kubeconfig "{{ home_path }}/.kube/config"
+    --kubeconfig "{{ home_path }}/.kube/config" \
+    --components-extra image-reflector-controller,image-automation-controller
   when: flux_check.rc == 0

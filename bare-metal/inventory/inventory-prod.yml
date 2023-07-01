@@ -4,6 +4,7 @@ localhost:
     127.0.0.1
   vars:
     flux_version: 0.41.1
+    weave_gitops_version: 0.26.0
     ansible_connection: local
     branch: main
     target_path: kubernetes/clusters/production
