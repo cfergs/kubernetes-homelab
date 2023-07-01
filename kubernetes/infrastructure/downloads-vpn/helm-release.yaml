@@ -8,13 +8,13 @@ spec:
   chart:
     spec:
       chart: pod-gateway
-      interval: 15m
+      interval: 1h0m0s
       sourceRef:
         kind: HelmRepository
         name: angelnu
         namespace: flux-system
       version: 6.5.1
-  interval: 15m
+  interval: 1h0m0s
   values:
     image:
       repository: ghcr.io/angelnu/pod-gateway

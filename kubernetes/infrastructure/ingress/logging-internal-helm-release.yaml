@@ -5,12 +5,12 @@ metadata:
   name: logging-nginx-internal
   namespace: nginx-internal
 spec:
-  interval: 5m
+  interval: 1h0m0s
   chart:
     spec:
       chart: ingress-nginx
       version: 4.7.0
-      interval: 5m
+      interval: 1h0m0s
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx

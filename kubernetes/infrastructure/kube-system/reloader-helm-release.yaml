@@ -5,12 +5,12 @@ metadata:
   name: reloader
   namespace: kube-system
 spec:
-  interval: 5m
+  interval: 1h0m0s
   chart:
     spec:
       chart: reloader
       version: 1.0.27
-      interval: 5m
+      interval: 1h0m0s
       sourceRef:
         kind: HelmRepository
         name: reloader

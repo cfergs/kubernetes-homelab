@@ -5,12 +5,12 @@ metadata:
   name: splunk-operator
   namespace: monitor
 spec:
-  interval: 5m
+  interval: 1h0m0s
   chart:
     spec:
       chart: splunk-operator
       version: 2.3.0
-      interval: 5m
+      interval: 1h0m0s
       sourceRef:
         kind: HelmRepository
         name: splunk-operator
