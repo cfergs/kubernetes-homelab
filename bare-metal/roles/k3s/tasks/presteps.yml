@@ -89,3 +89,8 @@
       value: '17039360'
     - name: net.core.rmem_max
       value: '17039360'
+    # following from https://coderise.io/kubernetes-system-io-ioexception-the-configured-user-limit-on-the-number-of-inotify-instances-has-been-reached/
+    - name: fs.inotify.max_user_instances
+      value: '524288' # default is 128 on ubuntu
+    - name: fs.inotify.max_user_watches
+      value: '524288' # default is ~58349 on ubuntu
