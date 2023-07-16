@@ -15,6 +15,10 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: flux-system
+  dependsOn:
+    - name: prometheus-crds
+      namespace: flux-system
+
   values:
     nameOverride: nginx-internal
     controller:
@@ -34,6 +38,15 @@ spec:
         enabled: true
         default: false
         controllerValue: k8s.io/ingress-nginx-internal
+
+      metrics:
+        port: 10254
+        portName: metrics
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          additionalLabels:
+            release: prometheus
 
       service:
         annotations:
