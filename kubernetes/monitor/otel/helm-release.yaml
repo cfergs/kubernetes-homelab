@@ -34,8 +34,17 @@ spec:
           - "/var/log/pods/kube-system_snapshot-controller*/*/*.log"
       journald:
         enabled: true
-        #directory: /var/log/journal
-        #index: k8s_events
+        units:
+          - name: k3s
+            priority: info
+          - name: nut-driver
+            priority: info
+          - name: nut-server
+            priority: info
+        directory: /var/log/journal
+        index: k8s_events
 
     secret:
       create: false
+      name: splunk-otel-collector
+      validateSecret: false
