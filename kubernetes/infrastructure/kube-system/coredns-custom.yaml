@@ -4,8 +4,10 @@ metadata:
   name: coredns-custom
   namespace: kube-system
 data:
-  override.server: |
-    # dummy file
+  dummy.server: |
+    # dummy file for *.server
     # Otherwise coredns will every minute log error:
     # "[WARNING] No files matching import glob pattern: /etc/coredns/custom/*.server" errors
     # https://github.com/k3s-io/k3s/issues/4919
+  dummy.override: |
+    # another dummy file for *.override
