@@ -32,5 +32,10 @@ spec:
           - "/var/log/pods/longhorn-system_longhorn-manager*/*/*.log"
           - "/var/log/pods/downloads-vpn_vpn-pod-gateway*/*/*.log" # longhorn and vpn generate too many events to make them useful
           - "/var/log/pods/kube-system_snapshot-controller*/*/*.log"
+      journald:
+        enabled: true
+        #directory: /var/log/journal
+        #index: k8s_events
+
     secret:
       create: false
