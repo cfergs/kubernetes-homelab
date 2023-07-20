@@ -9,6 +9,5 @@ resources:
   - ingress.yaml
   - media.yaml
   - monitor.yaml
-  - reloader.yaml
   - secrets-sync.yaml
   - unifi.yaml
