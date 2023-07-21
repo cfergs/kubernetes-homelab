@@ -1,6 +1,8 @@
 {
     "recommendations": [
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
         "redhat.ansible",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "weaveworks.vscode-gitops-tools"
     ]
 }
