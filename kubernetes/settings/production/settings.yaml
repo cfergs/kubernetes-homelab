@@ -24,4 +24,4 @@ data:
 
   LONGHORN_S3_BUCKET: 's3://bucket-20220912-1654@us-east-1/'
 
-  SPLUNK_AZURE_ENDPOINT: https://chickenwafflesprodstore.blob.core.windows.net
+  SPLUNK_AZURE_ENDPOINT: https://splunkmrv50tzxpu.blob.core.windows.net
