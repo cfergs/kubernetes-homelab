@@ -22,6 +22,8 @@ data:
         cert: /opt/splunk/etc/auth/server.pem
         password: password
         ca: /opt/splunk/etc/auth/cacert.pem
+      launch:
+        AZURE_LOG_LEVEL: debug
       conf:
         - key: indexes
           value:
