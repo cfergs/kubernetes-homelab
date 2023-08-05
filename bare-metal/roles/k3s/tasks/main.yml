@@ -4,3 +4,6 @@
 
 - name: Install k3s
   ansible.builtin.include_tasks: k3s.yml
+
+- name: Create initial k3s required resources # secrets, labels etc
+  ansible.builtin.include_tasks: post_k3s_install.yml
