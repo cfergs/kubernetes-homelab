@@ -16,7 +16,7 @@
   ansible.builtin.command: 'flux check --kubeconfig "{{ home_path }}/.kube/config"'
   register: flux_check
 
-- name: Flux | Deploy | Bootstrap Cmd
+- name: Flux | Deploy | Bootstrap Cmd # noqa no-changed-when
   ansible.builtin.shell: |
     export GITHUB_TOKEN={{ github_token }}
 

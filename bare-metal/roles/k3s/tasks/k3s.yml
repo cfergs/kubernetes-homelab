@@ -51,6 +51,7 @@
     - k3s_control_node is defined
     - k3s_control_node
 
+# Both these values are pulled from the env values used as part of initially running ansible
 - name: Create Azure-Keyvault secret
   become: true
   kubernetes.core.k8s:
@@ -63,8 +64,8 @@
         namespace: secrets-sync
       type: Opaque
       data:
-        clientid: "{{ KEYVAULT_CLIENT_ID | b64encode }}"
-        clientsecret: "{{ KEYVAULT_SECRET | b64encode }}"
+        clientid: "{{ azure_client_id | b64encode }}"
+        clientsecret: "{{ azure_secret | b64encode }}"
     kubeconfig: "{{ kube_file }}"
   no_log: true
   when:
@@ -88,13 +89,13 @@
       stringData:
         claimGroups: roles
         claimUsername: email
-        clientID: "{{ WEAVE_GITOPS_APP_CLIENTID }}"
+        clientID: "{{ weave_gitops_app_clientid }}"
         customScopes: openid,profile,email
-        clientSecret: "{{ WEAVE_GITOPS_APP_CLIENTSECRET }}"
+        clientSecret: "{{ weave_gitops_app_clientsecret }}"
         issuerURL: "https://login.microsoftonline.com/{{ azure_tenant }}/v2.0"
-        redirectURL: "https://flux.{{ HOMELAB_DOMAIN_NAME }}/oauth2/callback"
+        redirectURL: "https://flux.{{ homelab_domain_name }}/oauth2/callback"
     kubeconfig: "{{ kube_file }}"
-  no_log: true
+#  no_log: true
   when:
     - k3s_control_node is defined
     - k3s_control_node

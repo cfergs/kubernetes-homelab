@@ -1,4 +1,9 @@
 ---
+# Values common to both dev and prod
+
+# flux creds
+github_token: "{{ lookup('azure_keyvault_secret', 'github-token', vault_url=kv_url) }}"
+
 # flux setup
 app_ver: "{{ flux_version }}"
 

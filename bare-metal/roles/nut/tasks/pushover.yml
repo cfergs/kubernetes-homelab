@@ -22,8 +22,8 @@
   ansible.builtin.blockinfile:
     path: /etc/pushover/pushover-config
     block: |
-      api_token={{ PUSHOVER_APP_TOKEN }}
-      user_key={{ PUSHOVER_USER_TOKEN }}
+      api_token={{ pushover_app_token }}
+      user_key={{ pushover_user_token }}
     create: true
     state: present
     owner: root

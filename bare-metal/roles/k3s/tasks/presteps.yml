@@ -34,34 +34,6 @@
           DefaultTimeoutStartSec=30s
           DefaultTimeoutStopSec=30s
 
-# Remove traefik as leveraging nginx. Adding .skip is recommended.
-- name: Delete traefik file (if exists)
-  become: true
-  ansible.builtin.file:
-    path: /var/lib/rancher/k3s/server/manifests/traefik.yaml
-    state: absent
-  when:
-    - k3s_control_node is defined
-    - k3s_control_node
-
-- name: Create Traefik skip file
-  become: true
-  ansible.builtin.file:
-    path: /var/lib/rancher/k3s/server/manifests/traefik.yaml.skip
-    state: touch
-    mode: u=rw,g=r,o=r
-    modification_time: preserve
-    access_time: preserve
-  when:
-    - k3s_control_node is defined
-    - k3s_control_node
-
-# addition to above for when running against existing install.
-# 1. Run steps in https://github.com/k3s-io/k3s/issues/1160#issuecomment-1115803175
-# 2. Delete left over resources - (kubectl api-resources | grep traefik) and check each resource
-# 3. Delete crd - (kubectl get crd | grep traefik) THEN kubectl delete crd <crd-name>
-# Another useful link: https://community.traefik.io/t/what-is-the-proper-way-to-uninstall-and-clean-up-the-traefik-helm-charts/11343
-
 - name: Update Multipath file # https://longhorn.io/kb/troubleshooting-volume-with-multipath/
   become: true
   ansible.builtin.copy:

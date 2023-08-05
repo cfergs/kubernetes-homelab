@@ -13,9 +13,9 @@ Needed every 6months
 
 * Login to Azure portal and open cloudshell
 * Create license.lic
-* az account set --subscription "Pay-As-You-Go"
+* az account set --subscription "Visual Studio Enterprise"
 * az keyvault list
-* az keyvault secret set --vault-name "chickenwaffles-keyvault" --name splunk-enterprise-license --file license.lic
+* az keyvault secret set --vault-name "vault-name" --name splunk-enterprise-license --file license.lic
 
 ## Convert helm to yaml
 * helm template splunk-connect-for-syslog/splunk-connect-for-syslog -f values.yaml

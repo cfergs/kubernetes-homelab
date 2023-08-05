@@ -64,5 +64,5 @@ ansible-k3s-prod:
 ansible-flux-dev: ansible-env
 	cd bare-metal; make ansible-flux-dev
 
-ansible-flux-prod:
+ansible-flux-prod: ansible-env
 	cd bare-metal; make ansible-flux-prod

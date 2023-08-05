@@ -25,7 +25,7 @@
     state: restarted
   become: true
 
-- name: Restart udev
+- name: Restart udev # noqa no-changed-when
   ansible.builtin.shell:
     cmd: udevadm control --reload-rules && udevadm trigger
   become: true
