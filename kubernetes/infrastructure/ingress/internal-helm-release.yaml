@@ -15,9 +15,6 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: flux-system
-  dependsOn:
-    - name: prometheus-crds
-      namespace: flux-system
 
   values:
     nameOverride: nginx-internal

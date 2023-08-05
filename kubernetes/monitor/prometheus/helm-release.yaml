@@ -16,12 +16,14 @@ spec:
         name: prometheus-community
         namespace: flux-system
   dependsOn:
-    - name: prometheus-crds
-      namespace: flux-system
+    - name: splunk-operator
+      namespace: monitor
+    - name: logging-nginx-internal
+      namespace: nginx-internal
 
   values:
     crds:
-      enabled: false # crd is deployed by clusters/<env>/crds.yaml::helmrelease: prometheus-crds
+      enabled: true # most important crds are installed as part of ansible base deployment
 
     grafana:
       enabled: true
