@@ -1,0 +1,100 @@
+# yaml-language-server: $schema=../../../schemas/kustomization_v1beta2.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: infrastructure-ingress-external
+  namespace: flux-system
+spec:
+  dependsOn:
+#    - name: cluster-settings
+#    - name: helm
+    - name: infrastructure-cert-manager-config
+    - name: infrastructure-metallb-config
+#    - name: namespaces
+    - name: secrets
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/ingress/external
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1beta2.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: infrastructure-ingress-internal
+  namespace: flux-system
+spec:
+  dependsOn:
+#    - name: helm
+    - name: infrastructure-cert-manager-config
+    - name: infrastructure-metallb-config
+#    - name: namespaces
+#    - name: secrets
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/ingress/internal
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1beta2.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: infrastructure-ingress-logging
+  namespace: flux-system
+spec:
+  dependsOn:
+#    - name: helm
+    - name: infrastructure-cert-manager-config
+    - name: infrastructure-metallb-config
+#    - name: namespaces
+#    - name: secrets
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/ingress/logging
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1beta2.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: infrastructure-ingress-rules
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-internal
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/ingress/rules
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s

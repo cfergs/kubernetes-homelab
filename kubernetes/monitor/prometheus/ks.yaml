@@ -1,13 +1,21 @@
+---
 # yaml-language-server: $schema=../../../schemas/kustomization_v1beta2.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: helm
+  name: monitor-prometheus
   namespace: flux-system
 spec:
+  dependsOn:
+#    - name: helm
+    - name: infrastructure-ingress-logging
+#    - name: namespaces
+#    - name: secrets
+#    - name: secrets-sync
   interval: 1h0m0s
-  path: ./kubernetes/helm
+  path: ./kubernetes/monitor/prometheus/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
+  timeout: 5m0s

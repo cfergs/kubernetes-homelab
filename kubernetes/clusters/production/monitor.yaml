@@ -5,13 +5,11 @@ metadata:
   name: monitor
   namespace: flux-system
 spec:
-  interval: 1h0m0s
   dependsOn:
-    - name: namespaces
     - name: helm
-    - name: cluster-settings
+    - name: namespaces
     - name: secrets
-    - name: infrastructure
+  interval: 1h0m0s
   sourceRef:
     kind: GitRepository
     name: flux-system

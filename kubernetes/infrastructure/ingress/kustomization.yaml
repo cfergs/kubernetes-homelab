@@ -1,8 +1,0 @@
-# yaml-language-server: $schema=https://json.schemastore.org/kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - internal-helm-release.yaml # resources only allowed internally
-  - external-helm-release.yaml # resources allowed internally & externally
-  - logging-internal-helm-release.yaml # special ingress for logs - nginx logs not ingested by splunk
-  - flux-ingress-rule.yaml # special rule for weave gitops url

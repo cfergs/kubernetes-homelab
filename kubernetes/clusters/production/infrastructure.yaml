@@ -5,12 +5,10 @@ metadata:
   name: infrastructure
   namespace: flux-system
 spec:
-  interval: 1h0m0s
   dependsOn:
-    - name: namespaces
     - name: helm
-    - name: cluster-settings
-    - name: secrets
+    - name: namespaces
+  interval: 1h0m0s
   sourceRef:
     kind: GitRepository
     name: flux-system

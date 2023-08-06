@@ -2,28 +2,24 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: apps
+  name: infrastructure-vpn
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: cluster-settings
-    - name: helm
-    - name: infrastructure
-#    - name: infrastructure-external-secrets-stores
-#    - name: infrastructure-ingress-external
-#    - name: infrastructure-ingress-internal
-    - name: namespaces
   interval: 1h0m0s
-  path: ./kubernetes/apps
+  dependsOn:
+#    - name: helm
+    - name: infrastructure-external-secrets-stores
+#    - name: namespaces
+#    - name: secrets
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./kubernetes/infrastructure/vpn/app
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
     substitute: {}
     substituteFrom:
       - kind: ConfigMap
         name: cluster-settings
   prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
   timeout: 5m0s
-  validation: client
   wait: true

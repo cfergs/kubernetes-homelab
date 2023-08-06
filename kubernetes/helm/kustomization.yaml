@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - angelnu-charts.yaml
   - csi-secrets-store-provider-azure.yaml
+  - external-secrets.yaml
   - ingress-nginx.yaml
   - kubernetes-reflector.yaml
   - reloader.yaml
