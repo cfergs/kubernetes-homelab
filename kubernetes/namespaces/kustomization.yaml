@@ -9,5 +9,4 @@ resources:
   - ingress.yaml
   - media.yaml
   - monitor.yaml
-  - secrets-sync.yaml
   - unifi.yaml
