@@ -10,7 +10,6 @@ spec:
 #    - name: helm
     - name: infrastructure-external-secrets-stores
 #    - name: namespaces
-#    - name: secrets
   sourceRef:
     kind: GitRepository
     name: flux-system

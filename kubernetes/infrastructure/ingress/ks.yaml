@@ -11,7 +11,6 @@ spec:
     - name: infrastructure-cert-manager-config
     - name: infrastructure-metallb-config
 #    - name: namespaces
-    - name: secrets
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/ingress/external
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
@@ -37,7 +36,6 @@ spec:
     - name: infrastructure-cert-manager-config
     - name: infrastructure-metallb-config
 #    - name: namespaces
-#    - name: secrets
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/ingress/internal
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
@@ -63,7 +61,6 @@ spec:
     - name: infrastructure-cert-manager-config
     - name: infrastructure-metallb-config
 #    - name: namespaces
-#    - name: secrets
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/ingress/logging
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120

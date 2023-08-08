@@ -10,7 +10,6 @@ spec:
     - name: namespaces
     - name: helm
     - name: cluster-settings
-    - name: secrets
   sourceRef:
     kind: GitRepository
     name: flux-system

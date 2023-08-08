@@ -6,9 +6,8 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-#    - name: namespaces
+    - name: infrastructure-external-secrets-stores
     - name: infrastructure-reloader
-#    - name: secrets
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/external/cloudflared
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
@@ -29,9 +28,6 @@ metadata:
   name: infrastructure-external-dns
   namespace: flux-system
 spec:
-#  dependsOn:
-#    - name: namespaces
-#    - name: secrets
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/external/dns
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120

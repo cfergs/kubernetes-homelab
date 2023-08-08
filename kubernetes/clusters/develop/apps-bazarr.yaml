@@ -9,7 +9,6 @@ spec:
   dependsOn:
     - name: namespaces
     - name: cluster-settings
-    - name: secrets
     - name: infrastructure
   sourceRef:
     kind: GitRepository

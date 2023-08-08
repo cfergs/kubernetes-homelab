@@ -8,10 +8,9 @@ metadata:
 spec:
   dependsOn:
 #    - name: helm
+    - name: infrastructure-external-secrets-stores
     - name: infrastructure-ingress-logging
 #    - name: namespaces
-#    - name: secrets
-#    - name: secrets-sync
   interval: 1h0m0s
   path: ./kubernetes/monitor/prometheus/app
   prune: true

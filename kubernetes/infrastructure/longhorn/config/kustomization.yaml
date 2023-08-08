@@ -6,3 +6,4 @@ resources:
   - longhorn-default-settings.yaml
   - longhorn-snapshot.yaml
   - longhorn-snapshot-class.yaml
+  - secret.yaml

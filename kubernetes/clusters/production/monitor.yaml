@@ -8,7 +8,6 @@ spec:
   dependsOn:
     - name: helm
     - name: namespaces
-    - name: secrets
   interval: 1h0m0s
   sourceRef:
     kind: GitRepository

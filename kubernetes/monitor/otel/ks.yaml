@@ -10,8 +10,6 @@ spec:
 #    - name: helm
     - name: monitor-splunk-app
 #    - name: namespaces
-#    - name: secrets
-#    - name: secrets-sync
   interval: 1h0m0s
   path: ./kubernetes/monitor/otel/app
   prune: true
