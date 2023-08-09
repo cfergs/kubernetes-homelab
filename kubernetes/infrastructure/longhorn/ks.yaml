@@ -41,6 +41,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
+    - name: cluster-settings
     - name: infrastructure-external-secrets-stores
     - name: infrastructure-longhorn-snapshot-controller
   interval: 1h0m0s

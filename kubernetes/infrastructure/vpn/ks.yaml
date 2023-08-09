@@ -5,13 +5,12 @@ metadata:
   name: infrastructure-vpn
   namespace: flux-system
 spec:
-  interval: 1h0m0s
   dependsOn:
+    - name: cluster-settings
     - name: infrastructure-external-secrets-stores
-#    - name: namespaces
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
+    - name: namespaces
+    - name: repositories
+  interval: 1h0m0s
   path: ./kubernetes/infrastructure/vpn/app
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
     substitute: {}
@@ -19,5 +18,8 @@ spec:
       - kind: ConfigMap
         name: cluster-settings
   prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
   timeout: 5m0s
   wait: true

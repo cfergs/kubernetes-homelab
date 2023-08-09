@@ -5,21 +5,23 @@ metadata:
   name: apps-bazarr
   namespace: flux-system
 spec:
-  interval: 1h0m0s
   dependsOn:
-    - name: namespaces
     - name: cluster-settings
-    - name: infrastructure
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
+    - name: infrastructure-external-secrets-stores
+    - name: infrastructure-ingress-external
+    - name: infrastructure-ingress-internal
+    - name: namespaces
+    - name: repositories
+  interval: 1h0m0s
   path: ./kubernetes/apps/media/bazarr
-  prune: true
-  wait: true
-  timeout: 5m0s
-  validation: client
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
     substitute: {}
     substituteFrom:
       - kind: ConfigMap
         name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
