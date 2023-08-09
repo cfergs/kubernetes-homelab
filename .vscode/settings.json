@@ -1,6 +1,7 @@
 {
     "ansible.ansible.path": ".venv/bin/ansible",
     "ansible.python.interpreterPath": ".venv/bin/python3",
+    "cfnLint.format.enable": false,
     "editor.tabSize": 2,
     "extensions.ignoreRecommendations": true,
     "files.associations": {
@@ -15,5 +16,5 @@
     "yaml.schemas": {
         "ansible": "ansible/**/*.yml",
         "kubernetes": "kubernetes/**/*.yaml"
-      }
+    }
 }

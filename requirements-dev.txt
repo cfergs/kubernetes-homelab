@@ -1,4 +1,5 @@
 ansible-lint
+checkov
 pre-commit
 pre-commit-hooks
 yamllint

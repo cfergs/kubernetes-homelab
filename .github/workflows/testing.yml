@@ -1,0 +1,37 @@
+name: Tests
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions: read-all
+
+jobs:
+  test:
+    name: Linting Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run ansible-lint
+        uses: ansible/ansible-lint@main
+
+      - name: Run Checkov Ansible Action
+        id: checkov-ansible
+        uses: bridgecrewio/checkov-action@master
+        if: success() || failure() # still run if another step fails
+        with:
+          directory: ansible/
+          framework: ansible
+          output_format: cli
+          output_file_path: console
+
+      - name: Run Checkov Kubernetes Actions
+        id: checkov-kubernetes
+        uses: bridgecrewio/checkov-action@master
+        if: success() || failure() # still run if another step fails
+        with:
+          directory: kubernetes/
+          framework: kubernetes helm kustomize yaml
+          output_format: cli
+          output_file_path: console
