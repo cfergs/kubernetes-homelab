@@ -5,6 +5,7 @@ resources:
   - angelnu-charts.yaml
   - external-secrets.yaml
   - ingress-nginx.yaml
+  - prometheus-community.yaml
   - reloader.yaml
   - splunk-operator.yaml
   - splunk-otel-collector.yaml
