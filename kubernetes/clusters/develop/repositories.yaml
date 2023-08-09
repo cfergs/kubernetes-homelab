@@ -9,5 +9,5 @@ spec:
   path: ./kubernetes/clusters/repositories
   prune: true
   sourceRef:
-      kind: GitRepository
-      name: flux-system
+    kind: GitRepository
+    name: flux-system
