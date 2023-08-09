@@ -76,10 +76,10 @@ spec:
         path: /
 
       sidecar:
-          dashboards:
-            multicluster:
-              etcd:
-                enabled: true
+        dashboards:
+          multicluster:
+            etcd:
+              enabled: true
 
     kube-state-metrics:
       metricLabelsAllowlist:

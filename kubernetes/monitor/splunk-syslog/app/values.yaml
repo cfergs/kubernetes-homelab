@@ -12,7 +12,7 @@ splunk:
 
 sc4s:
   config_files:
-     app-mikrotik_routeros.conf: |-
+    app-mikrotik_routeros.conf: |-
       #/opt/sc4s/local/config/app-parsers/app-vps-mikrotik_routeros.conf
 
       application app-vps-test-mikrotik_routeros[sc4s-vps] {
@@ -40,4 +40,3 @@ service:
   annotations:
     metallb.universe.tf/allow-shared-ip: splunk-syslog
     metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}
-

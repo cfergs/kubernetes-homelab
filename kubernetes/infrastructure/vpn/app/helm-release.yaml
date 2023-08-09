@@ -91,15 +91,15 @@ spec:
           egress:
             # Allow only VPN traffic to Internet
             - to:
-              - ipBlock:
-                  cidr: 0.0.0.0/0
+                - ipBlock:
+                    cidr: 0.0.0.0/0
               ports:
-              - port: 1194 # VPN traffic (default OpenVPN)
-                protocol: UDP
+                - port: 1194 # VPN traffic (default OpenVPN)
+                  protocol: UDP
             # Allow any traffic within k8s
             - to:
-              - ipBlock:
-                  cidr: 10.0.0.0/8 # Cluster IPs (default k3s)
+                - ipBlock:
+                    cidr: 10.0.0.0/8 # Cluster IPs (default k3s)
 
     dnsConfig:
       options:

@@ -48,7 +48,7 @@ spec:
         value: "Login with AzureAD"
     rbac:
       impersonationResources: ["groups"]
-      impersonationResourceNames: ["weave-gitops-admin","weave-gitops-readonly"]
+      impersonationResourceNames: ["weave-gitops-admin", "weave-gitops-readonly"]
 ---
 ##########################################
 # https://github.com/weaveworks/weave-gitops/issues/2696
@@ -96,7 +96,7 @@ rules:
     resources: ["kustomizations"]
     verbs: ["patch"]
   - apiGroups: ["source.toolkit.fluxcd.io"]
-    resources: ["buckets","helmcharts","gitrepositories","helmrepositories","ocirepositories"]
+    resources: ["buckets", "helmcharts", "gitrepositories", "helmrepositories", "ocirepositories"]
     verbs: ["patch"]
 ---
 # Read only actions
@@ -107,7 +107,7 @@ metadata:
 rules:
   - apiGroups: ["*"]
     resources: ["*"]
-    verbs: ["get","list","watch"]
+    verbs: ["get", "list", "watch"]
 ---
 # Bind the weave-gitops-admin-cluster-role to the weave-gitops-admin group
 apiVersion: rbac.authorization.k8s.io/v1
@@ -115,9 +115,9 @@ kind: ClusterRoleBinding
 metadata:
   name: weave-gitops-admin-binding
 subjects:
-- kind: Group
-  name: weave-gitops-admin
-  apiGroup: rbac.authorization.k8s.io
+  - kind: Group
+    name: weave-gitops-admin
+    apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
   name: weave-gitops-admin-cluster-role
@@ -129,9 +129,9 @@ kind: ClusterRoleBinding
 metadata:
   name: weave-gitops-admin-readonly-binding
 subjects:
-- kind: Group
-  name: weave-gitops-admin
-  apiGroup: rbac.authorization.k8s.io
+  - kind: Group
+    name: weave-gitops-admin
+    apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
   name: weave-gitops-readonly-cluster-role
@@ -143,9 +143,9 @@ kind: ClusterRoleBinding
 metadata:
   name: weave-gitops-readonly-binding
 subjects:
-- kind: Group
-  name: weave-gitops-readonly
-  apiGroup: rbac.authorization.k8s.io
+  - kind: Group
+    name: weave-gitops-readonly
+    apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: ClusterRole
   name: weave-gitops-readonly-cluster-role
