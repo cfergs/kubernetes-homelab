@@ -4,7 +4,7 @@
     "editor.tabSize": 2,
     "extensions.ignoreRecommendations": true,
     "files.associations": {
-        "**/bare-metal/**/*.yml": "ansible"
+        "**/ansible/**/*.yml": "ansible"
     },
     "files.eol": "\n",
     "files.insertFinalNewline": true,
@@ -13,7 +13,7 @@
     "redhat.telemetry.enabled": false,
     "terminal.integrated.defaultProfile.windows": "Ubuntu-20.04 (WSL)",
     "yaml.schemas": {
-        "ansible": "bare-metal/**/*.yml",
+        "ansible": "ansible/**/*.yml",
         "kubernetes": "kubernetes/**/*.yaml"
       }
 }

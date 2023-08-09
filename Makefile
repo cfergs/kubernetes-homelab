@@ -53,16 +53,16 @@ clean: clean-venv clean-pre-commit
 
 # Ansible Specific
 ansible-env: ci-environment
-	cd bare-metal; make ansible-requirements
+	cd ansible; make ansible-requirements
 
 ansible-k3s-dev: ansible-env
-	cd bare-metal; make ansible-k3s-dev
+	cd ansible; make ansible-k3s-dev
 
 ansible-k3s-prod:
-	cd bare-metal; make ansible-k3s-prod
+	cd ansible; make ansible-k3s-prod
 
 ansible-flux-dev: ansible-env
-	cd bare-metal; make ansible-flux-dev
+	cd ansible; make ansible-flux-dev
 
 ansible-flux-prod: ansible-env
-	cd bare-metal; make ansible-flux-prod
+	cd ansible; make ansible-flux-prod

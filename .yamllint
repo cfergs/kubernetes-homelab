@@ -2,7 +2,7 @@ extends: default
 
 ignore:
   - .venv/
-  - bare-metal/
+  - ansible/
   - flux-system
 
 rules:
