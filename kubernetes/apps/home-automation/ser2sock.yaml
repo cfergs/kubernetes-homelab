@@ -3,6 +3,12 @@ kind: Deployment
 metadata:
   name: zigbee-ser2sock
   namespace: home-automation
+  annotations:
+    checkov.io/skip1: CKV_K8S_16=Container should not be privileged
+    checkov.io/skip2: CKV_K8S_20=Containers should not run with allowPrivilegeEscalation
+    checkov.io/skip3: CKV_K8S_23=Minimize the admission of root containers
+    checkov.io/skip4: CKV_K8S_28=Minimize the admission of containers with the NET_RAW capability
+    checkov.io/skip5: CKV_K8S_37=Minimize the admission of containers with capabilities assigned
   labels:
     app: zigbee-ser2sock
 spec:

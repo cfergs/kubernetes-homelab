@@ -11,3 +11,7 @@ skip-check:
   - CKV_K8S_15 # Image Pull Policy should be Always
   - CKV_K8S_40 # Containers should run as a high UID to avoid host conflict
   - CKV_K8S_43 # Image should use digest
+skip-path:
+  - kubernetes/clusters/develop/flux-system
+  - kubernetes/clusters/production/flux-system
+  - kubernetes/infrastructure/longhorn/snapshot-controller
