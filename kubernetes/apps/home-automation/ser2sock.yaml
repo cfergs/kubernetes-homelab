@@ -15,6 +15,10 @@ spec:
       labels:
         app: zigbee-ser2sock
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: ttyusb
           hostPath:
@@ -24,6 +28,7 @@ spec:
           image: tenstartups/ser2sock@sha256:379d9338c720da30b63dc4cf2ecea07eb89dac7d62d5c79047294fffe97ae559
           securityContext:
             privileged: true
+            readOnlyRootFilesystem: true
           ports:
             - containerPort: 10000
           env:

@@ -17,6 +17,10 @@ spec:
       labels:
         name: hass
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: hass-config
           configMap:

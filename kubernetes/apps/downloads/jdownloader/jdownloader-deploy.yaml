@@ -14,6 +14,10 @@ spec:
       labels:
         name: jdownloader
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: jdownloader-volume
           persistentVolumeClaim:

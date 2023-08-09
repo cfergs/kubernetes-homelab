@@ -16,12 +16,15 @@ spec:
       labels:
         app: sabnzbd
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: sabnzbd-volume
           persistentVolumeClaim:

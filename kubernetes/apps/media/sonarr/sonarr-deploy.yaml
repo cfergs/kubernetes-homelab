@@ -14,12 +14,15 @@ spec:
       labels:
         app: sonarr
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: sonarr-volume
           persistentVolumeClaim:
