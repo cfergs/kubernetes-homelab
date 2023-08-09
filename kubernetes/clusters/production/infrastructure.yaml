@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: helm
+    - name: repositories
     - name: namespaces
   interval: 1h0m0s
   sourceRef:

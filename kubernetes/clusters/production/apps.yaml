@@ -7,12 +7,13 @@ metadata:
 spec:
   dependsOn:
     - name: cluster-settings
-    - name: helm
+    - name: infrastructure-external-secrets-stores
     - name: infrastructure
 #    - name: infrastructure-external-secrets-stores
 #    - name: infrastructure-ingress-external
 #    - name: infrastructure-ingress-internal
     - name: namespaces
+    - name: repositories
   interval: 1h0m0s
   path: ./kubernetes/apps
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120

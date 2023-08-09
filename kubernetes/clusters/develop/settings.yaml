@@ -9,7 +9,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./kubernetes/settings/develop
+  path: ./kubernetes/clusters/settings/develop
   prune: true
   wait: true
   timeout: 5m0s

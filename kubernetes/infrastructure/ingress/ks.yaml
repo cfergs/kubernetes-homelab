@@ -7,7 +7,6 @@ metadata:
 spec:
   dependsOn:
 #    - name: cluster-settings
-#    - name: helm
     - name: infrastructure-cert-manager-config
     - name: infrastructure-metallb-config
 #    - name: namespaces
@@ -32,7 +31,6 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-#    - name: helm
     - name: infrastructure-cert-manager-config
     - name: infrastructure-metallb-config
 #    - name: namespaces
@@ -57,7 +55,6 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-#    - name: helm
     - name: infrastructure-cert-manager-config
     - name: infrastructure-metallb-config
 #    - name: namespaces

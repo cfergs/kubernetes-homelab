@@ -8,7 +8,7 @@ spec:
   interval: 1h0m0s
   dependsOn:
     - name: namespaces
-    - name: helm
+    - name: repositories
     - name: cluster-settings
   sourceRef:
     kind: GitRepository

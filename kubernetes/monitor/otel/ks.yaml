@@ -7,7 +7,6 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-#    - name: helm
     - name: monitor-splunk-app
 #    - name: namespaces
   interval: 1h0m0s

@@ -2,12 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: helm
+  name: repositories
   namespace: flux-system
 spec:
   interval: 1h0m0s
-  path: ./kubernetes/helm
+  path: ./kubernetes/clusters/repositories
   prune: true
   sourceRef:
-    kind: GitRepository
-    name: flux-system
+      kind: GitRepository
+      name: flux-system

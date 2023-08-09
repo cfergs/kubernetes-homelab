@@ -7,7 +7,6 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-#    - name: helm
     - name: infrastructure-external-secrets-stores
     - name: infrastructure-ingress-logging
 #    - name: namespaces

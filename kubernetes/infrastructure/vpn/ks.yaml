@@ -7,7 +7,6 @@ metadata:
 spec:
   interval: 1h0m0s
   dependsOn:
-#    - name: helm
     - name: infrastructure-external-secrets-stores
 #    - name: namespaces
   sourceRef:

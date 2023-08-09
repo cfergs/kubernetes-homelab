@@ -8,7 +8,6 @@ spec:
   interval: 1h0m0s
   dependsOn:
     - name: namespaces
-    - name: helm
     - name: cluster-settings
     - name: infrastructure
   sourceRef:

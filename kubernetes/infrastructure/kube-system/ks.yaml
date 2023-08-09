@@ -26,8 +26,6 @@ metadata:
   name: infrastructure-reloader
   namespace: flux-system
 spec:
-#  dependsOn:
-#    - name: helm
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/kube-system/reloader
   prune: true
