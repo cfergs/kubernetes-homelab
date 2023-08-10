@@ -9,16 +9,26 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: 48.1.1
+      version: 48.3.1
       interval: 1h0m0s
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
 
   values:
     crds:
-      enabled: true # most important crds are installed as part of ansible base deployment
+      enabled: false # crds are installed as part of ansible base deployment
 
     grafana:
       enabled: true
@@ -154,5 +164,5 @@ spec:
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
 
-    prometheusOperator:
-      enabled: true
+    #prometheusOperator:
+    #  enabled: true

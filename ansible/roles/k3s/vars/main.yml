@@ -5,23 +5,18 @@ k3s_server:
   disable:
     - servicelb
     - traefik
+
+# /var/lib/rancher/k3s/server/manifests
 k3s_server_manifests_urls:
-  # Essential Prometheus Operator CRDs (the rest are installed with the kube-prometheus-stack helm release)
-  - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
-    filename: custom-prometheus-podmonitors.yaml
-  - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
-    filename: custom-prometheus-prometheusrules.yaml
-  - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
-    filename: custom-prometheus-scrapeconfigs.yaml
-  - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
-    filename: custom-prometheus-servicemonitors.yaml
-  # Other Things
   - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.2/deploy/longhorn.yaml
     filename: longhorn.yml
   - url: https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
     filename: metallb-native.yaml
   - url: https://github.com/cert-manager/cert-manager/releases/download/v1.12.2/cert-manager.yaml
     filename: cert-manager.yaml
+
+k3s_server_manifests_templates:
+  - prometheus-crds-helmchart.yml.j2
 
 kube_file: /etc/rancher/k3s/k3s.yaml
 
