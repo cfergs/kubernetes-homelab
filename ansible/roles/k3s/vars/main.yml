@@ -8,7 +8,7 @@ k3s_server:
 
 # /var/lib/rancher/k3s/server/manifests
 k3s_server_manifests_urls:
-  - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.4.2/deploy/longhorn.yaml
+  - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/deploy/longhorn.yaml
     filename: longhorn.yml
   - url: https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
     filename: metallb-native.yaml
