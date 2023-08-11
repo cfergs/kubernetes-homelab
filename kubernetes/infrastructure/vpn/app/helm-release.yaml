@@ -56,7 +56,7 @@ spec:
               secretKeyRef:
                 name: nordvpn
                 key: password
-          - name: SERVER_REGIONS
+          - name: SERVER_COUNTRIES
             value: Australia
           - name: VPN_SERVICE_PROVIDER
             value: nordvpn
