@@ -10,3 +10,4 @@ resources:
   - media.yaml
   - monitor.yaml
   - unifi.yaml
+  - vpn.yaml

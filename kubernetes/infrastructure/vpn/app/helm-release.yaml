@@ -3,7 +3,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: vpn
-  namespace: downloads-vpn
+  namespace: vpn
 spec:
   chart:
     spec:
@@ -16,6 +16,9 @@ spec:
       version: 6.5.1
   interval: 1h0m0s
   values:
+    global:
+      fullnameOverride: vpn
+
     image:
       repository: ghcr.io/angelnu/pod-gateway
       tag: v1.8.1@sha256:baba1f27d821e8cbd27be115156425041455d1281115a8ca8d3bca9379a3ee24
