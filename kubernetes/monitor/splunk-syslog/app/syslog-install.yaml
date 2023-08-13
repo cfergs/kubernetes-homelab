@@ -157,7 +157,6 @@ spec:
       containers:
         - name: splunk-connect-for-syslog
           securityContext:
-            readOnlyRootFilesystem: true
             capabilities:
               drop:
               - ALL
@@ -212,10 +211,6 @@ spec:
           - name: config
             mountPath: /etc/syslog-ng/conf.d/configmap/config/app_parsers
             readOnly: true
-          - name: tmpetc
-            mountPath: /etc/syslog-ng
-          - name: tmpvar
-            mountPath: /var/lib/syslog-ng
           livenessProbe:
             httpGet:
               path: /healthz
@@ -237,14 +232,6 @@ spec:
         - name: config
           configMap:
             name: syslog-config
-        - name: tmpetc
-          emptyDir:
-            medium: Memory
-            sizeLimit: 128Mi
-        - name: tmpvar
-          emptyDir:
-            medium: Memory
-            sizeLimit: 128Mi
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -261,6 +248,3 @@ spec:
                   values:
                   - splunk-connect-for-syslog
               topologyKey: "kubernetes.io/hostname"
-
-/var/lib/syslog-ng
-/etc/syslog-ng/
