@@ -24,7 +24,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2023.5.1-amd64
+          image: cloudflare/cloudflared:2023.7.3
           args:
             - tunnel
             - --config
