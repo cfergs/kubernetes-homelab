@@ -5,6 +5,7 @@ image:
   pullPolicy: IfNotPresent
   tag: 2.49.3
 
+fullnameOverride: syslog
 splunk:
   hec_url: https://splunk-hec.${DOMAIN_NAME}/services/collector/event
   hec_verify_tls: "no"
@@ -30,6 +31,10 @@ sc4s:
 persistence:
   enabled: false
 
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
 securityContext:
   capabilities:
     drop:
@@ -37,6 +42,6 @@ securityContext:
 
 service:
   type: LoadBalancer
+  usemetallb: {}
   annotations:
-    metallb.universe.tf/allow-shared-ip: splunk-syslog
     metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}
