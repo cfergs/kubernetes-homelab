@@ -46,10 +46,15 @@
           "type": "integer"
         },
         "task": {
-          "description": "The recurring job type. Can be \"snapshot\" or \"backup\".",
+          "description": "The recurring job task. Can be \"snapshot\", \"snapshot-force-create\", \"snapshot-cleanup\", \"snapshot-delete\", \"backup\", \"backup-force-create\" or \"filesystem-trim\"",
           "enum": [
             "snapshot",
-            "backup"
+            "snapshot-force-create",
+            "snapshot-cleanup",
+            "snapshot-delete",
+            "backup",
+            "backup-force-create",
+            "filesystem-trim"
           ],
           "type": "string"
         }
