@@ -18,6 +18,4 @@ data:
 
   NAS_IP: 192.168.0.11
 
-  LONGHORN_S3_BUCKET:
-
   SPLUNK_AZURE_ENDPOINT: https://splunkw4krjmbnd4.blob.core.windows.net

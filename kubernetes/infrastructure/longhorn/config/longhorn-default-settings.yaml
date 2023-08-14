@@ -20,8 +20,8 @@ data:
     snapshot-data-integrity-cronjob: "0 0 */2 * *" # every 2 days
 
     # backup
-    backup-target-credential-secret: s3-backup-secret
-    backup-target: ${LONGHORN_S3_BUCKET}
+    backup-target-credential-secret: azure-longhorn-backup-secret
+    backup-target: azblob://longhorn@core.windows.net/
 
     # scheduling
     allow-volume-creation-with-degraded-availability: "false"
