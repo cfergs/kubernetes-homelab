@@ -43,6 +43,8 @@ spec:
             priority: info
           - name: nut-server
             priority: info
+          - name: stale-containers
+            priority: info
         directory: /var/log/journal
         index: k8s_events
 
