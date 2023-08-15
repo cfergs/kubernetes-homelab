@@ -7,3 +7,6 @@
 
 - name: Create initial k3s required resources # secrets, labels etc
   ansible.builtin.include_tasks: post_k3s_install.yml
+  when:
+    - k3s_control_node is defined
+    - k3s_control_node

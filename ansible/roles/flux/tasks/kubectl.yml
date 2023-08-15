@@ -5,7 +5,7 @@
 
 - name: Kubectl | Download Binary
   ansible.builtin.get_url:
-    url: 'https://dl.k8s.io/release/{{ kubectl_latest }}/bin/linux/amd64/kubectl'
+    url: "https://dl.k8s.io/release/{{ kubectl_latest }}/bin/{{ ansible_facts['system'] | lower }}/{{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else 'arm64' }}/kubectl"
     dest: /tmp
     mode: 0644
 
@@ -14,8 +14,8 @@
     src: /tmp/kubectl
     dest: /usr/local/bin
     owner: root
-    group: root
-    mode: u+x,g+x,o+rwx
+    group: "{{ 'admin' if ansible_facts['system'] == 'Darwin' else 'root' }}"
+    mode: 0755
 
 # kubectl check if existing config exists on localhost
 - name: Kubectl | Check if updated /tmp/kubeconfig file exists

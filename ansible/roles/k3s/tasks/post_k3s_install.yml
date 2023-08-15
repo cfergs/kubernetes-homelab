@@ -15,10 +15,10 @@
     - k3s_control_node is defined
     - k3s_control_node
 
-- name: Create secret-sync namespace
+- name: Create secret namespace
   become: true
   kubernetes.core.k8s:
-    name: secrets-sync
+    name: secrets
     api_version: v1
     kind: Namespace
     state: present
@@ -37,7 +37,7 @@
       kind: Secret
       metadata:
         name: azure-secrets-store-cred
-        namespace: secrets-sync
+        namespace: secrets
       type: Opaque
       data:
         clientid: "{{ azure_client_id | b64encode }}"

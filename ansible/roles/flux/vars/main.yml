@@ -5,6 +5,8 @@
 github_token: "{{ lookup('azure_keyvault_secret', 'github-token', vault_url=kv_url) }}"
 
 # flux setup
+app_arch: "{{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else 'arm64' }}"
+app_platform: "{{ ansible_facts['system'] | lower }}" # either darwin or linux
 app_ver: "{{ flux_version }}"
 
 # flux deploy

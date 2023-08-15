@@ -1,7 +1,7 @@
 ---
 - name: Weave GitOps | Download Binary
   ansible.builtin.unarchive:
-    src: 'https://github.com/weaveworks/weave-gitops/releases/download/v{{ weave_gitops_version }}/gitops-linux-x86_64.tar.gz'
+    src: "https://github.com/weaveworks/weave-gitops/releases/download/v{{ weave_gitops_version }}/gitops-{{ 'darwin' if ansible_facts['system'] == 'Darwin' else 'linux' }}-{{ ansible_facts['architecture'] }}.tar.gz"
     dest: /usr/local/bin
     remote_src: yes
     include: gitops
