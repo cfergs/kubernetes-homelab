@@ -2,6 +2,9 @@
 - name: Pre-Steps
   ansible.builtin.include_tasks: presteps.yml
 
+- name: Flush restart handlers # needed to confirm all outstanding handlers are finished
+  ansible.builtin.meta: flush_handlers
+
 - name: Install k3s
   ansible.builtin.include_tasks: k3s.yml
 

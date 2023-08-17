@@ -26,6 +26,14 @@
     name: nfs-common
     update_cache: true
 
+- name: Modify Journalctl size
+  become: true
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/journald.conf
+    block: |
+      SystemMaxUse=512M
+  notify: Restart journalctl
+
 - name: Adjust timeout
   become: true
   ansible.builtin.blockinfile:
