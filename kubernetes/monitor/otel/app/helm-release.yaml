@@ -45,11 +45,7 @@ spec:
             priority: info
           - name: stale-containers
             priority: info
-          - name: python3
-            priority: info
           - name: sshd
-            priority: info
-          - name: sudo
             priority: info
         directory: /var/log/journal
         index: k8s_events
