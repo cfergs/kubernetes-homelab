@@ -30,6 +30,8 @@ spec:
     crds:
       enabled: false # crds are installed as part of ansible base deployment
 
+    fullnameOverride: prometheus
+
     grafana:
       enabled: true
       admin:
