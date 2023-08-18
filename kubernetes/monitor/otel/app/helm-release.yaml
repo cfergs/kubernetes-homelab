@@ -45,7 +45,7 @@ spec:
             priority: info
           - name: stale-containers
             priority: info
-          - name: sshd
+          - name: ssh
             priority: info
         directory: /var/log/journal
         index: k8s_events
