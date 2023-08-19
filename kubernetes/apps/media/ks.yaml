@@ -1,0 +1,181 @@
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-media-bazarr
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/media/bazarr
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-media-jellyfin
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-internal
+  # additional inheritance from infrastructure-ingress-internal
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/media/jellyfin
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-media-mylar3
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/media/mylar3
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-media-openbooks
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/media/openbooks
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-media-prowlarr
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/media/prowlarr
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-media-radarr
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/media/radarr
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-media-sonarr
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/media/sonarr
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true

@@ -2,15 +2,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infrastructure-cert-manager-config
+  name: app-unifi-unifi
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infrastructure-external-secrets-stores
-  # additional inheritance from other dependencies:
+    - name: infrastructure-ingress-internal
+  # additional inheritance from infrastructure-ingress-internal
   # - cluster-settings
+  # - namespaces
   interval: 1h0m0s
-  path: ./kubernetes/infrastructure/cert-manager/config
+  path: ./kubernetes/apps/unifi/app
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
     substitute: {}
     substituteFrom:

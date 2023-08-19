@@ -7,8 +7,10 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-settings
     - name: monitor-splunk-app
+  # additional inheritance from monitor-splunk-app
+  # - cluster-settings
+  # - namespaces
   interval: 1h0m0s
   path: ./kubernetes/monitor/splunk-syslog/app
   prune: true

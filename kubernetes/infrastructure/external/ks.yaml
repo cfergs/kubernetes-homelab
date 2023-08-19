@@ -6,11 +6,12 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-settings
     - name: infrastructure-external-secrets-stores
     - name: infrastructure-reloader
-    - name: namespaces
-    - name: repositories
+  # additional inheritance from infrastructure-external-secrets-stores:
+  # - cluster-settings
+  # - namespaces
+  # - repositories
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/external/cloudflared
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
@@ -32,8 +33,10 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-settings
-    - name: namespaces
+    - name: infrastructure-external-cloudflared
+  # additional inheritance from infrastructure-external-secrets-stores (via infrastructure-external-cloudflared)
+  # - cluster-settings
+  # - namespaces
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/external/dns
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120

@@ -2,17 +2,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infrastructure-vpn
+  name: app-downloads-qbittorrent
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infrastructure-external-secrets-stores
-  # additional inheritance from infrastructure-external-secrets-stores
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
   # - cluster-settings
   # - namespaces
-  # - repositories
   interval: 1h0m0s
-  path: ./kubernetes/infrastructure/vpn/app
+  path: ./kubernetes/apps/downloads/qbittorrent
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
     substitute: {}
     substituteFrom:
@@ -29,15 +28,16 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infrastructure-vpn-network-rules
+  name: app-downloads-sabnzbd
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infrastructure-vpn
-  # additional inheritance from infrastructure-vpn
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
   # - namespaces
   interval: 1h0m0s
-  path: ./kubernetes/infrastructure/vpn/network-rules
+  path: ./kubernetes/apps/downloads/sabnzbd
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
     substitute: {}
     substituteFrom:

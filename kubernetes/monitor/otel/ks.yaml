@@ -7,9 +7,11 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-settings
     - name: monitor-splunk-app
-    - name: repositories
+  # additional inheritance from monitor-splunk-app
+  # - cluster-settings
+  # - namespaces
+  # - repositories
   interval: 1h0m0s
   path: ./kubernetes/monitor/otel/app
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120

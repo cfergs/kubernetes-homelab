@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - downloads/ks.yaml
+  - home-automation/ks.yaml
+  - media/ks.yaml
+  - unifi/ks.yaml

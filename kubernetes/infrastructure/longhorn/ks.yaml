@@ -41,9 +41,10 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: cluster-settings
     - name: infrastructure-external-secrets-stores
     - name: infrastructure-longhorn-snapshot-controller
+  # additional inheritance from infrastructure-external-secrets-stores
+  # - cluster-settings
   interval: 1h0m0s
   path: ./kubernetes/infrastructure/longhorn/config
   postBuild: # https://github.com/fluxcd/helm-operator/issues/120
