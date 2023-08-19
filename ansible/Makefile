@@ -4,14 +4,14 @@ ansible-requirements:
 	. ../.venv/bin/activate; pip install -r requirements-frozen.txt
 	. ../.venv/bin/activate; ansible-galaxy install -r requirements.yml
 
-ansible-k3s-dev: ansible-requirements
-	. ../.venv/bin/activate; ansible-playbook -i ./inventory/inventory-develop.yml k3scluster.yml --ask-pass --ask-become-pass
-
-ansible-k3s-prod: ansible-requirements
-	. ../.venv/bin/activate; ansible-playbook -i ./inventory/inventory-prod.yml k3scluster.yml --ask-pass --ask-become-pass
-
 # OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES is needed when running on macos
 # https://stackoverflow.com/questions/50168647/multiprocessing-causes-python-to-crash-and-gives-an-error-may-have-been-in-progr
+
+ansible-k3s-dev: ansible-requirements
+	. ../.venv/bin/activate; export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES; ansible-playbook -i ./inventory/inventory-develop.yml k3scluster.yml --ask-pass --ask-become-pass
+
+ansible-k3s-prod: ansible-requirements
+	. ../.venv/bin/activate; export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES; ansible-playbook -i ./inventory/inventory-prod.yml k3scluster.yml --ask-pass --ask-become-pass
 
 ansible-flux-dev: ansible-requirements
 	. ../.venv/bin/activate; export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES; ansible-playbook -i ./inventory/inventory-develop.yml localhost.yml --ask-become-pass

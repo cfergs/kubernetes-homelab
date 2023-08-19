@@ -1,4 +1,11 @@
 ---
+- name: MacOS | Install GNU tar # needed as default MacOS tar won't unzip .tar.gz files
+  become: false # brew won't run as root
+  community.general.homebrew:
+    name: gnu-tar
+    state: present
+  when: ansible_system is match("Darwin") # MacOS
+
 - name: Weave GitOps | Download Binary
   ansible.builtin.unarchive:
     src: "https://github.com/weaveworks/weave-gitops/releases/download/v{{ weave_gitops_version }}/gitops-{{ 'darwin' if ansible_facts['system'] == 'Darwin' else 'linux' }}-{{ ansible_facts['architecture'] }}.tar.gz"
