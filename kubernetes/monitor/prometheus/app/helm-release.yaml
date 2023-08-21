@@ -165,10 +165,20 @@ spec:
             action: keep
 
     prometheus:
+      thanosService:
+        enabled: true
+      thanosServiceMonitor:
+        enabled: true
+        interval: 5s
+
       prometheusSpec:
         # discover resources in non "monitor" namespaces
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
 
-    #prometheusOperator:
-    #  enabled: true
+        thanos:
+          image: quay.io/thanos/thanos:v0.31.0
+          objectStorageConfig:
+            key: thanos.yaml
+            name: prometheus-thanos-blob-creds
+        walCompression: true
