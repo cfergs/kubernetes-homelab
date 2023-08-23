@@ -4,6 +4,7 @@ kind: Standalone
 metadata:
   annotations:
     configmap.reloader.stakater.com/reload: splunk-defaults
+    secret.reloader.stakater.com/reload: azure-blob-splunk-secret, splunk-enterprise-license
   name: s1
   namespace: monitor
 #  finalizers:
