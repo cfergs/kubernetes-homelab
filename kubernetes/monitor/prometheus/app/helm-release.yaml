@@ -45,9 +45,17 @@ spec:
         dashboardproviders.yaml:
           apiVersion: 1
           providers:
-            - name: 'grafana-dashboards-kubernetes'
+            - name: grafana-dashboards-flux
               orgId: 1
-              folder: 'Kubernetes'
+              folder: flux
+              type: file
+              disableDeletion: true
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-flux
+            - name: grafana-dashboards-kubernetes
+              orgId: 1
+              folder: Kubernetes
               type: file
               disableDeletion: true
               editable: true
@@ -55,7 +63,7 @@ spec:
                 path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
             - name: grafana-dashboards-nginx
               orgId: 1
-              folder: 'Nginx'
+              folder: Nginx
               type: file
               disableDeletion: true
               editable: true
@@ -63,6 +71,13 @@ spec:
                 path: /var/lib/grafana/dashboards/grafana-dashboards-nginx
 
       dashboards:
+        grafana-dashboards-flux:
+          cluster:
+            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
+          control-plane:
+            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
+          raw:
+            url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/logs.json
         grafana-dashboards-kubernetes:
           k8s-system-api-server:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
