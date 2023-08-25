@@ -25,6 +25,10 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  valuesFrom:
+    - kind: ConfigMap
+      name: flux-kube-state-metrics-config
+      valuesKey: kube-state-metrics-config.yaml
 
   values:
     crds:
@@ -113,6 +117,7 @@ spec:
               enabled: true
 
     kube-state-metrics:
+      enabled: true
       metricLabelsAllowlist:
         - "pods=[*]"
         - "deployments=[*]"
@@ -208,3 +213,22 @@ spec:
             key: thanos.yaml
             name: prometheus-thanos-blob-creds
         walCompression: true
+
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              # Ignore these objects from Flux diff as they are mutated from chart hooks
+              kind: (ValidatingWebhookConfiguration|MutatingWebhookConfiguration)
+              name: kube-admission
+            patch: |
+              - op: add
+                path: /metadata/annotations/helm.toolkit.fluxcd.io~1driftDetection
+                value: disabled
+          - target:
+              # Ignore these objects from Flux diff as they are mutated at apply time but not at dry-run time
+              kind: PrometheusRule
+            patch: |
+              - op: add
+                path: /metadata/annotations/helm.toolkit.fluxcd.io~1driftDetection
+                value: disabled

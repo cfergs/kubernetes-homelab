@@ -4,3 +4,13 @@ kind: Kustomization
 resources:
   - secrets.yaml
   - helm-release.yaml
+configMapGenerator:
+  - name: flux-kube-state-metrics-config
+    files:
+      - kube-state-metrics-config.yaml
+    namespace: monitor
+    options:
+      labels:
+        app.kubernetes.io/part-of: flux
+configurations:
+  - kustomizeconfig.yaml
