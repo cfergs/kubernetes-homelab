@@ -15,6 +15,7 @@
     - k3s_control_node is defined
     - k3s_control_node
 
+# The following steps are needed to create namespace and secrets needed for external-secrets operator to connect to azure keyvault
 - name: Create secret namespace
   become: true
   kubernetes.core.k8s:
@@ -49,7 +50,7 @@
     - k3s_control_node
   changed_when: false
 
-# not using secrets-sync because this secret contains non secret values and i don't feel like sticking them in keyvault
+# Doing this because secret contains secret/non secret values and i don't feel like sticking all them in keyvault
 # secret expires 30/6/2025
 - name: Create flux weave gitops secret
   become: true
@@ -71,7 +72,7 @@
         issuerURL: "https://login.microsoftonline.com/{{ azure_tenant }}/v2.0"
         redirectURL: "https://flux.{{ homelab_domain_name }}/oauth2/callback"
     kubeconfig: "{{ kube_file }}"
-#  no_log: true
+  no_log: true
   when:
     - k3s_control_node is defined
     - k3s_control_node

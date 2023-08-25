@@ -1,4 +1,11 @@
 ---
+# the following things are needed as either pre-requirements to k3s or useful tweaks
+
+############################################
+# modemmanager interferes with zigbee2mqtt #
+# so lets remove it                        #
+############################################
+
 - name: Uninstall modemmanager
   become: true
   ansible.builtin.apt:
@@ -20,13 +27,16 @@
     - ModemManager
     - dbus-org.freedesktop.ModemManager1.service
 
-- name: Install nfs # without this volumes wont work
+############################################
+- name: Install software
   become: true
   ansible.builtin.apt:
-    name: nfs-common
+    name:
+      - net-tools # for network troubleshooting
+      - nfs-common # without this longhorn ReadWriteMany volumes wont work
     update_cache: true
 
-- name: Modify Journalctl size
+- name: Modify Journalctl size # by default it uses 4gb of space
   become: true
   ansible.builtin.blockinfile:
     path: /etc/systemd/journald.conf
