@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=../../../../schemas/podmonitor_v1.json
+# Special flux config as taken from https://github.com/fluxcd/flux2-monitoring-example/tree/main
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:

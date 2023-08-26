@@ -25,8 +25,10 @@ spec:
     kind: GitRepository
     name: flux-system
   timeout: 5m0s
+  wait: true
 ---
 # yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+# Special flux config as taken from https://github.com/fluxcd/flux2-monitoring-example/tree/main
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:

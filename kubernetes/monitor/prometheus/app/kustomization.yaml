@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - secrets.yaml
   - helm-release.yaml
+# following is special flux config as taken from https://github.com/fluxcd/flux2-monitoring-example/tree/main
 configMapGenerator:
   - name: flux-kube-state-metrics-config
     files:
