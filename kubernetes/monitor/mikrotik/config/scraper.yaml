@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=../../../../schemas/scrapeconfig_v1alpha1.json
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: mikrotik
+  namespace: monitor
+spec:
+  staticConfigs:
+    - targets: ["mikrotik.monitor.svc.cluster.local:49090"]
