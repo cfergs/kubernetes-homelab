@@ -12,11 +12,10 @@ k3s_server_manifests_urls:
     filename: longhorn.yml
   - url: https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
     filename: metallb-native.yaml
-  - url: https://github.com/cert-manager/cert-manager/releases/download/v1.12.2/cert-manager.yaml
-    filename: cert-manager.yaml
 
 k3s_server_manifests_templates:
   - prometheus-crds-helmchart.yml.j2
+  - certmanager-helmchart.yml.j2
 
 kube_file: /etc/rancher/k3s/k3s.yaml
 
