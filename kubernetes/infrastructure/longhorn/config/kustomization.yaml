@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - longhorn-backups.yaml
   - longhorn-default-settings.yaml
+  - longhorn-servicemonitor.yaml
   - longhorn-snapshot.yaml
   - longhorn-snapshot-class.yaml
   - secret.yaml

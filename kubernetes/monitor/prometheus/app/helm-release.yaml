@@ -103,6 +103,12 @@ spec:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
           k8s-views-pods:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
+          longhorn-storage:
+            gnetId: 13032
+            revision: 5
+            datasource:
+              - name: DS_PROMETHEUS
+                value: Prometheus
         grafana-dashboards-mikrotik:
           mikrotik-mktxp-exporter:
             gnetId: 13679
