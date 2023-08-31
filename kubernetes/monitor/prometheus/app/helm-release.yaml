@@ -59,6 +59,14 @@ spec:
               editable: true
               options:
                 path: /var/lib/grafana/dashboards/grafana-dashboards-flux
+            - name: grafana-dashboards-infrastructure
+              orgId: 1
+              folder: Infrastructure
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-infrastructure
             - name: grafana-dashboards-kubernetes
               orgId: 1
               folder: Kubernetes
@@ -67,14 +75,6 @@ spec:
               editable: true
               options:
                 path: /var/lib/grafana/dashboards/grafana-dashboards-kubernetes
-            - name: grafana-dashboards-mikrotik
-              orgId: 1
-              folder: Mikrotik
-              type: file
-              disableDeletion: true
-              editable: true
-              options:
-                path: /var/lib/grafana/dashboards/grafana-dashboards-mikrotik
             - name: grafana-dashboards-nginx
               orgId: 1
               folder: Nginx
@@ -83,6 +83,14 @@ spec:
               editable: true
               options:
                 path: /var/lib/grafana/dashboards/grafana-dashboards-nginx
+            - name: grafana-dashboards-thanos
+              orgId: 1
+              folder: Thanos
+              type: file
+              disableDeletion: true
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/grafana-dashboards-thanos
 
       dashboards:
         grafana-dashboards-flux:
@@ -90,6 +98,33 @@ spec:
             url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
           control-plane:
             url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
+        grafana-dashboards-infrastructure:
+          cert-manager:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
+            datasource: Prometheus
+          external-secrets:
+            url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
+            datasource: Prometheus
+          longhorn-storage:
+            gnetId: 13032 # https://grafana.com/grafana/dashboards/13032?tab=revisions
+            revision: 6
+            datasource:
+              - name: DS_PROMETHEUS
+                value: Prometheus
+          mikrotik-mktxp-exporter:
+            gnetId: 13679 # https://grafana.com/grafana/dashboards/13679?tab=revisions
+            revision: 20
+            datasource:
+              - name: DS_PROMETHEUS
+                value: Prometheus
+          metallb:
+            gnetId: 14127 # https://grafana.com/grafana/dashboards/14127?tab=revisions
+            revision: 1
+            datasource: Prometheus
+          node-exporter-full:
+            gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
+            revision: 31
+            datasource: Prometheus
         grafana-dashboards-kubernetes:
           k8s-system-api-server:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-system-api-server.json
@@ -103,22 +138,40 @@ spec:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-nodes.json
           k8s-views-pods:
             url: https://raw.githubusercontent.com/dotdc/grafana-dashboards-kubernetes/master/dashboards/k8s-views-pods.json
-          longhorn-storage:
-            gnetId: 13032
-            revision: 5
-            datasource:
-              - name: DS_PROMETHEUS
-                value: Prometheus
-        grafana-dashboards-mikrotik:
-          mikrotik-mktxp-exporter:
-            gnetId: 13679
-            revision: 20
-            datasource:
-              - name: DS_PROMETHEUS
-                value: Prometheus
         grafana-dashboards-nginx:
           nginx-controller:
             url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json
+          nginx-request-handling-performance:
+            url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/request-handling-performance.json
+            datasource: Prometheus
+        grafana-dashboards-thanos:
+          thanos-bucket-replicate:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/bucket-replicate.json
+            datasource: Prometheus
+          thanos-compact:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/compact.json
+            datasource: Prometheus
+          thanos-overview:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/overview.json
+            datasource: Prometheus
+          thanos-query:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query.json
+            datasource: Prometheus
+          thanos-query-frontend:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query-frontend.json
+            datasource: Prometheus
+          thanos-receieve:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/receive.json
+            datasource: Prometheus
+          thanos-rule:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/rule.json
+            datasource: Prometheus
+          thanos-sidecar:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/sidecar.json
+            datasource: Prometheus
+          thanos-store:
+            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/store.json
+            datasource: Prometheus
 
       forceDeployDashboards: true
 
