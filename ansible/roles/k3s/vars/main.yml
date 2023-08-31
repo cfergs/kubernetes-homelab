@@ -15,7 +15,6 @@ k3s_server_manifests_urls:
 
 k3s_server_manifests_templates:
   - prometheus-crds-helmchart.yml.j2
-  - certmanager-helmchart.yml.j2
 
 kube_file: /etc/rancher/k3s/k3s.yaml
 
