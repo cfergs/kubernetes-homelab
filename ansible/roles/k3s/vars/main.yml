@@ -8,13 +8,12 @@ k3s_server:
 
 # /var/lib/rancher/k3s/server/manifests
 k3s_server_manifests_urls:
-  - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/deploy/longhorn.yaml
+  - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/deploy/longhorn.yaml # don't change to HELM or you break longhorn
     filename: longhorn.yml
-  - url: https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml
-    filename: metallb-native.yaml
 
 k3s_server_manifests_templates:
   - prometheus-crds-helmchart.yml.j2
+  - metallb-helmchart.yml.j2
 
 kube_file: /etc/rancher/k3s/k3s.yaml
 
