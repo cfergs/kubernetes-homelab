@@ -1,31 +1,11 @@
----
-# yaml-language-server: $schema=../../../schemas/helmrepository_v1beta2.json
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
-metadata:
-  annotations:
-    metadata.weave.works/description: This is the source location for the Weave GitOps
-      Dashboard's helm chart.
-  labels:
-    app.kubernetes.io/component: ui
-    app.kubernetes.io/created-by: weave-gitops-cli
-    app.kubernetes.io/name: weave-gitops-dashboard
-    app.kubernetes.io/part-of: weave-gitops
-  name: ww-gitops
-  namespace: flux-system
-spec:
-  interval: 1h0m0s
-  type: oci
-  url: oci://ghcr.io/weaveworks/charts
----
-# yaml-language-server: $schema=../../../schemas/helmrelease_v2beta1.json
+# yaml-language-server: $schema=../../../../schemas/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   annotations:
-    metadata.weave.works/description: This is the Weave GitOps Dashboard.  It provides
+    metadata.weave.works/description: This is the Weave GitOps Dashboard. It provides
       a simple way to get insights into your GitOps workloads.
-  name: ww-gitops
+  name: weave-gitops
   namespace: flux-system
 spec:
   chart:
@@ -33,22 +13,65 @@ spec:
       chart: weave-gitops
       sourceRef:
         kind: HelmRepository
-        name: ww-gitops
-      version: 4.0.28 # v0.30.0
-  interval: 1h0m0s
+        name: weaveworks
+        namespace: flux-system
+      version: 4.0.30 # v0.32.0
+  install:
+    remediation:
+      retries: 3
+  interval: 1h
+  maxHistory: 2
+  timeout: 10m
+  uninstall:
+    keepHistory: false
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   values:
     additionalArgs:
       - --auth-methods=oidc
-      - --oidc-token-duration=1h0m0s
-      # can't do custom-oidc-scopes, oidc-groups-claim & oidc-username-claim if using a secret
+      # can't do custom-oidc-scopes, oidc-groups-claim & oidc-username-claim if using a secret via args. Do via secret itself
       # https://github.com/weaveworks/weave-gitops/issues/3300
-      # oidc-auth secret deployed via ansible as it's a combo of secret/non-secret values & don't want non secrets in azure keyvault
+
     envVars:
       - name: WEAVE_GITOPS_FEATURE_OIDC_BUTTON_LABEL
         value: "Login with AzureAD"
+      - name: WEAVE_GITOPS_FEATURE_TELEMETRY
+        value: "false"
+
+    ingress:
+      enabled: true
+      className: nginx-internal
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-issuer
+      hosts:
+        - host: flux.${DOMAIN_NAME}
+          paths:
+            - path: /
+              pathType: Prefix
+
+    podAnnotations:
+      secret.reloader.stakater.com/reload: oidc-auth
+
     rbac:
       impersonationResources: ["groups"]
       impersonationResourceNames: ["weave-gitops-admin", "weave-gitops-readonly"]
+
+    securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+      runAsUser: 10000
+      readOnlyRootFilesystem: true
+
+    serviceAccount:
+      create: true
+      name: weave-gitops
 ---
 ##########################################
 # https://github.com/weaveworks/weave-gitops/issues/2696
@@ -57,7 +80,7 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: ww-gitops-weave-gitops-patch
+  name: weave-gitops-patch
 rules:
   - apiGroups:
       - ""
@@ -69,15 +92,17 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: ww-gitops-weave-gitops-patch
+  name: weave-gitops-patch
+  annotations:
+    checkov.io/skip1: CKV2_K8S_3=No ServiceAccount/Node should have `impersonate` permissions for groups/users/service-accounts # needed for azure OIDC to work
 subjects:
   - kind: ServiceAccount
-    name: ww-gitops-weave-gitops
+    name: weave-gitops
     namespace: flux-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ww-gitops-weave-gitops-patch
+  name: weave-gitops-patch
 ---
 ##########################################
 # Admin only actions
@@ -104,6 +129,9 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: weave-gitops-readonly-cluster-role
+  annotations:
+    checkov.io/skip1: CKV_K8S_49=Minimize wildcard use in Roles and ClusterRoles
+    # HelmReleases store state in secrets, and you can't go granular and deny access to other secrets as their everywhere. Dumb
 rules:
   - apiGroups: ["*"]
     resources: ["*"]

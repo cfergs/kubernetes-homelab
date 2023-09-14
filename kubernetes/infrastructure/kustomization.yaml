@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - cert-manager/ks.yaml
   - external/ks.yaml # cloudflared and dns
+  - flux/ks.yaml # weave-gitops dashboard
   - kube-system/ks.yaml # coredns and reloader
   - longhorn/ks.yaml # config, external-snapshotter & crds
   - ingress/ks.yaml # flux/longhorn config, ingress - external, internal, logging

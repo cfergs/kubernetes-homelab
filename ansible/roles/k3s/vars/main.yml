@@ -16,8 +16,3 @@ k3s_server_manifests_templates:
   - metallb-helmchart.yml.j2
 
 kube_file: /etc/rancher/k3s/k3s.yaml
-
-# Secrets common to both dev and prod
-homelab_domain_name: "{{ lookup('azure_keyvault_secret', 'homelab-domainname', vault_url=kv_url) }}"
-weave_gitops_app_clientid: "{{ lookup('azure_keyvault_secret', 'weave-gitops-app-clientid', vault_url=kv_url) }}"
-weave_gitops_app_clientsecret: "{{ lookup('azure_keyvault_secret', 'weave-gitops-app-clientsecret', vault_url=kv_url) }}"

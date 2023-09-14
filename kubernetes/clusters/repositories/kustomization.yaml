@@ -10,3 +10,4 @@ resources:
   - reloader.yaml
   - splunk-operator.yaml
   - splunk-otel-collector.yaml
+  - weaveworks.yaml
