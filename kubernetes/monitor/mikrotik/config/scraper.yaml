@@ -6,4 +6,4 @@ metadata:
   namespace: monitor
 spec:
   staticConfigs:
-    - targets: ["mikrotik.monitor.svc.cluster.local:49090"]
+    - targets: ["mikrotik.monitor.svc.cluster.local.:49090"]
