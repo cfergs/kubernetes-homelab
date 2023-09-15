@@ -31,7 +31,6 @@ spec:
           - "/var/log/pods/vpn_vpn-*/*/*.log" # longhorn and vpn generate too many events to make them useful
           - "/var/log/pods/kube-system_snapshot-controller*/*/*.log"
           - "/var/log/pods/longhorn-system_longhorn-manager*/*/*.log"
-          - "/var/log/pods/metallb-system_speaker-*/speaker/*.log"
           - "/var/log/pods/nginx-internal_logging-nginx-internal-controller*/*/*.log"
 
       journald:
