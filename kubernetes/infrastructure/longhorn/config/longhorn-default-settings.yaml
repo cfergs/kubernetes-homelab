@@ -1,4 +1,5 @@
 # https://longhorn.io/docs/1.5.1/advanced-resources/deploy/customizing-default-settings/
+# https://github.com/longhorn/longhorn-manager/blob/a77b330ef8024b2f0eeb7d0341d1d3ba5b421e41/types/setting.go
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,10 +10,12 @@ data:
     # only specify values that deviate from defaults
 
     # general
+    allow-collecting-longhorn-usage-metrics: "false"
     default-data-locality: best-effort
     node-down-pod-deletion-policy: delete-both-statefulset-and-deployment-pod
     node-drain-policy: always-allow
     remove-snapshots-during-filesystem-trim: "true"
+    upgrade-checker: "false"
 
     # snapshot checks
     snapshot-data-integrity: enabled
