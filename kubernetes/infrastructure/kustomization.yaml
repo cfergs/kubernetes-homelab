@@ -3,11 +3,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - cert-manager/ks.yaml
-  - external/ks.yaml # cloudflared and dns
   - flux/ks.yaml # weave-gitops dashboard
   - kube-system/ks.yaml # coredns and reloader
   - longhorn/ks.yaml # config, external-snapshotter & crds
   - ingress/ks.yaml # flux/longhorn config, ingress - external, internal, logging
   - metallb/ks.yaml
   - secrets/ks.yaml
-  - vpn/ks.yaml

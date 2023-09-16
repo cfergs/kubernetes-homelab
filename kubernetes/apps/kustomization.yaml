@@ -5,4 +5,3 @@ resources:
   - downloads/ks.yaml
   - home-automation/ks.yaml
   - media/ks.yaml
-  - unifi/ks.yaml

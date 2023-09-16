@@ -9,5 +9,6 @@ resources:
   - ingress.yaml
   - media.yaml
   - monitor.yaml
+  - networking.yaml
   - unifi.yaml
   - vpn.yaml

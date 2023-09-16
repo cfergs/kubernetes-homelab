@@ -2,22 +2,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infrastructure-vpn
+  name: networking-vpn
   namespace: flux-system
 spec:
   dependsOn:
     - name: infrastructure-external-secrets-stores
   # additional inheritance from infrastructure-external-secrets-stores
-  # - cluster-settings
   # - namespaces
   # - repositories
   interval: 1h0m0s
-  path: ./kubernetes/infrastructure/vpn/app
-  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
-    substitute: {}
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
+  path: ./kubernetes/networking/vpn/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -29,20 +23,15 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infrastructure-vpn-network-rules
+  name: networking-vpn-network-rules
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infrastructure-vpn
+    - name: networking-vpn
   # additional inheritance from infrastructure-vpn
   # - namespaces
   interval: 1h0m0s
-  path: ./kubernetes/infrastructure/vpn/network-rules
-  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
-    substitute: {}
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
+  path: ./kubernetes/networking/vpn/network-rules
   prune: true
   sourceRef:
     kind: GitRepository
