@@ -51,3 +51,25 @@ spec:
     kind: GitRepository
     name: flux-system
   timeout: 5m
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+# Special flux config as taken from https://github.com/fluxcd/flux2-monitoring-example/tree/main
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: monitor-prometheus-thanos
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: monitor-prometheus
+  # additional inheritance from monitor-prometheus
+  # - namespaces
+  # - repositories
+  interval: 1h
+  path: ./kubernetes/monitor/prometheus/thanos
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 10m
