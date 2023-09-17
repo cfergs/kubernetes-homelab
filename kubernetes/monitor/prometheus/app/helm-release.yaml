@@ -45,6 +45,17 @@ spec:
 
     grafana:
       enabled: true
+
+      additionalDataSources:
+        - name: Prometheus
+          access: proxy
+          isDefault: true
+          jsonData:
+            incrementalQuerying: true
+            prometheusType: Thanos
+          type: prometheus
+          url: http://thanos-query-frontend.monitor.svc.cluster.local:9090
+
       admin:
         existingSecret: grafana-admin-creds
 
@@ -184,6 +195,12 @@ spec:
         hosts:
           - grafana.${DOMAIN_NAME}
         path: /
+
+      sidecar:
+        datasources:
+          alertmanager:
+            enabled: true # left at default value
+          defaultDatasourceEnabled: false # disable default prometheus datasource as we recreate it pointing to thanos
 
     # flux monitoring config will add to rbac and crd fields
     kube-state-metrics:
