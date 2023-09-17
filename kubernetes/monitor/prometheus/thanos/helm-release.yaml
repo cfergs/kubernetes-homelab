@@ -41,9 +41,8 @@ spec:
           - name: ndots
             value: "1"
       dnsDiscovery:
-        sidecarsService: prometheus-thanos-discovery #
-        sidecarsNamespace: monitor #
-      logLevel: debug
+        sidecarsService: prometheus-thanos-discovery
+        sidecarsNamespace: monitor
 
     # Thanos Query Frontend params
     queryFrontend:
@@ -52,7 +51,6 @@ spec:
         options:
           - name: ndots
             value: "1"
-      logLevel: debug
 
     # Thanos Compactor params
     compactor:
@@ -71,7 +69,6 @@ spec:
         enabled: true
         storageClass: local-path
         size: 10Gi
-      logLevel: debug
 
     # Thanos Store Gateway params
     storegateway:
@@ -84,7 +81,6 @@ spec:
         enabled: true
         storageClass: local-path
         size: 10Gi
-      logLevel: debug
 
     # Thanos Metrics params
     metrics:
