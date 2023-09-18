@@ -1,17 +1,10 @@
 ---
-all:
-  children:
-    localhost:
-    k3s_cluster:
-  vars:
-    kv_url: https://vault2pkmeuty6p.vault.azure.net/
-
 localhost:
   hosts:
     127.0.0.1
   vars:
     flux_version: 2.1.0
-    weave_gitops_version: 0.30.0
+    weave_gitops_version: 0.32.0
     ansible_connection: local
     branch: main
     target_path: kubernetes/clusters/develop

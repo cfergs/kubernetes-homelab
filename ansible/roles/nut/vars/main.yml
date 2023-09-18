@@ -5,7 +5,7 @@ nut_max_retry: 3
 
 nut_user_controller_name: nutcontrolleruser
 nut_user_subscriber_name: nutsubscriberuser
-nut_user_subscriber_password: "{{ lookup('azure_keyvault_secret', 'nut-user-subscriber-password', vault_url=kv_url) }}"
+nut_user_subscriber_password: "{{ lookup('azure_keyvault_secret', 'nut-user-subscriber-password', vault_url=azure_keyvault) }}"
 
 upsmon_shutdown_cmd: "/sbin/shutdown -h +0"
 upsmon_notifycmd: "NOTIFYCMD /sbin/upssched"

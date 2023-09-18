@@ -23,9 +23,9 @@ spec: # must specify sizing else etc=10Gi,var=100Gi. Will overwhelm storage and 
         storageType: blob
         provider: azure
         path: splunk/
-        endpoint: ${SPLUNK_AZURE_ENDPOINT}
+        endpoint: https://${AZURE_SPLUNK_STORAGE_ACCOUNT}.blob.core.windows.net
         secretRef: azure-blob-splunk-secret
-  extraEnv:
+  extraEnv: # these values are used by splunk-defaults configmap for connecting to azure storage backed smartstore
     - name: AZURE_BLOB_STORAGE_ACCOUNT
       valueFrom:
         secretKeyRef:

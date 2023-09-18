@@ -21,6 +21,8 @@ spec:
     substituteFrom:
       - kind: ConfigMap
         name: cluster-settings
+      - kind: ConfigMap
+        name: special-settings
   prune: true
   sourceRef:
     kind: GitRepository

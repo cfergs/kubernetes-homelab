@@ -6,13 +6,14 @@
         azure_client_id: "{{ lookup('ansible.builtin.env', 'AZURE_CLIENT_ID') }}"
         azure_secret: "{{ lookup('ansible.builtin.env', 'AZURE_SECRET') }}"
         azure_tenant: "{{ lookup('ansible.builtin.env', 'AZURE_TENANT') }}"
+        azure_keyvault: "{{ lookup('ansible.builtin.env', 'AZURE_KEYVAULT') }}"
       no_log: true
       delegate_to: localhost
 
     - name: Fail if Keyvault values don't exist
       ansible.builtin.fail:
-        msg: "No value for either AZURE_CLIENT_ID or AZURE_SECRET or AZURE_TENANT"
-      when: azure_client_id == "" or azure_secret == "" or azure_tenant == ""
+        msg: "No value for either AZURE_CLIENT_ID or AZURE_SECRET or AZURE_TENANT or AZURE_KEYVAULT"
+      when: azure_client_id == "" or azure_secret == "" or azure_tenant == "" or azure_keyvault == ""
       delegate_to: localhost
 
   roles:
