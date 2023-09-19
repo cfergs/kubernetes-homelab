@@ -61,7 +61,7 @@
         name: special-settings
         namespace: flux-system
       data:
-        AZURE_VAULT_NAME: "{{ azure_keyvault | b64encode }}"
+        AZURE_VAULT_NAME: "{{ azure_keyvault }}"
         AZURE_TENANT_ID: "{{ lookup('azure_keyvault_secret', 'azuread-tenantid', vault_url=azure_keyvault) }}"
         AZURE_SPLUNK_STORAGE_ACCOUNT: "{{ lookup('azure_keyvault_secret', 'splunk-blob-storage-account', vault_url=azure_keyvault) }}" # added into configmap as used by field not able to pull from secret
     kubeconfig: "{{ kube_file }}"
