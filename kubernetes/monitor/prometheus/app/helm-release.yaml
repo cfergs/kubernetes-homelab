@@ -187,6 +187,16 @@ spec:
 
       defaultDashboardsTimezone: browser
 
+      envValueFrom:
+        GF_AUTH_AZUREAD_CLIENT_ID:
+          secretKeyRef:
+            name: grafana-azure-auth
+            key: clientid
+        GF_AUTH_AZUREAD_CLIENT_SECRET:
+          secretKeyRef:
+            name: grafana-azure-auth
+            key: clientsecret
+
       grafana.ini:
         analytics:
           check_for_plugin_updates: false
@@ -194,6 +204,22 @@ spec:
           enabled: false
           feedback_links_enabled: false
           reporting_enabled: false
+
+        auth.azuread:
+          name: Azure AD
+          enabled: true
+          allow_sign_up: false
+          auto_login: false
+          scopes: openid email profile
+          auth_url: https://login.microsoftonline.com/${AZURE_TENANT_ID}/oauth2/v2.0/authorize
+          token_url: https://login.microsoftonline.com/${AZURE_TENANT_ID}/oauth2/v2.0/token
+          #allowed_domains:
+          #allowed_groups:
+          allowed_organizations: ${AZURE_TENANT_ID}
+          role_attribute_strict: false
+          allow_assign_grafana_admin: true
+          skip_org_role_sync: false
+          use_pkce: true
 
       ingress:
         enabled: true
