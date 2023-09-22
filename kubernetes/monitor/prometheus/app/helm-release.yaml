@@ -223,7 +223,7 @@ spec:
 
       ingress:
         enabled: true
-        ingressClassName: logging-nginx-internal
+        ingressClassName: nginx-internal
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-issuer
         hosts:
