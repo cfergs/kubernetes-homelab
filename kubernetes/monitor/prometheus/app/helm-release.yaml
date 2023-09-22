@@ -208,7 +208,7 @@ spec:
         auth.azuread:
           name: Azure AD
           enabled: true
-          allow_sign_up: false
+          allow_sign_up: true
           auto_login: false
           scopes: openid email profile
           auth_url: https://login.microsoftonline.com/${AZURE_TENANT_ID}/oauth2/v2.0/authorize
@@ -216,7 +216,7 @@ spec:
           #allowed_domains:
           #allowed_groups:
           allowed_organizations: ${AZURE_TENANT_ID}
-          role_attribute_strict: false
+          role_attribute_strict: true
           allow_assign_grafana_admin: true
           skip_org_role_sync: false
           use_pkce: true
