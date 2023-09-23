@@ -224,19 +224,14 @@ spec:
         security:
           cookie_secure: true
 
-        server:
-          root_url: https://mgmt.${DOMAIN_NAME}/grafana
-          serve_from_sub_path: false
-
       ingress:
         enabled: true
         ingressClassName: nginx-internal
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-issuer
-          nginx.ingress.kubernetes.io/rewrite-target: /$1
         hosts:
-          - mgmt.${DOMAIN_NAME}
-        path: /grafana/?(.*)
+          - grafana.${DOMAIN_NAME}
+        path: /
 
       sidecar:
         datasources:
