@@ -170,15 +170,6 @@ spec:
           thanos-query-frontend:
             url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query-frontend.json
             datasource: Prometheus
-          thanos-receieve:
-            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/receive.json
-            datasource: Prometheus
-          thanos-rule:
-            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/rule.json
-            datasource: Prometheus
-          thanos-sidecar:
-            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/sidecar.json
-            datasource: Prometheus
           thanos-store:
             url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/store.json
             datasource: Prometheus
@@ -221,6 +212,10 @@ spec:
 
         security:
           cookie_secure: true
+
+        server:
+          root_url: https://grafana.${DOMAIN_NAME}
+          serve_from_sub_path: false
 
       ingress:
         enabled: true
