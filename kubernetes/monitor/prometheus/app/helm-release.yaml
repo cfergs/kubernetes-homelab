@@ -221,6 +221,9 @@ spec:
           skip_org_role_sync: false
           use_pkce: true
 
+        security:
+          cookie_secure: true
+
         server:
           root_url: https://mgmt.${DOMAIN_NAME}/grafana
           serve_from_sub_path: false
