@@ -1,4 +1,6 @@
 exclude_paths:
   - .venv
   - kubernetes
+skip_list:
+  - var-naming[no-role-prefix]
 use_default_rules: true
