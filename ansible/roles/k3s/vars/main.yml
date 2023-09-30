@@ -8,7 +8,7 @@ k3s_server:
 
 # /var/lib/rancher/k3s/server/manifests
 k3s_server_manifests_urls:
-  - url: https://raw.githubusercontent.com/longhorn/longhorn/v1.5.1/deploy/longhorn.yaml # don't change to HELM or you break longhorn
+  - url: "https://raw.githubusercontent.com/longhorn/longhorn/v{{ longhorn_version }}/deploy/longhorn.yaml" # don't change to HELM or you break longhorn
     filename: longhorn.yml
 
 k3s_server_manifests_templates:

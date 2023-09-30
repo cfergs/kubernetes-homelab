@@ -1,12 +1,12 @@
-# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+# yaml-language-server: $schema=../../schemas/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: namespaces
+  name: apps
   namespace: flux-system
 spec:
   interval: 1h0m0s
-  path: ./kubernetes/namespaces
+  path: ./kubernetes/apps
   prune: true
   sourceRef:
     kind: GitRepository

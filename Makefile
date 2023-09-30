@@ -55,14 +55,8 @@ clean: clean-venv clean-pre-commit
 ansible-env: ci-environment
 	cd ansible; make ansible-requirements
 
-ansible-k3s-dev: ansible-env
-	cd ansible; make ansible-k3s-dev
+ansible-k3s:
+	cd ansible; make ansible-k3s
 
-ansible-k3s-prod:
-	cd ansible; make ansible-k3s-prod
-
-ansible-flux-dev: ansible-env
-	cd ansible; make ansible-flux-dev
-
-ansible-flux-prod: ansible-env
-	cd ansible; make ansible-flux-prod
+ansible-flux: ansible-env
+	cd ansible; make ansible-flux

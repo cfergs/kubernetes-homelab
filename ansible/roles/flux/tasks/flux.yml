@@ -28,11 +28,11 @@
     export GITHUB_TOKEN={{ github_token }}
 
     flux bootstrap github --owner={{ github_owner }} \
-    --repository={{ repository_name }} \
-    --path={{ target_path }} \
-    --branch={{ branch }} \
-    --personal={{ personal }} \
-    --private={{ private }} \
+    --repository={{ github_repository_name }} \
+    --path={{ github_target_path }} \
+    --branch={{ github_branch }} \
+    --personal \
+    --private={{ github_private_repository }} \
     --kubeconfig "{{ home_path }}/.kube/config" \
     --components-extra image-reflector-controller,image-automation-controller
   when: flux_check.rc == 0

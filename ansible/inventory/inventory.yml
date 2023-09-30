@@ -1,0 +1,52 @@
+---
+localhost:
+  hosts:
+    127.0.0.1
+  vars:
+    ansible_connection: local
+
+    # Flux
+    flux_version: 2.1.1
+    weave_gitops_version: 0.32.0
+
+    # Flux - Github values
+    github_branch: refactor
+    github_owner: cfergs
+    github_private_repository: true
+    github_repository_name: kubernetes-homelab
+    github_target_path: kubernetes/cluster
+    github_token: "{{ lookup('azure_keyvault_secret', 'github-token', vault_url=azure_keyvault) }}"
+
+k3s_cluster:
+  hosts:
+    monty:
+      nut_controller_node: true
+      k3s_control_node: true
+      ansible_host: 192.168.0.225
+    crackers:
+      ansible_host: 192.168.0.226
+    mindy:
+      ansible_host: 192.168.0.227
+  vars:
+    # SSH connectivity
+    ansible_connection: paramiko # don't need to apt-get sshpass
+    ansible_user: ubuntu
+    ansible_python_interpreter: /usr/bin/python3
+
+    # k3s settings
+    k3s_registration_address: 192.168.0.225
+    k3s_release_version: v1.26.6+k3s1
+
+    # Kubernetes app versions - only ones installed thru ansible
+    longhorn_version: 1.5.1
+    metallb_version: 0.13.11
+    prometheus_crd_version: 6.0.0
+
+    # NUT - UPS management
+    nut_controller_address: 192.168.0.225
+    nut_user_controller_password: "{{ lookup('azure_keyvault_secret', 'nut-user-controller-password', vault_url=azure_keyvault) }}"
+    nut_user_subscriber_password: "{{ lookup('azure_keyvault_secret', 'nut-user-subscriber-password', vault_url=azure_keyvault) }}"
+
+    # NUT - Pushover alerting
+    pushover_app_token: "{{ lookup('azure_keyvault_secret', 'pushover-app-token', vault_url=azure_keyvault) }}"
+    pushover_user_token: "{{ lookup('azure_keyvault_secret', 'pushover-user-token', vault_url=azure_keyvault) }}"

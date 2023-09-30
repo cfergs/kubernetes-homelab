@@ -1,16 +1,5 @@
 ---
-# Values common to both dev and prod
-
-# flux creds
-github_token: "{{ lookup('azure_keyvault_secret', 'github-token', vault_url=azure_keyvault) }}"
-
 # flux setup - app_arch & app_os tweaks make nicholaswilde.flux2 role compatibile with MacOS. Don't mess with these values
 app_arch: "{{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else 'arm64' }}"
 app_os: "{{ ansible_facts['system'] | lower }}"
 app_ver: "{{ flux_version }}"
-
-# flux deploy
-github_owner: cfergs
-repository_name: kubernetes-homelab
-personal: true
-private: true
