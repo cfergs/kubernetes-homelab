@@ -5,6 +5,7 @@ metadata:
   namespace: networking
   annotations:
     checkov.io/skip1: CKV_K8S_35=Prefer using secrets as files over secrets as environment variables
+    secret.reloader.stakater.com/reload: cloudflare-tunnel-token
 spec:
   selector:
     matchLabels:

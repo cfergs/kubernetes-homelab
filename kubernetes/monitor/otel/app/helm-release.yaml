@@ -16,6 +16,9 @@ spec:
         name: splunk-otel-collector-chart
         namespace: flux-system
   values:
+    agent:
+      annotations:
+        secret.reloader.stakater.com/reload: splunk-otel-collector
     clusterName: k3s_homelab
     environment: production
     logsEngine: otel

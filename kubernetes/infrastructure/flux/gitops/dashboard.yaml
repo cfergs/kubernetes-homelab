@@ -34,6 +34,9 @@ spec:
       # can't do custom-oidc-scopes, oidc-groups-claim & oidc-username-claim if using a secret via args. Do via secret itself
       # https://github.com/weaveworks/weave-gitops/issues/3300
 
+    annotations:
+      secret.reloader.stakater.com/reload: oidc-auth
+
     envVars:
       - name: WEAVE_GITOPS_FEATURE_OIDC_BUTTON_LABEL
         value: "Login with AzureAD"
@@ -50,9 +53,6 @@ spec:
           paths:
             - path: /
               pathType: Prefix
-
-    podAnnotations:
-      secret.reloader.stakater.com/reload: oidc-auth
 
     rbac:
       impersonationResources: ["groups"]

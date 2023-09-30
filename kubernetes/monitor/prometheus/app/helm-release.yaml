@@ -60,6 +60,9 @@ spec:
       admin:
         existingSecret: grafana-admin-creds
 
+      annotations:
+        secret.reloader.stakater.com/reload: grafana-admin-creds, grafana-azure-auth
+
       dashboardProviders:
         dashboardproviders.yaml:
           apiVersion: 1
@@ -337,6 +340,10 @@ spec:
         enabled: true
       thanosServiceMonitor:
         enabled: true
+
+    prometheusOperator:
+      annotations:
+        secret.reloader.stakater.com/reload: prometheus-thanos-blob-creds
 
   postRenderers:
     - kustomize:

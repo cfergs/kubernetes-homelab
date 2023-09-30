@@ -129,6 +129,7 @@ metadata:
     checkov.io/skip1: CKV_K8S_22=Use read-only filesystem for containers where possible - this will break container
     checkov.io/skip2: CKV_K8S_35=Prefer using secrets as files over secrets as environment variables
     checkov.io/skip3: CKV_K8S_38=Ensure that Service Account Tokens are only mounted where necessary
+    secret.reloader.stakater.com/reload: splunk-monitor-secret
   labels:
     helm.sh/chart: splunk-connect-for-syslog-3.1.5
     app.kubernetes.io/name: splunk-connect-for-syslog

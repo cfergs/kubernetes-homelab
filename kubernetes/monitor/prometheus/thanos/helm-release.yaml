@@ -31,6 +31,8 @@ spec:
     # Value params listed in order shown in doco
 
     # Thanos Common params
+    commonAnnotations:
+      secret.reloader.stakater.com/reload: prometheus-thanos-blob-creds
     existingObjstoreSecret: prometheus-thanos-blob-creds
 
     # Thanos Query params
