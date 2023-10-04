@@ -60,3 +60,9 @@ ansible-k3s:
 
 ansible-flux: ansible-env
 	cd ansible; make ansible-flux
+
+ansible-node-patch: ansible-env
+	cd ansible; make ansible-node-patch
+
+ansible-node-reboot: ansible-env
+	cd ansible; make ansible-node-reboot

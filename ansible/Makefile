@@ -12,3 +12,9 @@ ansible-k3s: ansible-requirements
 
 ansible-flux: ansible-requirements
 	. ../.venv/bin/activate; export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES; ansible-playbook -i ./inventory/inventory.yml localhost.yml --ask-become-pass
+
+ansible-node-patch: ansible-requirements
+	. ../.venv/bin/activate; export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES; ansible-playbook -i ./inventory/inventory.yml os_patch.yml --ask-pass  --ask-become-pass
+
+ansible-node-reboot: ansible-requirements
+	. ../.venv/bin/activate; export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES; ansible-playbook -i ./inventory/inventory.yml os_patch.yml  --extra-vars '{"just_reboot":"true"}' --ask-pass  --ask-become-pass
