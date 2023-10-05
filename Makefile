@@ -66,3 +66,6 @@ ansible-node-patch: ansible-env
 
 ansible-node-reboot: ansible-env
 	cd ansible; make ansible-node-reboot
+
+ansible-node-shutdown: ansible-env
+	cd ansible; make ansible-node-shutdown
