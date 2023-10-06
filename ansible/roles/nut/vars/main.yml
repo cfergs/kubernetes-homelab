@@ -13,14 +13,14 @@ upsmon_powerdown_flag: "POWERDOWNFLAG /etc/killpower" # can hash out whole line 
 
 nut_ups_devices:
   - |
-    [cyberpower]
+    [eaton]
       driver = "usbhid-ups"
-      desc = "CyberPower UPS VP700ELCD"
+      desc = "Eaton 5E UPS"
       port = "auto"
-      vendorid = "0764"
-      productid = "0501"
-      product = "VP700ELCD"
-      vendor = "CPS"
+      vendorid = "0463"
+      productid = "FFFF"
+      product = "5E"
+      vendor = "EATON"
       bus = "003"
       ondelay = 0
       offdelay = 180
@@ -44,20 +44,20 @@ ups_mode:
   controller:
     nut_mode: netserver
     nut_ups_monitors:
-      - "MONITOR cyberpower@{{ nut_controller_address }} 1 {{ nut_user_controller_name }} {{ nut_user_controller_password }} master"
+      - "MONITOR eaton@{{ nut_controller_address }} 1 {{ nut_user_controller_name }} {{ nut_user_controller_password }} master"
       - "MONITOR heartbeat@localhost 0 {{ nut_user_controller_name }} {{ nut_user_controller_password }} master"
     upssched_at_cmds:
-      - AT COMMBAD cyberpower@{{ nut_controller_address }} EXECUTE lostcomms
-      - AT LOWBATT cyberpower@{{ nut_controller_address }} EXECUTE lowbatt
-      - AT NOCOMM cyberpower@{{ nut_controller_address }} EXECUTE lostcomms
-      - AT ONBATT cyberpower@{{ nut_controller_address }} EXECUTE onbatt
-      - AT ONBATT cyberpower@{{ nut_controller_address }} START-TIMER mute_beeper 60
-      - AT ONLINE cyberpower@{{ nut_controller_address }} CANCEL-TIMER mute_beeper
-      - AT ONLINE cyberpower@{{ nut_controller_address }} EXECUTE online
-      - AT REPLBATT cyberpower@{{ nut_controller_address }} EXECUTE replbatt
+      - AT COMMBAD eaton@{{ nut_controller_address }} EXECUTE lostcomms
+      - AT LOWBATT eaton@{{ nut_controller_address }} EXECUTE lowbatt
+      - AT NOCOMM eaton@{{ nut_controller_address }} EXECUTE lostcomms
+      - AT ONBATT eaton@{{ nut_controller_address }} EXECUTE onbatt
+      - AT ONBATT eaton@{{ nut_controller_address }} START-TIMER mute_beeper 60
+      - AT ONLINE eaton@{{ nut_controller_address }} CANCEL-TIMER mute_beeper
+      - AT ONLINE eaton@{{ nut_controller_address }} EXECUTE online
+      - AT REPLBATT eaton@{{ nut_controller_address }} EXECUTE replbatt
       - AT ONBATT heartbeat@localhost CANCEL-TIMER heartbeat-failure-timer
       - AT ONBATT heartbeat@localhost START-TIMER heartbeat-failure-timer 660
   subscriber:
     nut_mode: netclient
     nut_ups_monitors:
-      - "MONITOR cyberpower@{{ nut_controller_address }} 1 {{ nut_user_subscriber_name }} {{ nut_user_subscriber_password }} slave"
+      - "MONITOR eaton@{{ nut_controller_address }} 1 {{ nut_user_subscriber_name }} {{ nut_user_subscriber_password }} slave"

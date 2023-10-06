@@ -1,6 +1,6 @@
 #! /bin/sh
 
-UPS="cyberpower@{{ nut_controller_address }}"
+UPS="eaton@{{ nut_controller_address }}"
 STATUS=$( upsc $UPS ups.status 2>&1 | grep -v "^Init SSL")
 CHARGE=$( upsc $UPS battery.charge 2>&1 | grep -v "^Init SSL")
 CHMSG="[$STATUS]:$CHARGE%"
@@ -11,13 +11,13 @@ case $1 in
 		/etc/pushover/pushover.sh -T "$(hostname), LOCALHOST HEARTBEAT PROBLEM" -m "Heartbeat monitoring ups driver has failed. Pls do the needful" -p 1
 		;;
 	lostcomms)
-		logger -t upssched-cmd "LOSTCOMMS: CYBERPOWER, $CHMSG"
-		/etc/pushover/pushover.sh -T "$(hostname), UPS LOSTCOMMS: CYBERPOWER" -m "$(hostname) lost comms to UPS. $CHMSG" -p 1
+		logger -t upssched-cmd "LOSTCOMMS: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "$(hostname), UPS LOSTCOMMS: EATON" -m "$(hostname) lost comms to UPS. $CHMSG" -p 1
 		;;
 	lowbatt)
-		logger -t upssched-cmd "LOWBATTERY: CYBERPOWER, $CHMSG"
-		/etc/pushover/pushover.sh -T "UPS LOWBATTERY: CYBERPOWER" -m "SHUTDOWN OF HOSTS TO COMMENCE SHORTLY. $CHMSG" -p 2
-		upscmd -u {{ nut_user_controller_name }} -p {{ nut_user_controller_password }} cyberpower@{{ nut_controller_address }} beeper.enable
+		logger -t upssched-cmd "LOWBATTERY: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "UPS LOWBATTERY: EATON" -m "SHUTDOWN OF HOSTS TO COMMENCE SHORTLY. $CHMSG" -p 2
+		upscmd -u {{ nut_user_controller_name }} -p {{ nut_user_controller_password }} eaton@{{ nut_controller_address }} beeper.enable
 		# shutdown kube cluster
 		kubectl drain --pod-selector='app!=csi-attacher,app!=csi-provisioner,longhorn.io/component!=instance-manager,app!=longhorn-admission-webhook,app!=longhorn-conversion-webhook' --ignore-daemonsets --delete-emptydir-data --force --timeout=60s monty crackers mindy --kubeconfig=/etc/rancher/k3s/kubedrainconfig
 		logger -t upssched-cmd "ONBATTERY: K8s Nodes Drained"
@@ -26,19 +26,19 @@ case $1 in
 		upsmon -c fsd
 		;;
 	mute_beeper)
-		upscmd -u {{ nut_user_controller_name }} -p {{ nut_user_controller_password }} cyberpower@{{ nut_controller_address }} beeper.mute
+		upscmd -u {{ nut_user_controller_name }} -p {{ nut_user_controller_password }} eaton@{{ nut_controller_address }} beeper.mute
 		;;
 	onbatt)
-		logger -t upssched-cmd "ONBATTERY: CYBERPOWER, $CHMSG"
-		/etc/pushover/pushover.sh -T "UPS ONBATTERY: CYBERPOWER" -m "STATUS: $CHMSG" -p 1
+		logger -t upssched-cmd "ONBATTERY: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "UPS ONBATTERY: EATON" -m "STATUS: $CHMSG" -p 1
 		;;
 	online)
-		logger -t upssched-cmd "ONLINE: CYBERPOWER, $CHMSG"
-		/etc/pushover/pushover.sh -T "UPS ONLINE: CYBERPOWER" -m "STATUS: $CHMSG" -p 1
+		logger -t upssched-cmd "ONLINE: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "UPS ONLINE: EATON" -m "STATUS: $CHMSG" -p 1
 		;;
 	replbatt)
-		logger -t upssched-cmd "REPLACEBATTERY: CYBERPOWER, $CHMSG"
-		/etc/pushover/pushover.sh -T "UPS REPLACEBATTERY: CYBERPOWER" -m "REPLACE BATTERY NOW" -p 1
+		logger -t upssched-cmd "REPLACEBATTERY: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "UPS REPLACEBATTERY: EATON" -m "REPLACE BATTERY NOW" -p 1
 		;;
 	*)
 		logger -t upssched-cmd "Unrecognized command: $1"

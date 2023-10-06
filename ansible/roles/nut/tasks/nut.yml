@@ -72,7 +72,7 @@
     - nut_controller_node
 
 # https://github.com/networkupstools/nut/issues/779 , https://wiki.archlinux.org/title/Network_UPS_Tools#upsd_configuration
-- name: NUT Controller | nut-driver restart modify # cyberpower and dummy ups start issue
+- name: NUT Controller | nut-driver restart modify # eaton and dummy ups start issue
   become: true
   ansible.builtin.blockinfile:
     path: /lib/systemd/system/nut-driver.service
