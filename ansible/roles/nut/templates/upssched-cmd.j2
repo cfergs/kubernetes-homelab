@@ -18,6 +18,10 @@ case $1 in
 		logger -t upssched-cmd "LOWBATTERY: EATON, $CHMSG"
 		/etc/pushover/pushover.sh -T "UPS LOWBATTERY: EATON" -m "SHUTDOWN OF HOSTS TO COMMENCE SHORTLY. $CHMSG" -p 2
 		upscmd -u {{ nut_user_controller_name }} -p {{ nut_user_controller_password }} eaton@{{ nut_controller_address }} beeper.enable
+		# cordon kube nodes
+		kubectl cordon monty crackers mindy --kubeconfig=/etc/rancher/k3s/kubedrainconfig
+		logger -t upssched-cmd "ONBATTERY: K8s Nodes Cordoned"
+		/etc/pushover/pushover.sh -T "UPS ONBATTERY: NODES CORDONED" -m "nodes cordoned" -p 1
 		# shutdown kube cluster
 		kubectl drain --pod-selector='app!=csi-attacher,app!=csi-provisioner,longhorn.io/component!=instance-manager,app!=longhorn-admission-webhook,app!=longhorn-conversion-webhook' --ignore-daemonsets --delete-emptydir-data --force --timeout=60s monty crackers mindy --kubeconfig=/etc/rancher/k3s/kubedrainconfig
 		logger -t upssched-cmd "ONBATTERY: K8s Nodes Drained"
