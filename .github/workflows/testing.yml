@@ -13,6 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up Python 3
+        uses: actions/setup-python@v4
+
+      # ansible-lint needs it's requirements before it works properly
+      - name: Install test dependencies
+        run: |
+          pip3 install ansible-core
+          ansible-galaxy install -r ansible/requirements.yml
+
       - name: Run ansible-lint
         uses: ansible/ansible-lint@main
 
