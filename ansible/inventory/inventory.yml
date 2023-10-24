@@ -10,7 +10,7 @@ localhost:
     weave_gitops_version: 0.32.0
 
     # Flux - Github values
-    github_branch: refactor
+    github_branch: main
     github_owner: cfergs
     github_private_repository: true
     github_repository_name: kubernetes-homelab
