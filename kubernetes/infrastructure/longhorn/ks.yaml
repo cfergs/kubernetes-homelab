@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-longhorn-crd
+  namespace: flux-system
+spec:
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/longhorn/crd
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-longhorn-snapshot-controller
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-longhorn-crd
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/longhorn/snapshot-controller
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-longhorn-config
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-external-secrets-stores
+    - name: infrastructure-longhorn-snapshot-controller
+  # additional inheritance from infrastructure-external-secrets-stores
+  # - cluster-settings
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/longhorn/config
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true

@@ -1,0 +1,72 @@
+---
+- name: Cluster | Crackers | Zigbee label
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiversion: v1
+      kind: Node
+      metadata:
+        name: crackers
+        labels:
+          usb: zigbee
+    kubeconfig: "{{ kube_file }}"
+  when:
+    - k3s_control_node is defined
+    - k3s_control_node
+
+# The following steps are needed to create namespace and secrets needed for external-secrets operator to connect to azure keyvault
+- name: Create secret namespace
+  become: true
+  kubernetes.core.k8s:
+    name: secrets
+    api_version: v1
+    kind: Namespace
+    state: present
+    kubeconfig: "{{ kube_file }}"
+  when:
+    - k3s_control_node is defined
+    - k3s_control_node
+
+# Both these values are pulled from the env values used as part of initially running ansible
+- name: Create Azure-Keyvault secret
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: azure-secrets-store-cred
+        namespace: secrets
+      type: Opaque
+      data:
+        clientid: "{{ azure_client_id | b64encode }}"
+        clientsecret: "{{ azure_secret | b64encode }}"
+    kubeconfig: "{{ kube_file }}"
+  no_log: true
+  when:
+    - k3s_control_node is defined
+    - k3s_control_node
+  changed_when: false
+
+- name: Create special values configmap
+  become: true
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: special-settings
+        namespace: flux-system
+      data:
+        AZURE_VAULT_NAME: "{{ azure_keyvault }}"
+        AZURE_TENANT_ID: "{{ lookup('azure_keyvault_secret', 'azuread-tenantid', vault_url=azure_keyvault) }}"
+        AZURE_SPLUNK_STORAGE_ACCOUNT: "{{ lookup('azure_keyvault_secret', 'splunk-blob-storage-account', vault_url=azure_keyvault) }}" # added into configmap as used by field not able to pull from secret
+    kubeconfig: "{{ kube_file }}"
+  no_log: true
+  when:
+    - k3s_control_node is defined
+    - k3s_control_node
+  changed_when: false

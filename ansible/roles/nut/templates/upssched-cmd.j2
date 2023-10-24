@@ -1,0 +1,51 @@
+#! /bin/sh
+
+UPS="eaton@{{ nut_controller_address }}"
+STATUS=$( upsc $UPS ups.status 2>&1 | grep -v "^Init SSL")
+CHARGE=$( upsc $UPS battery.charge 2>&1 | grep -v "^Init SSL")
+CHMSG="[$STATUS]:$CHARGE%"
+
+case $1 in
+	heartbeat-failure-timer)
+		logger -t upssched-cmd "UPS LOSTCOMMS: LOCALHOST HEARTBEAT"
+		/etc/pushover/pushover.sh -T "$(hostname), LOCALHOST HEARTBEAT PROBLEM" -m "Heartbeat monitoring ups driver has failed. Pls do the needful" -p 1
+		;;
+	lostcomms)
+		logger -t upssched-cmd "LOSTCOMMS: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "$(hostname), UPS LOSTCOMMS: EATON" -m "$(hostname) lost comms to UPS. $CHMSG" -p 1
+		;;
+	lowbatt)
+		logger -t upssched-cmd "LOWBATTERY: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "UPS LOWBATTERY: EATON" -m "SHUTDOWN OF HOSTS TO COMMENCE SHORTLY. $CHMSG" -p 2
+		upscmd -u {{ nut_user_controller_name }} -p {{ nut_user_controller_password }} eaton@{{ nut_controller_address }} beeper.enable
+		# cordon kube nodes
+		kubectl cordon monty crackers mindy --kubeconfig=/etc/rancher/k3s/kubedrainconfig
+		logger -t upssched-cmd "ONBATTERY: K8s Nodes Cordoned"
+		/etc/pushover/pushover.sh -T "UPS ONBATTERY: NODES CORDONED" -m "nodes cordoned" -p 1
+		# shutdown kube cluster
+		kubectl drain --pod-selector='app!=csi-attacher,app!=csi-provisioner,longhorn.io/component!=instance-manager,app!=longhorn-admission-webhook,app!=longhorn-conversion-webhook' --ignore-daemonsets --delete-emptydir-data --force --timeout=60s monty crackers mindy --kubeconfig=/etc/rancher/k3s/kubedrainconfig
+		logger -t upssched-cmd "ONBATTERY: K8s Nodes Drained"
+		/etc/pushover/pushover.sh -T "UPS ONBATTERY: NODES DRAINED" -m "nodes drained of all k8s pods" -p 1
+		# tell subscribers to shutdown
+		upsmon -c fsd
+		;;
+	mute_beeper)
+		upscmd -u {{ nut_user_controller_name }} -p {{ nut_user_controller_password }} eaton@{{ nut_controller_address }} beeper.mute
+		;;
+	onbatt)
+		logger -t upssched-cmd "ONBATTERY: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "UPS ONBATTERY: EATON" -m "STATUS: $CHMSG" -p 1
+		;;
+	online)
+		logger -t upssched-cmd "ONLINE: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "UPS ONLINE: EATON" -m "STATUS: $CHMSG" -p 1
+		;;
+	replbatt)
+		logger -t upssched-cmd "REPLACEBATTERY: EATON, $CHMSG"
+		/etc/pushover/pushover.sh -T "UPS REPLACEBATTERY: EATON" -m "REPLACE BATTERY NOW" -p 1
+		;;
+	*)
+		logger -t upssched-cmd "Unrecognized command: $1"
+		/etc/pushover/pushover.sh -T "UPSSCHED-CMD ERROR" -m "$1"
+		;;
+esac

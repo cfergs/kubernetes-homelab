@@ -1,0 +1,47 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/splunk/splunk-connect-for-syslog/container2
+  pullPolicy: IfNotPresent
+  tag: 2.49.3
+
+fullnameOverride: syslog
+splunk:
+  hec_url: https://splunk-hec.${DOMAIN_NAME}/services/collector/event
+  hec_verify_tls: "no"
+  hec_token: 00000000-0000-0000-0000-000000000000
+
+sc4s:
+  config_files:
+    app-mikrotik_routeros.conf: |-
+      #/opt/sc4s/local/config/app-parsers/app-vps-mikrotik_routeros.conf
+
+      application app-vps-test-mikrotik_routeros[sc4s-vps] {
+        filter {
+                host("steffy" type(string) flags(prefix))
+            };
+            parser {
+                p_set_netsource_fields(
+                    vendor('mikrotik')
+                    product('routeros')
+                );
+            };
+        };
+
+persistence:
+  enabled: false
+
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+
+service:
+  type: LoadBalancer
+  usemetallb: {}
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}

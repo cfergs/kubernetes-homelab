@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: networking-unifi
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-internal
+  # additional inheritance from infrastructure-ingress-internal
+  # - cluster-settings
+  # - namespaces
+  interval: 1h
+  path: ./kubernetes/networking/unifi/app
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m

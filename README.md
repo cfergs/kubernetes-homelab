@@ -1,28 +1,55 @@
 # kubernetes-homelab
 Kubernetes: The next generation
 
-## Schemas
+## Overview
 
-Refer to https://github.com/datreeio/CRDs-catalog.
+This is a mono repository for my home infrastructure and Kubernetes cluster. It's comprised of Infrastructure as Code (IaC) leveraging the following tools:
+* [Ansible](https://www.ansible.com/)
+* [Kubernetes](https://kubernetes.io/)
+* [Flux](https://github.com/fluxcd/flux2)
+* [GitHub Actions](https://github.com/features/actions)
 
-Custom schemas reside in /schemas folder. Extracted using CRD Extractor
+## Directories
 
-## Update Splunk License
+This Git repository contains the following directory structure.
 
-Needed every 6months
+```sh
+📁 repo
+├─📁 ansible           # Ansible code to bootstrap, install/upgrade k3s/flux
+├─📁 kubernetes        # Kubernetes cluster defined as code
+| ├─📁 apps            # User based applications
+| ├─📁 clusters        # Cluster config and settings
+| ├─📁 infrastructure  # Core applications - cert-manager, ingress, secrets etc
+| ├─📁 monitor         # Apps for monitoring cluster or other resources
+| ├─📁 namespaces      #
+| ├─📁 networking      # Cloudflare, unifi and VPN
+| └─📁 repositories    # helmrepositories
+├─📁 schema
+```
 
-* Login to Azure portal and open cloudshell
-* Create license.lic
-* az account set --subscription "Pay-As-You-Go"
-* az keyvault list
-* az keyvault secret set --vault-name "chickenwaffles-keyvault" --name splunk-enterprise-license --file license.lic
+## Core Components
 
-## Convert helm to yaml
-* helm template splunk-connect-for-syslog/splunk-connect-for-syslog -f values.yaml
+- [cert-manager](https://cert-manager.io/docs/): creates SSL certificates for services in my cluster
+- [cloudflare-tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/): securely access url's externally
+- [external-secrets](https://github.com/external-secrets/external-secrets/): managed Kubernetes secrets using Azure Key Vaults
+- [ingress-nginx](https://github.com/kubernetes/ingress-nginx/): ingress controller for Kubernetes using NGINX as a reverse proxy
+- [longhorn](https://longhorn.io): distributed peristent storage and creates backups to Azure Storage
+- [metallb](https://metallb.universe.tf/): layer 2 load-balancer
+- [splunk](https://splunk.com): log querying
+- [prometheus](https://prometheus.io): query metrics, displayed using grafana
 
-## Longhorn Upgrade
-* Read doco for any changes
-* Upgrade longhorn **k3s_server_manifests_urls** value in k3s/vars
-* Deploy
-* When complete update **engineImage** value
-* Re-deploy
+## Associated Repositories
+
+* [cloudflare-terraform](https://github.com/cfergs/cloudflare-terraform): Manage external DNS and cloudflare-tunnels
+* [kubernetes-homelab-azure](https://github.com/cfergs/kubernetes-homelab-azure): Manage azure storage and keyvault
+* [network-automation](https://github.com/cfergs/network-automation): Manage mikrotik and wireless network config and internal DNS
+
+## Documentation
+
+* [PreRequisites](./docs/prerequisites.md)
+* [Hardware](./docs/hardware.md)
+* [Install/Upgrade Steps](./docs/install-upgrade.md)
+* [Apps](./docs/apps.md)
+* [Linting](./docs/linting.md)
+* [Monitoring](./docs/monitoring.md)
+* [Other](./docs/other.md)

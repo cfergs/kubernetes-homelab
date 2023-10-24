@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=../../../../schemas/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: domain-wildcard
+  namespace: cert-manager
+spec:
+  dnsNames:
+    - '*.${DOMAIN_NAME}'
+    - ${DOMAIN_NAME}
+  secretName: domain-wildcard
+  issuerRef:
+    name: letsencrypt-issuer
+    kind: ClusterIssuer

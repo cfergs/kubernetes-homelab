@@ -2,9 +2,11 @@ extends: default
 
 ignore:
   - .venv/
-  - bare-metal/
+  - ansible/
   - flux-system
-
+  - kubernetes/infrastructure/longhorn/crd
+  - kubernetes/infrastructure/longhorn/snapshot-controller
+  - kubernetes/monitor/splunk-syslog/app/syslog-install.yaml # generated from helm
 rules:
   document-start: disable
   comments: disable

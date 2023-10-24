@@ -1,0 +1,100 @@
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-home-automation-hass
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-internal
+  # additional inheritance from infrastructure-ingress-internal
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/home-automation/home-assistant
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-home-automation-mosquitto
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-internal
+  # additional inheritance from app-home-automation-hass
+  # - cluster-settings
+  # - infrastructure-metallb-config
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/home-automation/mosquitto
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-home-automation-ser2sock
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: app-home-automation-hass
+  # additional inheritance from app-home-automation-hass
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/home-automation/ser2sock
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-home-automation-ziqbee2mqtt
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: app-home-automation-mosquitto
+    - name: app-home-automation-ser2sock
+  # additional inheritance from app-home-automation-mosquitto
+  # - cluster-settings
+  # - infrastructure-ingress-internal
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/home-automation/zigbee2mqtt
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true

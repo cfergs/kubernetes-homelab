@@ -1,0 +1,38 @@
+---
+- name: MacOS | Install GNU tar # needed as default MacOS tar won't unzip .tar.gz files
+  become: false # brew won't run as root
+  community.general.homebrew:
+    name: gnu-tar
+    state: present
+  when: ansible_system is match("Darwin") # MacOS
+
+- name: Weave GitOps | Download Binary
+  ansible.builtin.unarchive:
+    src: "https://github.com/weaveworks/weave-gitops/releases/download/v{{ weave_gitops_version }}/gitops-{{ 'darwin' if ansible_facts['system'] == 'Darwin' else 'linux' }}-{{ ansible_facts['architecture'] }}.tar.gz"
+    dest: /usr/local/bin
+    remote_src: yes
+    include: gitops
+    mode: 0755
+
+- name: Flux | Setup | Binary
+  ansible.builtin.include_role:
+    name: nicholaswilde.flux2
+
+- name: Flux | Check # noqa no-changed-when
+# forces prerequisites
+  ansible.builtin.command: 'flux check --kubeconfig "{{ home_path }}/.kube/config"'
+  register: flux_check
+
+- name: Flux | Deploy | Bootstrap Cmd # noqa no-changed-when
+  ansible.builtin.shell: |
+    export GITHUB_TOKEN={{ github_token }}
+
+    flux bootstrap github --owner={{ github_owner }} \
+    --repository={{ github_repository_name }} \
+    --path={{ github_target_path }} \
+    --branch={{ github_branch }} \
+    --personal \
+    --private={{ github_private_repository }} \
+    --kubeconfig "{{ home_path }}/.kube/config" \
+    --components-extra image-reflector-controller,image-automation-controller
+  when: flux_check.rc == 0

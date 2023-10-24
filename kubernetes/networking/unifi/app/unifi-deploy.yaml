@@ -1,0 +1,155 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: unifi
+  namespace: networking
+spec:
+  serviceName: unifi
+  replicas: 1
+  selector:
+    matchLabels:
+      name: unifi
+  template:
+    metadata:
+      name: unifi
+      labels:
+        name: unifi
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: unifi-volume
+          persistentVolumeClaim:
+            claimName: unifi-volume-pvc
+        - name: tmpvol
+          emptyDir:
+            medium: Memory
+            sizeLimit: 64Mi
+      containers:
+        - name: unifi
+          image: ghcr.io/jacobalberty/unifi-docker:v7.3.83@sha256:b2c58b67e8a63d34dab649cd19316c56cf024fa5a76cb224a0fc258b239a14c8
+          ports:
+            - containerPort: 3478 # used for STUN
+              name: ubnt-3478
+              protocol: UDP
+            - containerPort: 5514 # Remote Syslog
+              name: ubnt-5514
+              protocol: UDP
+            - containerPort: 8080 # device and application communication
+              name: ubnt-8080
+              protocol: TCP
+            - containerPort: 8443 # application GUI/API as seen in a web browser - Non Appliance
+              name: ubnt-8443
+              protocol: TCP
+            - containerPort: 10001 # device discovery
+              name: ubnt-10001
+              protocol: UDP
+          env:
+            - name: TZ
+              value: ${TIMEZONE}
+            - name: UNIFI_STDOUT # Controller outputs logs to stdout in addition to server.log - needed for splunk
+              value: "true"
+          volumeMounts:
+            - name: unifi-volume
+              mountPath: /unifi
+            - name: tmpvol
+              mountPath: /tmp # needed for creating backups
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: unifi-ingress
+  namespace: networking
+spec:
+  ports:
+    - name: ubnt-8443
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+  selector:
+    name: unifi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-lb-tcp
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: ${UNIFI_IP}
+    metallb.universe.tf/allow-shared-ip: unifi-lb
+  namespace: networking
+spec:
+  externalTrafficPolicy: Local
+  ports:
+    - port: 8080
+      name: uap-inform
+      targetPort: 8080
+  selector:
+    name: unifi
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi-lb-udp
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: ${UNIFI_IP}
+    metallb.universe.tf/allow-shared-ip: unifi-lb
+  namespace: networking
+spec:
+  externalTrafficPolicy: Local
+  ports:
+    - port: 3478
+      name: stun-port
+      targetPort: 3478
+      protocol: UDP
+    - port: 5514
+      name: syslog-port
+      targetPort: 5514
+      protocol: UDP
+    - port: 10001
+      name: discovery
+      targetPort: 10001
+      protocol: UDP
+  selector:
+    name: unifi
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: unifi-ingress
+  namespace: networking
+spec:
+  ingressClassName: nginx-internal
+  rules:
+    - host: unifi.${DOMAIN_NAME}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: unifi-ingress
+                port:
+                  name: ubnt-8443

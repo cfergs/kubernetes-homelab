@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zigbee-ser2sock
+  namespace: home-automation
+  annotations:
+    checkov.io/skip1: CKV_K8S_16=Container should not be privileged
+    checkov.io/skip2: CKV_K8S_20=Containers should not run with allowPrivilegeEscalation
+    checkov.io/skip3: CKV_K8S_23=Minimize the admission of root containers
+    checkov.io/skip4: CKV_K8S_28=Minimize the admission of containers with the NET_RAW capability
+    checkov.io/skip5: CKV_K8S_37=Minimize the admission of containers with capabilities assigned
+  labels:
+    app: zigbee-ser2sock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zigbee-ser2sock
+  template:
+    metadata:
+      labels:
+        app: zigbee-ser2sock
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: ttyusb
+          hostPath:
+            path: /dev/ttyUSB0
+      containers:
+        - name: ser2sock
+          image: tenstartups/ser2sock@sha256:379d9338c720da30b63dc4cf2ecea07eb89dac7d62d5c79047294fffe97ae559
+          securityContext:
+            privileged: true
+            readOnlyRootFilesystem: true
+          ports:
+            - containerPort: 10000
+          env:
+            - name: BAUD_RATE
+              value: '115200'
+            - name: LISTENER_PORT
+              value: '10000'
+            - name: SERIAL_DEVICE
+              value: /dev/ttyUSB0
+          volumeMounts:
+            - name: ttyusb
+              mountPath: /dev/ttyUSB0
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: usb
+                    operator: In
+                    values:
+                      - zigbee
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zigbee-ser2sock
+  namespace: home-automation
+  labels:
+    app: zigbee-ser2sock
+spec:
+  ports:
+    - port: 10000
+      protocol: TCP
+      targetPort: 10000
+  selector:
+    app: zigbee-ser2sock

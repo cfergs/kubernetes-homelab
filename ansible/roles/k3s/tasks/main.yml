@@ -1,0 +1,21 @@
+---
+- name: Pre-Steps
+  ansible.builtin.include_tasks: presteps.yml
+
+- name: Flush restart handlers # needed to confirm all outstanding handlers are finished
+  ansible.builtin.meta: flush_handlers
+
+- name: Install k3s
+  ansible.builtin.include_tasks: k3s.yml
+
+- name: Create initial k3s required resources # secrets, labels etc
+  ansible.builtin.include_tasks: post_k3s_install.yml
+  when:
+    - k3s_control_node is defined
+    - k3s_control_node
+
+# Taken from https://github.com/onedr0p/home-ops/blob/main/ansible/kubernetes/playbooks/cluster-installation.yaml
+- name: Create service to cleanup stale containers
+  ansible.builtin.include_tasks: stale_containers.yml
+  vars:
+    stale_containers_state: enabled

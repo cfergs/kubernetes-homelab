@@ -1,0 +1,16 @@
+- name: Drain node # noqa no-changed-when command-instead-of-shell partial-become[task]
+  ansible.builtin.shell: |
+    kubectl drain "{{ inventory_hostname | lower }}" \
+    --ignore-daemonsets \
+    --delete-emptydir-data \
+    --force \
+    --grace-period=10 \
+    --timeout=60s \
+    --pod-selector=app!=csi-attacher,app!=csi-provisioner,app!=longhorn-admission-webhook,app!=longhorn-conversion-webhook,app!=longhorn-driver-deployer
+  become_user: "{{ local_username }}"
+  delegate_to: localhost
+  register: swamp_drained
+
+- name: Shutdown node
+  community.general.shutdown:
+  when: swamp_drained.rc == 0

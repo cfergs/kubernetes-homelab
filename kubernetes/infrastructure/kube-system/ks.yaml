@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-coredns-config
+  namespace: flux-system
+spec:
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/kube-system/coredns
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-reloader
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: repositories
+  interval: 1h0m0s
+  path: ./kubernetes/infrastructure/kube-system/reloader
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true

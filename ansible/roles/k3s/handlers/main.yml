@@ -1,0 +1,14 @@
+---
+- name: Restart multipath systemd
+  become: true
+  ansible.builtin.systemd:
+    name: multipathd
+    daemon_reload: true
+    enabled: true
+    state: restarted
+
+- name: Restart journalctl
+  become: true
+  ansible.builtin.systemd:
+    name: systemd-journald.service
+    state: restarted

@@ -2,6 +2,12 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   annotations:
+    checkov.io/skip1: CKV_K8S_20=Containers should not run with allowPrivilegeEscalation
+    checkov.io/skip2: CKV_K8S_22=Use read-only filesystem for containers where possible
+    checkov.io/skip3: CKV_K8S_23=Minimize the admission of root containers
+    checkov.io/skip4: CKV_K8S_28=Minimize the admission of containers with the NET_RAW capability
+    checkov.io/skip5: CKV_K8S_30=Apply security context to your containers"
+    checkov.io/skip6: CKV_K8S_37=Minimize the admission of containers with capabilities assigned
     configmap.reloader.stakater.com/reload: hass-config # reload pod if configuration.yaml updated
   name: hass
   namespace: home-automation
@@ -17,6 +23,10 @@ spec:
       labels:
         name: hass
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: hass-config
           configMap:

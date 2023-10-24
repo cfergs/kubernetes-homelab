@@ -1,0 +1,77 @@
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: monitor-prometheus
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-logging
+  # additional inheritance from infrastructure-ingress-logging
+  # - cluster-settings
+  # - infrastructure-external-secrets-stores
+  # - namespaces
+  # - repositories
+  interval: 1h
+  path: ./kubernetes/monitor/prometheus/app
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+      - kind: ConfigMap
+        name: special-settings
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 10m
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+# Special flux config as taken from https://github.com/fluxcd/flux2-monitoring-example/tree/main
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: monitor-prometheus-podmonitor
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: monitor-prometheus
+  # additional inheritance from monitor-prometheus
+  # - infrastructure-external-secrets-stores
+  # - infrastructure-ingress-logging
+  # - namespaces
+  # - repositories
+  interval: 1h
+  path: ./kubernetes/monitor/prometheus/podmonitor
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+# Special flux config as taken from https://github.com/fluxcd/flux2-monitoring-example/tree/main
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: monitor-prometheus-thanos
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: monitor-prometheus
+  # additional inheritance from monitor-prometheus
+  # - namespaces
+  # - repositories
+  interval: 1h
+  path: ./kubernetes/monitor/prometheus/thanos
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 10m

@@ -1,0 +1,5 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - logging-internal-helm-release.yaml # special ingress for logs - nginx logs not ingested by splunk

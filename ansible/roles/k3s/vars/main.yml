@@ -1,0 +1,18 @@
+---
+k3s_become: true
+k3s_install_hard_links: true
+k3s_server:
+  disable:
+    - servicelb
+    - traefik
+
+# /var/lib/rancher/k3s/server/manifests
+k3s_server_manifests_urls:
+  - url: "https://raw.githubusercontent.com/longhorn/longhorn/v{{ longhorn_version }}/deploy/longhorn.yaml" # don't change to HELM or you break longhorn
+    filename: longhorn.yml
+
+k3s_server_manifests_templates:
+  - prometheus-crds-helmchart.yml.j2
+  - metallb-helmchart.yml.j2
+
+kube_file: /etc/rancher/k3s/k3s.yaml

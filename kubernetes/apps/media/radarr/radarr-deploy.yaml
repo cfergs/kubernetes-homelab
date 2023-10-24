@@ -16,12 +16,15 @@ spec:
       labels:
         app: radarr
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: radarr-volume
           persistentVolumeClaim:
@@ -38,7 +41,7 @@ spec:
             sizeLimit: 64Mi
       containers:
         - name: radarr
-          image: ghcr.io/onedr0p/radarr:4.5.2.7388@sha256:ceed83169bb5f25f5164188f7f61bbe616d4128e3015f5e2bd04bf3d3e8a0790
+          image: ghcr.io/onedr0p/radarr:4.7.5.7809@sha256:7b3c6b9625dbba4ee08bd70c6ceb14497217a817447f228abae1af65c635f5ec
           ports:
             - containerPort: 7878
           env:

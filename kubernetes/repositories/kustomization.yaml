@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - angelnu-charts.yaml
+  - bitnami.yaml
+  - external-secrets.yaml
+  - ingress-nginx.yaml
+  - jetstack.yaml
+  - prometheus-community.yaml
+  - reloader.yaml
+  - splunk-operator.yaml
+  - splunk-otel-collector.yaml
+  - weaveworks.yaml

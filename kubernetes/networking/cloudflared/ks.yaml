@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: networking-cloudflared
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-external-secrets-stores
+  # additional inheritance from infrastructure-external-secrets-stores:
+  # - namespaces
+  interval: 1h
+  path: ./kubernetes/networking/cloudflared/app
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 10m

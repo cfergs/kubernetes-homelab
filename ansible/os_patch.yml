@@ -1,0 +1,19 @@
+- name: OS Patch
+  hosts: k3s_cluster
+  become: true
+  pre_tasks:
+    - name: Get local user for running scripts
+      ansible.builtin.set_fact:
+        local_username: "{{ lookup('env', 'USER') }}"
+      delegate_to: localhost
+
+    # needed for k8s ansible module to work
+    - name: Pip Installs # noqa partial-become[task]
+      ansible.builtin.pip:
+        name:
+          - kubernetes
+      become_user: "{{ local_username }}"
+      delegate_to: localhost
+
+  roles:
+    - os_patch

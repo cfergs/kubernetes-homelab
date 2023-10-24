@@ -1,0 +1,134 @@
+# yaml-language-server: $schema=../../../../schemas/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: splunk-operator
+  namespace: monitor
+spec:
+  interval: 1h0m0s
+  chart:
+    spec:
+      chart: splunk-operator
+      version: 2.3.0
+      interval: 1h0m0s
+      sourceRef:
+        kind: HelmRepository
+        name: splunk-operator
+        namespace: flux-system
+  values:
+    # Splunk image
+    image:
+      repository: docker.io/splunk/splunk:9.0.5
+
+    # The kube-rbac-proxy is a small HTTP proxy for a single upstream, that can perform RBAC
+    # authorization against the Kubernetes API.
+    # reference: https://github.com/brancz/kube-rbac-proxy
+    kubeRbacProxy:
+
+      # Specify kube-rbac-proxy image
+      image:
+        repository: gcr.io/kubebuilder/kube-rbac-proxy
+        pullPolicy: IfNotPresent
+        tag: "v0.13.1"
+
+      # Set resource requests and limits for kube-rbac-proxy container
+      resources:
+        limits:
+          cpu: 500m
+          memory: 128Mi
+        requests:
+          cpu: 5m
+          memory: 64Mi
+
+    # Splunk Operator configurations
+    splunkOperator:
+      image:
+        repository: docker.io/splunk/splunk-operator:2.3.0
+        pullPolicy: IfNotPresent
+
+      # Set image pull secrets to pull image from a private registry
+      imagePullSecrets: []
+
+      # Give operator cluster-wide access, otherwise access is limited to operator namespace
+      clusterWideAccess: true
+
+      # List namespaces to be watched by Splunk Operator e.x "namespace1,namespace2", must have cluster-wide access
+      # Default watches the entire cluster
+      watchNamespaces: ""
+
+      # Add annotations to Splunk Operator deployment
+      annotations: {}
+
+      # Add pod annotations to Splunk Operator deployment pod
+      podAnnotations: {}
+
+      containerSecurityContext:
+        allowPrivilegeEscalation: false
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+        runAsNonRoot: true
+
+      # Set usage of host networking and namespace
+      # reference: https://kubernetes.io/docs/concepts/security/pod-security-policy/#host-namespaces
+      hostNetwork: false
+      hostPID: false
+      hostIPC: false
+
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          port: 8081
+        initialDelaySeconds: 15
+        periodSeconds: 20
+
+      readinessProbe:
+        httpGet:
+          path: /readyz
+          port: 8081
+        initialDelaySeconds: 5
+        periodSeconds: 10
+
+      service:
+        type: ClusterIP
+        ports:
+          - name: http
+            port: 80
+            protocol: TCP
+            targetPort: http
+
+      # Set resource requests and limits for manager container
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 2000Mi
+        requests:
+          cpu: 1000m
+          memory: 2000Mi
+
+      # Specify nodes that can schedule the Splunk Operator pod
+      # reference: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+      nodeSelector: {}
+
+      # Specify Splunk Operator pod tolerations
+      # reference: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+      tolerations: []
+
+      # Define affinity scheduling rules
+      # reference: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#affinity-v1-core
+      affinity: {}
+
+      # Set duration in seconds the pod needs to terminate gracefully
+      # reference: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.20/#pod-v1-core
+      terminationGracePeriodSeconds: 10
+
+      # Specify volumes for Splunk Operator pod, append additional volumes to list
+      # reference: https://kubernetes.io/docs/concepts/storage/volumes/
+      volumes:
+        - name: app-staging
+          persistentVolumeClaim:
+            claimName: splunk-operator-app-download
+
+      volumeMounts:
+        - mountPath: /opt/splunk/appframework/
+          name: app-staging

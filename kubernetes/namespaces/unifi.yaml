@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: unifi
-  annotations:
-    splunk.com/index: k8s_apps

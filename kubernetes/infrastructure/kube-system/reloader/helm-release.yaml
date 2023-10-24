@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=../../../../schemas/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: reloader
+  namespace: kube-system
+spec:
+  interval: 1h0m0s
+  chart:
+    spec:
+      chart: reloader
+      version: 1.0.36
+      interval: 1h0m0s
+      sourceRef:
+        kind: HelmRepository
+        name: reloader
+        namespace: flux-system
+  values:
+    fullnameOverride: reloader
+    deployment:
+      containerSecurityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: false
+      rbac:
+        enabled: true
+      securityContext:
+        automountServiceAccountToken: false
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault

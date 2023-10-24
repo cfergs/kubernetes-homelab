@@ -14,12 +14,15 @@ spec:
       labels:
         name: mylar3
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: comics-volume
           persistentVolumeClaim:
@@ -47,7 +50,7 @@ spec:
             sizeLimit: 256Mi
       containers:
         - name: mylar3
-          image: ghcr.io/cdloh/mylar3:0.7.2@sha256:05ed542e48df9aa722fc20472d2b34818a7848f87b3f11b8463435a2181f1d8b
+          image: ghcr.io/cdloh/mylar3:0.7.5@sha256:88a6473fd11cfe053f0fbd6b9bef768c1fb6d39da374347c6eb2b151e24bd9dd
           command: ["/bin/sh"]
           args: ["-c", "/app/entrypoint.sh"]
           ports:

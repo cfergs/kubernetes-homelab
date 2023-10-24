@@ -1,0 +1,180 @@
+# yaml-language-server: $schema=../../../../schemas/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  annotations:
+    metadata.weave.works/description: This is the Weave GitOps Dashboard. It provides
+      a simple way to get insights into your GitOps workloads.
+  name: weave-gitops
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: weave-gitops
+      sourceRef:
+        kind: HelmRepository
+        name: weaveworks
+        namespace: flux-system
+      version: 4.0.31 # v0.33.0
+  install:
+    remediation:
+      retries: 3
+  interval: 1h
+  maxHistory: 2
+  timeout: 10m
+  uninstall:
+    keepHistory: false
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    additionalArgs:
+      - --auth-methods=oidc
+      # can't do custom-oidc-scopes, oidc-groups-claim & oidc-username-claim if using a secret via args. Do via secret itself
+      # https://github.com/weaveworks/weave-gitops/issues/3300
+
+    annotations:
+      secret.reloader.stakater.com/reload: oidc-auth
+
+    envVars:
+      - name: WEAVE_GITOPS_FEATURE_OIDC_BUTTON_LABEL
+        value: "Login with AzureAD"
+      - name: WEAVE_GITOPS_FEATURE_TELEMETRY
+        value: "false"
+
+    ingress:
+      enabled: true
+      className: nginx-internal
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-issuer
+      hosts:
+        - host: flux.${DOMAIN_NAME}
+          paths:
+            - path: /
+              pathType: Prefix
+
+    rbac:
+      impersonationResources: ["groups"]
+      impersonationResourceNames: ["weave-gitops-admin", "weave-gitops-readonly"]
+
+    securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+      runAsUser: 10000
+      readOnlyRootFilesystem: true
+
+    serviceAccount:
+      create: true
+      name: weave-gitops
+---
+##########################################
+# https://github.com/weaveworks/weave-gitops/issues/2696
+# fix - failed creating user client to pool: failed creating client for cluster=Default: could not create RESTMapper from config: unknown
+##########################################
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: weave-gitops-patch
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - users
+    verbs:
+      - impersonate
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: weave-gitops-patch
+  annotations:
+    checkov.io/skip1: CKV2_K8S_3=No ServiceAccount/Node should have `impersonate` permissions for groups/users/service-accounts # needed for azure OIDC to work
+subjects:
+  - kind: ServiceAccount
+    name: weave-gitops
+    namespace: flux-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: weave-gitops-patch
+---
+##########################################
+# Admin only actions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: weave-gitops-admin-cluster-role
+rules:
+  - apiGroups: ["helm.toolkit.fluxcd.io"]
+    resources: ["helmreleases"]
+    verbs: ["patch"]
+  - apiGroups: ["infra.contrib.fluxcd.io"]
+    resources: ["terraforms"]
+    verbs: ["patch"]
+  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+    resources: ["kustomizations"]
+    verbs: ["patch"]
+  - apiGroups: ["source.toolkit.fluxcd.io"]
+    resources: ["buckets", "helmcharts", "gitrepositories", "helmrepositories", "ocirepositories"]
+    verbs: ["patch"]
+---
+# Read only actions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: weave-gitops-readonly-cluster-role
+  annotations:
+    checkov.io/skip1: CKV_K8S_49=Minimize wildcard use in Roles and ClusterRoles
+    # HelmReleases store state in secrets, and you can't go granular and deny access to other secrets as their everywhere. Dumb
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+---
+# Bind the weave-gitops-admin-cluster-role to the weave-gitops-admin group
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: weave-gitops-admin-binding
+subjects:
+  - kind: Group
+    name: weave-gitops-admin
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: weave-gitops-admin-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Bind the weave-gitops-readonly-cluster-role to the weave-gitops-admin group
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: weave-gitops-admin-readonly-binding
+subjects:
+  - kind: Group
+    name: weave-gitops-admin
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: weave-gitops-readonly-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Bind the weave-gitops-readonly-cluster-role to the weave-gitops-readonly group
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: weave-gitops-readonly-binding
+subjects:
+  - kind: Group
+    name: weave-gitops-readonly
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: weave-gitops-readonly-cluster-role
+  apiGroup: rbac.authorization.k8s.io

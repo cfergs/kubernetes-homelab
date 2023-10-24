@@ -1,0 +1,251 @@
+---
+# Source: splunk-connect-for-syslog/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: syslog
+  namespace: monitor
+  labels:
+    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    app.kubernetes.io/name: splunk-connect-for-syslog
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "input"
+    app.kubernetes.io/part-of: "Splunk"
+---
+# Source: splunk-connect-for-syslog/templates/config-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: syslog-config
+  namespace: monitor
+  labels:
+    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    app.kubernetes.io/name: splunk-connect-for-syslog
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "input"
+    app.kubernetes.io/part-of: "Splunk"
+data:
+  app-mikrotik_routeros.conf: |-
+    #/opt/sc4s/local/config/app-parsers/app-vps-mikrotik_routeros.conf
+
+    application app-vps-test-mikrotik_routeros[sc4s-vps] {
+      filter {
+              host("steffy" type(string) flags(prefix))
+          };
+          parser {
+              p_set_netsource_fields(
+                  vendor('mikrotik')
+                  product('routeros')
+              );
+          };
+      };
+---
+# Source: splunk-connect-for-syslog/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: syslog-tcp
+  namespace: monitor
+  annotations:
+    metallb.universe.tf/allow-shared-ip: "splunk-connect"
+    metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}
+  labels:
+    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    app.kubernetes.io/name: splunk-connect-for-syslog
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "input"
+    app.kubernetes.io/part-of: "Splunk"
+
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+    - port: 514
+      targetPort: bsd-dflt-tcp
+      protocol: TCP
+      name: bsd-dflt-tcp
+#    - port: 6514
+#      targetPort: bsd-dflt-tls
+#      protocol: TCP
+#      name: bsd-dflt-tls
+#    - port: 601
+#      targetPort: ietf-dflt-tcp
+#      protocol: TCP
+#      name: ietf-dflt-tcp
+#    - port: 5425
+#      targetPort: ietf-dflt-tls
+#      protocol: TCP
+#      name: ietf-dflt-tls
+  selector:
+    app.kubernetes.io/name: splunk-connect-for-syslog
+    app.kubernetes.io/instance: release-name
+---
+# Source: splunk-connect-for-syslog/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: syslog-udp
+  namespace: monitor
+  annotations:
+    metallb.universe.tf/allow-shared-ip: "splunk-connect"
+    metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}
+  labels:
+    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    app.kubernetes.io/name: splunk-connect-for-syslog
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "input"
+    app.kubernetes.io/part-of: "Splunk"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+    - port: 514
+      targetPort: bsd-dflt-udp
+      protocol: UDP
+      name: bsd-dflt-udp
+#    - port: 601
+#      targetPort: ietf-dflt-udp
+#      protocol: UDP
+#      name: ietf-dflt-udp
+  selector:
+    app.kubernetes.io/name: splunk-connect-for-syslog
+    app.kubernetes.io/instance: release-name
+---
+# Source: splunk-connect-for-syslog/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: syslog
+  namespace: monitor
+  annotations:
+    checkov.io/skip1: CKV_K8S_22=Use read-only filesystem for containers where possible - this will break container
+    checkov.io/skip2: CKV_K8S_35=Prefer using secrets as files over secrets as environment variables
+    checkov.io/skip3: CKV_K8S_38=Ensure that Service Account Tokens are only mounted where necessary
+    secret.reloader.stakater.com/reload: splunk-monitor-secret
+  labels:
+    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    app.kubernetes.io/name: splunk-connect-for-syslog
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: "input"
+    app.kubernetes.io/part-of: "Splunk"
+spec:
+  serviceName: syslog
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: splunk-connect-for-syslog
+      app.kubernetes.io/instance: release-name
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: splunk-connect-for-syslog
+        app.kubernetes.io/instance: release-name
+    spec:
+      serviceAccountName: syslog
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: splunk-connect-for-syslog
+          securityContext:
+            capabilities:
+              drop:
+              - ALL
+          image: "ghcr.io/splunk/splunk-connect-for-syslog/container2:2.49.3"
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: SC4S_SNMP_TRAP_COLLECT
+            value: "no"
+          - name: SC4S_CONTAINER_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: SC4S_RUNTIME_ENV
+            value: "k8s"
+          - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_URL
+            value: "https://splunk-hec.${DOMAIN_NAME}/services/collector/event"
+          - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: hec_token
+                name: splunk-monitor-secret
+          - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_TLS_VERIFY
+            value: "no"
+          - name: SC4S_DEST_SPLUNK_HEC_DEFAULT_DISKBUFF_ENABLE
+            value: "no"
+          - name: SC4S_SOURCE_TLS_ENABLE
+            value: "no"
+
+          ports:
+            - name: bsd-dflt-tcp
+              containerPort: 514
+              protocol: TCP
+            - name: bsd-dflt-udp
+              containerPort: 514
+              protocol: UDP
+            #- name: bsd-dflt-tls
+            #  containerPort: 6514
+            #  protocol: TCP
+            #- name: ietf-dflt-tcp
+            #  containerPort: 601
+            #  protocol: TCP
+            #- name: ietf-dflt-udp
+            #  containerPort: 601
+            #  protocol: UDP
+            #- name: ietf-dflt-tls
+            #  containerPort: 5425
+            #  protocol: TCP
+            - name: health
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+          - name: config
+            mountPath: /etc/syslog-ng/conf.d/configmap/config/app_parsers
+            readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 3
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            failureThreshold: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+          resources:
+            {}
+      volumes:
+        - name: config
+          configMap:
+            name: syslog-config
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - release-name
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - splunk-connect-for-syslog
+              topologyKey: "kubernetes.io/hostname"

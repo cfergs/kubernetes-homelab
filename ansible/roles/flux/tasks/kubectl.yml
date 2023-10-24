@@ -1,0 +1,45 @@
+---
+- name: Kubectl | Get Latest Version
+  ansible.builtin.set_fact:
+    kubectl_latest: "{{ lookup('url', 'https://dl.k8s.io/release/stable.txt') }}"
+
+- name: Kubectl | Download Binary
+  ansible.builtin.get_url:
+    url: "https://dl.k8s.io/release/{{ kubectl_latest }}/bin/{{ ansible_facts['system'] | lower }}/{{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else 'arm64' }}/kubectl"
+    dest: /tmp
+    mode: 0644
+
+- name: Kubectl | Copy binary to /bin
+  ansible.builtin.copy:
+    src: /tmp/kubectl
+    dest: /usr/local/bin
+    owner: root
+    group: "{{ 'admin' if ansible_facts['system'] == 'Darwin' else 'root' }}"
+    mode: 0755
+
+# kubectl check if existing config exists on localhost
+- name: Kubectl | Check if updated /tmp/kubeconfig file exists
+  ansible.builtin.stat:
+    path: /tmp/kubeconfig
+  register: result
+
+- name: Kubectl | Check if .kube folder exists
+  ansible.builtin.file:
+    path: '{{ home_path }}/.kube'
+    state: directory
+    mode: 0755
+
+- name: Kubectl | Updating config file
+  ansible.builtin.copy:
+    src: /tmp/kubeconfig
+    dest: '{{ home_path }}/.kube/config'
+    backup: true
+    mode: 0644
+  when:
+    - result.stat.exists
+    - (result.stat.isdir is undefined) or (not result.stat.isdir)
+
+- name: Kubectl | Remove tmp file
+  ansible.builtin.file:
+    path: /tmp/kubeconfig
+    state: absent

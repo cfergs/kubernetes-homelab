@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: repositories
+  namespace: flux-system
+spec:
+  interval: 1h0m0s
+  path: ./kubernetes/repositories
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system

@@ -1,0 +1,11 @@
+---
+# https://docs.k3s.io/helm
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: prometheus-crds
+  namespace: kube-system
+spec:
+  repo: https://prometheus-community.github.io/helm-charts
+  chart: prometheus-operator-crds
+  version: {{ prometheus_crd_version }}

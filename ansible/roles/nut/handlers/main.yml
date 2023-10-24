@@ -1,0 +1,35 @@
+---
+- name: Restart NUT Controller
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    daemon_reload: true
+    enabled: true
+    state: restarted
+  with_items:
+    - nut-driver
+    - nut-monitor
+    - nut-server
+  become: true
+
+- name: Restart NUT Subscriber
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - nut-monitor
+  become: true
+
+- name: Restart upsmon service
+  ansible.builtin.service:
+    name: nut-monitor
+    state: restarted
+  become: true
+
+- name: Restart udev # noqa no-changed-when
+  ansible.builtin.shell:
+    cmd: udevadm control --reload-rules && udevadm trigger
+  become: true
+
+- name: Update Grub # noqa no-changed-when
+  ansible.builtin.command: update-grub
+  become: true

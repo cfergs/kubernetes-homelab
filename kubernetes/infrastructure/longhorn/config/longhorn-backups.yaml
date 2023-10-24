@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=../../../../schemas/recurringjob_v1beta2.json
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: backup-daily-12hrs
+  namespace: longhorn-system
+spec:
+  cron: "0 2/12 * * ?"
+  task: "backup"
+  groups:
+    - default
+  retain: 60 # retain 30 days of backups
+  concurrency: 2

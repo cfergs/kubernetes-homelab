@@ -14,12 +14,15 @@ spec:
       labels:
         name: prowlarr
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: prowlarr-volume
           persistentVolumeClaim:
@@ -30,7 +33,7 @@ spec:
             sizeLimit: 64Mi
       containers:
         - name: prowlarr
-          image: ghcr.io/onedr0p/prowlarr-develop:1.6.3.3608@sha256:6b6a06839106cebfc0260bee61dfbcc7bf6c6d1b2a65270d3b079f57d372fdc1
+          image: ghcr.io/onedr0p/prowlarr-develop:1.8.6.3946@sha256:c30d7035f031bc2ab75587a2bf156e60ff3b16ea9196915c814241bdbb7245c7
           ports:
             - containerPort: 9696
           env:

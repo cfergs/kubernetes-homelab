@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-downloads-qbittorrent
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/downloads/qbittorrent
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true
+---
+# yaml-language-server: $schema=../../../schemas/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-downloads-sabnzbd
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infrastructure-ingress-external
+  # additional inheritance from infrastructure-ingress-external
+  # - cluster-settings
+  # - namespaces
+  interval: 1h0m0s
+  path: ./kubernetes/apps/downloads/sabnzbd
+  postBuild: # https://github.com/fluxcd/helm-operator/issues/120
+    substitute: {}
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 5m0s
+  wait: true

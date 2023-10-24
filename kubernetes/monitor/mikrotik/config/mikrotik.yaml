@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    configmap.reloader.stakater.com/reload: mikrotik-core-config
+    secret.reloader.stakater.com/reload: mikrotik-config
+  name: mikrotik
+  namespace: monitor
+  labels:
+    app: mikrotik
+spec:
+  serviceName: mikrotik
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mikrotik
+  template:
+    metadata:
+      labels:
+        app: mikrotik
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: mikrotik
+          image: ghcr.io/akpw/mktxp:gha-5473726165@sha256:c53416a4cea2bc8ca80971258cfee392590746547854cb1fff4419aec0f50a31
+          ports:
+            - name: http
+              containerPort: 49090
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: mikrotik-config
+              mountPath: /mktxp/mktxp.conf
+              subPath: mktxp.conf
+            - name: mikrotik-core-config
+              mountPath: /mktxp/_mktxp.conf
+              subPath: _mktxp.conf
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10111
+        runAsGroup: 10111
+        fsGroup: 10111
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: mikrotik-config
+          secret:
+            secretName: mikrotik-config
+        - name: mikrotik-core-config
+          configMap:
+            name: mikrotik-core-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mikrotik
+  namespace: monitor
+spec:
+  ports:
+    - name: http
+      port: 49090
+      protocol: TCP
+      targetPort: 49090
+  selector:
+    app: mikrotik

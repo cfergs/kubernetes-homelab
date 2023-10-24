@@ -1,0 +1,86 @@
+---
+# the following things are needed as either pre-requirements to k3s or useful tweaks
+
+############################################
+# modemmanager interferes with zigbee2mqtt #
+# so lets remove it                        #
+############################################
+
+- name: Uninstall modemmanager
+  become: true
+  ansible.builtin.apt:
+    name: modemmanager
+    state: absent
+
+- name: Unmark ModemManager Service
+  become: true
+  ansible.builtin.systemd:
+    masked: false
+    name: ModemManager.service
+
+- name: Remove ModemManager systemd files
+  become: true
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ item }}"
+    state: absent
+  with_items:
+    - ModemManager
+    - dbus-org.freedesktop.ModemManager1.service
+
+############################################
+- name: Install software
+  become: true
+  ansible.builtin.apt:
+    name:
+      - net-tools # for network troubleshooting
+      - nfs-common # without this longhorn ReadWriteMany volumes wont work
+    update_cache: true
+
+- name: Modify Journalctl size # by default it uses 4gb of space
+  become: true
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/journald.conf
+    block: |
+      SystemMaxUse=512M
+  notify: Restart journalctl
+
+- name: Adjust timeout
+  become: true
+  ansible.builtin.blockinfile:
+    path: /etc/systemd/system.conf
+    block: |
+          DefaultTimeoutStartSec=30s
+          DefaultTimeoutStopSec=30s
+
+- name: Update Multipath file # https://longhorn.io/kb/troubleshooting-volume-with-multipath/
+  become: true
+  ansible.builtin.copy:
+    src: multipath.conf
+    dest: /etc/multipath.conf
+    owner: root
+    group: root
+    mode: '0644'
+    backup: true
+  notify: Restart multipath systemd
+
+# https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
+# https://splunk.github.io/splunk-connect-for-syslog/main/gettingstarted/quickstart_guide/
+# Leveraged by Cloudflared & splunk connect for syslog
+- name: Ensure values are set correctly in sysctl
+  become: true
+  ansible.posix.sysctl:
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
+    state: present
+    sysctl_set: true
+    reload: true
+  loop:
+    - name: net.core.rmem_default
+      value: '17039360'
+    - name: net.core.rmem_max
+      value: '17039360'
+    # following from https://coderise.io/kubernetes-system-io-ioexception-the-configured-user-limit-on-the-number-of-inotify-instances-has-been-reached/
+    - name: fs.inotify.max_user_instances
+      value: '524288' # default is 128 on ubuntu
+    - name: fs.inotify.max_user_watches
+      value: '524288' # default is ~58349 on ubuntu

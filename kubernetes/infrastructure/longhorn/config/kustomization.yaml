@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - longhorn-backups.yaml
+  - longhorn-default-settings.yaml
+  - longhorn-servicemonitor.yaml
+  - longhorn-snapshot.yaml
+  - longhorn-snapshot-class.yaml
+  - secret.yaml

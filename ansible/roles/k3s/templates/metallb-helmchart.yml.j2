@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+---
+# https://docs.k3s.io/helm
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: metallb
+  namespace: kube-system
+spec:
+  repo: https://metallb.github.io/metallb
+  chart: metallb
+  version: {{ metallb_version }}
+  targetNamespace: metallb-system
+  valuesContent: |-
+    prometheus:
+      rbacPrometheus: false
+      secureMetricsPort: 9120
+      prometheusRule:
+        enabled: true
+      serviceMonitor:
+        enabled: true
+    speaker:
+      frr:
+        enabled: false

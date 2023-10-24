@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../../../schemas/volume_v1beta2.json
+apiVersion: longhorn.io/v1beta2
+kind: Volume
+metadata:
+  name: unifi-volume
+  namespace: longhorn-system
+spec:
+  accessMode: rwo
+  engineImage: longhornio/longhorn-engine:v1.5.1
+  frontend: blockdev
+  replicaAutoBalance: best-effort
+  size: "5368709120" # 5GB
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: unifi-volume-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  csi:
+    driver: driver.longhorn.io
+    fsType: ext4
+    volumeHandle: unifi-volume
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: unifi-volume-pvc
+  namespace: networking
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn-static
+  volumeMode: Filesystem
+  volumeName: unifi-volume-pv

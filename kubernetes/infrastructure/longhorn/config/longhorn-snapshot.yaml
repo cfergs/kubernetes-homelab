@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=../../../../schemas/recurringjob_v1beta2.json
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: daily-1am
+  namespace: longhorn-system
+spec:
+  cron: "0 1 * * *"
+  task: "snapshot"
+  groups:
+    - default
+  retain: 2
+  concurrency: 2

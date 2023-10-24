@@ -1,0 +1,95 @@
+# yaml-language-server: $schema=../../../../schemas/externalsecret_v1beta1.json
+# needed because mktxp.conf has a password in it
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mikrotik-config
+  namespace: monitor
+spec:
+  refreshInterval: 24h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: azure-keyvault
+  target:
+    name: mikrotik-config
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        mktxp.conf: |
+          [steffy]
+            enabled = True                  # turns metrics collection for this RouterOS device on / off
+
+            hostname = 192.168.0.1          # RouterOS IP address
+            port = 8729                     # RouterOS API / API-SSL service port
+
+            username = prometheus-read-only # RouterOS user, needs to have 'read' and 'api' permissions
+            password = {{ .password }}
+
+            use_ssl = True                  # enables connection via API-SSL servis
+            no_ssl_certificate = True       # enables API_SSL connect without router SSL certificate
+            ssl_certificate_verify = False  # turns SSL certificate verification on / off
+
+            installed_packages = True       # Installed packages
+            dhcp = True                     # DHCP general metrics
+            dhcp_lease = True               # DHCP lease metrics
+
+            connections = True              # IP connections metrics
+            connection_stats = True         # Open IP connections metrics
+
+            pool = True                     # Pool metrics
+            interface = True                # Interfaces traffic metrics
+
+            firewall = True                 # IPv4 Firewall rules traffic metrics
+            ipv6_firewall = False           # IPv6 Firewall rules traffic metrics
+            ipv6_neighbor = False           # Reachable IPv6 Neighbors
+
+            poe = False                     # POE metrics
+            monitor = True                  # Interface monitor metrics
+            netwatch = False                # Netwatch metrics
+            public_ip = True                # Public IP metrics
+            route = True                    # Routes metrics
+            wireless = False                # WLAN general metrics
+            wireless_clients = False        # WLAN clients metrics
+            capsman = False                 # CAPsMAN general metrics
+            capsman_clients = False         # CAPsMAN clients metrics
+
+            user = True                     # Active Users metrics
+            queue = False                   # Queues metrics
+
+            remote_dhcp_entry = None        # An MKTXP entry for remote DHCP info resolution (capsman/wireless)
+
+            use_comments_over_names = True  # when available, forces using comments over the interfaces names
+
+            check_for_updates = True       # check for available ROS updates
+  data:
+    - secretKey: password
+      remoteRef:
+        key: mikrotik-prometheus-password
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mikrotik-core-config
+  namespace: monitor
+data:
+  _mktxp.conf: |
+    [MKTXP]
+    port = 49090
+    socket_timeout = 2
+
+    initial_delay_on_failure = 120
+    max_delay_on_failure = 900
+    delay_inc_div = 5
+
+    bandwidth = False               # Turns metrics bandwidth metrics collection on / off
+    bandwidth_test_interval = 420   # Interval for colllecting bandwidth metrics
+    minimal_collect_interval = 5    # Minimal metric collection interval
+
+    verbose_mode = False            # Set it on for troubleshooting
+
+    fetch_routers_in_parallel = False   # Set to True if you want to fetch multiple routers parallel
+    max_worker_threads = 5              # Max number of worker threads that can fetch routers. Meaningless if fetch_routers_in_parallel is set to False
+
+    max_scrape_duration = 10            # Max duration of individual routers' metrics collection
+    total_max_scrape_duration = 30      # Max overall duration of all metrics collection

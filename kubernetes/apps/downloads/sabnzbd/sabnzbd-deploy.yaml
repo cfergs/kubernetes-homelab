@@ -16,12 +16,15 @@ spec:
       labels:
         app: sabnzbd
     spec:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
       volumes:
         - name: sabnzbd-volume
           persistentVolumeClaim:
@@ -35,7 +38,7 @@ spec:
             sizeLimit: 64Mi
       containers:
         - name: sabnzbd
-          image: ghcr.io/onedr0p/sabnzbd:4.0.2@sha256:3b75ba1498efa9885376e2afad52561452622cae105a55f1b5214bd5b408df13
+          image: ghcr.io/onedr0p/sabnzbd:4.0.3@sha256:b338769c0125c1d966b9dde867491197e321bb95aa6fbb5fbc3cbcbf0be2ca54
           ports:
             - containerPort: 8080
           env:
