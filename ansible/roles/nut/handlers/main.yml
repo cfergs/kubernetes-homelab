@@ -29,3 +29,7 @@
   ansible.builtin.shell:
     cmd: udevadm control --reload-rules && udevadm trigger
   become: true
+
+- name: Update Grub # noqa no-changed-when
+  ansible.builtin.command: update-grub
+  become: true

@@ -125,3 +125,17 @@
   when:
     - nut_controller_node is defined
     - nut_controller_node
+
+## Eaton UPS fix - will require a reboot to apply ##
+# https://github.com/networkupstools/nut/issues/630
+# https://networkupstools.org/docs/FAQ.html#_why_does_my_eaton_5e_usb_ups_on_linux_connect_but_quickly_disconnects_soon
+- name: NUT Controller | Eaton Grub Fix
+  become: true
+  ansible.builtin.lineinfile:
+    dest: /etc/default/grub
+    regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="(.*)"'
+    line: GRUB_CMDLINE_LINUX_DEFAULT="usbhid.quirks=0x0463:0xffff:0x08"
+  notify: Update Grub
+  when:
+    - nut_controller_node is defined
+    - nut_controller_node
