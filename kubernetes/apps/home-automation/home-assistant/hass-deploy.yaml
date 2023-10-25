@@ -36,7 +36,7 @@ spec:
             claimName: hass-volume-pvc
       containers:
         - name: homeassistant
-          image: ghcr.io/home-assistant/home-assistant:2023.6.2@sha256:d23d82c22c4dc97a3d0c187d7cd9e8370033798222683c45b8b80a0ad8a81620
+          image: ghcr.io/home-assistant/home-assistant:2023.10.5@sha256:40da971cc50caf4ceb12cbe951f58585ba8de5eec6164b202a72aaf10be92d06
           ports:
             - containerPort: 8123
           env:

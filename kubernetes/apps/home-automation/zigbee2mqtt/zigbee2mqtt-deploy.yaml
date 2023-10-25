@@ -30,7 +30,7 @@ spec:
             claimName: zigbee2mqtt-volume-pvc
       containers:
         - name: zigbee2mqtt
-          image: ghcr.io/koenkk/zigbee2mqtt:1.31.2@sha256:1da90ab94c9935eecc766cdcec5551510b45a3371d8a648fb7c07be3b38f75a1
+          image: ghcr.io/koenkk/zigbee2mqtt:1.33.1@sha256:d8d0abdc8f7fbe280ba4627c8e7162e019f17541e233aecd1afd32b9a18cbd00
           ports:
             - containerPort: 8080
           env:

@@ -41,7 +41,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: qbittorrent
-          image: ghcr.io/onedr0p/qbittorrent:4.5.5@sha256:92a0d513eaa8e56c6a4b517ae79ecd28e5fc6cc23fd969f9f5939bbcd05c26ff
+          image: ghcr.io/onedr0p/qbittorrent:4.6.0@sha256:6dc76a5df8fc0a660d4ff3ec961e4133c99f27e1f84559233cc6d4d128c3e926
           ports:
             - name: webui
               containerPort: 8080
