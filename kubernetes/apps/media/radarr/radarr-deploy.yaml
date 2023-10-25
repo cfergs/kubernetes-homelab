@@ -47,6 +47,8 @@ spec:
           env:
             - name: RADARR__ANALYTICS_ENABLED
               value: "False"
+            - name: RADARR__AUTHENTICATION_METHOD
+              value: External
             - name: RADARR__URL_BASE
               value: /radarr
           volumeMounts:
