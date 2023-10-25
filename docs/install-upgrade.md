@@ -34,17 +34,17 @@
 ## Kubernetes Upgrade
 1. Paste in azure_client_id, azure_secret, azure_tenant and azure_keyvault variables
 2. Update `k3s_release_version` in `ansible/inventory/inventory-prod.yml`
-3. Update Kubernetes, run `make ansible-k3s-prod`
+3. Update Kubernetes, run `make ansible-k3s`
 
 ## Flux Upgrade
 1. Paste in azure_client_id, azure_secret, azure_tenant and azure_keyvault variables
 2. Update `flux_version` and `weave_gitops_version` values in `ansible/inventory/inventory-prod.yml`
-3. Update Flux, run `make ansible-flux-prod`
+3. Update Flux, run `make ansible-flux`
 
 ## Longhorn Upgrade
 1. Read doco for any changes
 2. Upgrade longhorn `k3s_server_manifests_urls` value in `ansible/roles/k3s/vars/main.yml`
-3. Run `make ansible-k3s-prod`
+3. Run `make ansible-k3s`
 4. Confirm upgrade was successful and new version is running (check longhorn mgmt url)
 5. When complete search repo and update `engineImage` value to new version
 6. Raise a PR and redeploy
