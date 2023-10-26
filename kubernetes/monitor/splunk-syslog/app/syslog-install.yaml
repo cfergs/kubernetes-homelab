@@ -6,10 +6,10 @@ metadata:
   name: syslog
   namespace: monitor
   labels:
-    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    helm.sh/chart: splunk-connect-for-syslog-3.5.1
     app.kubernetes.io/name: splunk-connect-for-syslog
     app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: "input"
     app.kubernetes.io/part-of: "Splunk"
@@ -21,10 +21,10 @@ metadata:
   name: syslog-config
   namespace: monitor
   labels:
-    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    helm.sh/chart: splunk-connect-for-syslog-3.5.1
     app.kubernetes.io/name: splunk-connect-for-syslog
     app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: "input"
     app.kubernetes.io/part-of: "Splunk"
@@ -54,10 +54,10 @@ metadata:
     metallb.universe.tf/allow-shared-ip: "splunk-connect"
     metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}
   labels:
-    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    helm.sh/chart: splunk-connect-for-syslog-3.5.1
     app.kubernetes.io/name: splunk-connect-for-syslog
     app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: "input"
     app.kubernetes.io/part-of: "Splunk"
@@ -70,18 +70,6 @@ spec:
       targetPort: bsd-dflt-tcp
       protocol: TCP
       name: bsd-dflt-tcp
-#    - port: 6514
-#      targetPort: bsd-dflt-tls
-#      protocol: TCP
-#      name: bsd-dflt-tls
-#    - port: 601
-#      targetPort: ietf-dflt-tcp
-#      protocol: TCP
-#      name: ietf-dflt-tcp
-#    - port: 5425
-#      targetPort: ietf-dflt-tls
-#      protocol: TCP
-#      name: ietf-dflt-tls
   selector:
     app.kubernetes.io/name: splunk-connect-for-syslog
     app.kubernetes.io/instance: release-name
@@ -96,10 +84,10 @@ metadata:
     metallb.universe.tf/allow-shared-ip: "splunk-connect"
     metallb.universe.tf/loadBalancerIPs: ${SYSLOG_IP}
   labels:
-    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    helm.sh/chart: splunk-connect-for-syslog-3.5.1
     app.kubernetes.io/name: splunk-connect-for-syslog
     app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: "input"
     app.kubernetes.io/part-of: "Splunk"
@@ -111,10 +99,6 @@ spec:
       targetPort: bsd-dflt-udp
       protocol: UDP
       name: bsd-dflt-udp
-#    - port: 601
-#      targetPort: ietf-dflt-udp
-#      protocol: UDP
-#      name: ietf-dflt-udp
   selector:
     app.kubernetes.io/name: splunk-connect-for-syslog
     app.kubernetes.io/instance: release-name
@@ -131,10 +115,10 @@ metadata:
     checkov.io/skip3: CKV_K8S_38=Ensure that Service Account Tokens are only mounted where necessary
     secret.reloader.stakater.com/reload: splunk-monitor-secret
   labels:
-    helm.sh/chart: splunk-connect-for-syslog-3.1.5
+    helm.sh/chart: splunk-connect-for-syslog-3.5.1
     app.kubernetes.io/name: splunk-connect-for-syslog
     app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "3.1.5"
+    app.kubernetes.io/version: "3.5.1"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: "input"
     app.kubernetes.io/part-of: "Splunk"
@@ -161,7 +145,7 @@ spec:
             capabilities:
               drop:
               - ALL
-          image: "ghcr.io/splunk/splunk-connect-for-syslog/container2:2.49.3"
+          image: "ghcr.io/splunk/splunk-connect-for-syslog/container3:3.5.1"
           imagePullPolicy: IfNotPresent
           env:
           - name: SC4S_SNMP_TRAP_COLLECT
@@ -193,18 +177,6 @@ spec:
             - name: bsd-dflt-udp
               containerPort: 514
               protocol: UDP
-            #- name: bsd-dflt-tls
-            #  containerPort: 6514
-            #  protocol: TCP
-            #- name: ietf-dflt-tcp
-            #  containerPort: 601
-            #  protocol: TCP
-            #- name: ietf-dflt-udp
-            #  containerPort: 601
-            #  protocol: UDP
-            #- name: ietf-dflt-tls
-            #  containerPort: 5425
-            #  protocol: TCP
             - name: health
               containerPort: 8080
               protocol: TCP
