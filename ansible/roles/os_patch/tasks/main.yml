@@ -3,24 +3,43 @@
     autoremove: true
     update_cache: yes
     upgrade: full
+  when: just_reboot is undefined
 
 - name: Check if a reboot is needed
   ansible.builtin.stat:
     path: /var/run/reboot-required
   register: reboot_required_file
 
+# Fixes error: "cannot evict pod as it would violate the pods disruption budget"
+# Longhorn is supposed to delete pdb as part of draining and allowing setting "node-drain-policy: always-allow" but won't.
+# Deleting pdb won't affect placement of pods and its recreated when longhorn reinitialises upon uncordon
+- name: Delete Pod Disruption Budgets # noqa no-changed-when command-instead-of-shell partial-become[task]
+  ansible.builtin.shell: |
+    set -o pipefail
+    kubectl get pdb -A -o json | jq -r '.items[] | select(.spec.selector.matchLabels."longhorn.io/component" == "instance-manager" and .spec.selector.matchLabels."longhorn.io/node" == "{{ inventory_hostname | lower }}")' \
+    | kubectl delete -f -
+  become_user: "{{ local_username }}"
+  delegate_to: localhost
+  when: reboot_required_file.stat.exists or just_reboot is defined
+
 - name: Drain node # noqa no-changed-when command-instead-of-shell partial-become[task]
   ansible.builtin.shell: |
     kubectl drain "{{ inventory_hostname | lower }}" \
-    --ignore-daemonsets \
     --delete-emptydir-data \
     --force \
-    --grace-period=10 \
-    --pod-selector=app!=csi-attacher,app!=csi-provisioner,app!=longhorn-admission-webhook,app!=longhorn-conversion-webhook,app!=longhorn-driver-deployer
+    --ignore-daemonsets \
+    --pod-selector="{{ pod_selectors | join(',') }}"
   become_user: "{{ local_username }}"
   delegate_to: localhost
+  vars:
+    pod_selectors:
+      - app!=csi-attacher
+      - app!=csi-provisioner
+      - app!=longhorn-admission-webhook
+      - app!=longhorn-conversion-webhook
+      - app!=longhorn-driver-deployer
   register: swamp_drained
-  when: reboot_required_file.stat.exists or just_reboot == "true"
+  when: reboot_required_file.stat.exists or just_reboot is defined
 
 - name: Reboot node
   ansible.builtin.reboot:
@@ -30,7 +49,7 @@
     pre_reboot_delay: 0
     post_reboot_delay: 30
     test_command: uptime
-  when: (reboot_required_file.stat.exists and swamp_drained.rc == 0) or just_reboot == "true"
+  when: (reboot_required_file.stat.exists and swamp_drained.rc == 0) or just_reboot is defined
 
 # only when all servers patched
 - name: Uncordon Node # noqa partial-become[task]

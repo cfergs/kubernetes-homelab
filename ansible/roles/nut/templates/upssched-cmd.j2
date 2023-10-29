@@ -18,12 +18,12 @@ case $1 in
 		logger -t upssched-cmd "LOWBATTERY: EATON, $CHMSG"
 		/etc/pushover/pushover.sh -T "UPS LOWBATTERY: EATON" -m "SHUTDOWN OF HOSTS TO COMMENCE SHORTLY. $CHMSG" -p 2
 		upscmd -u {{ nut_user_controller_name }} -p {{ nut_user_controller_password }} eaton@{{ nut_controller_address }} beeper.enable
-		# cordon kube nodes
-		kubectl cordon monty crackers mindy --kubeconfig=/etc/rancher/k3s/kubedrainconfig
-		logger -t upssched-cmd "ONBATTERY: K8s Nodes Cordoned"
-		/etc/pushover/pushover.sh -T "UPS ONBATTERY: NODES CORDONED" -m "nodes cordoned" -p 1
+		# delete pod disruption budgets
+		kubectl get pdb -A -o json | jq -r '.items[] | select(.spec.selector.matchLabels."longhorn.io/component" == "instance-manager" | kubectl delete -f - --kubeconfig=/etc/rancher/k3s/kubedrainconfig
+		logger -t upssched-cmd "ONBATTERY: K8s pod disruption policies deleted"
+		/etc/pushover/pushover.sh -T "UPS ONBATTERY: POD DISRUPTION POLICIES DELETED" -m "pod disruption policies deleted" -p 1
 		# shutdown kube cluster
-		kubectl drain --pod-selector='app!=csi-attacher,app!=csi-provisioner,longhorn.io/component!=instance-manager,app!=longhorn-admission-webhook,app!=longhorn-conversion-webhook' --ignore-daemonsets --delete-emptydir-data --force --timeout=60s monty crackers mindy --kubeconfig=/etc/rancher/k3s/kubedrainconfig
+		kubectl drain monty crackers mindy --delete-emptydir-data --ignore-daemonsets --pod-selector='app!=csi-attacher,app!=csi-provisioner,app!=longhorn-admission-webhook,app!=longhorn-conversion-webhook,app!=longhorn-driver-deployer' --kubeconfig=/etc/rancher/k3s/kubedrainconfig
 		logger -t upssched-cmd "ONBATTERY: K8s Nodes Drained"
 		/etc/pushover/pushover.sh -T "UPS ONBATTERY: NODES DRAINED" -m "nodes drained of all k8s pods" -p 1
 		# tell subscribers to shutdown

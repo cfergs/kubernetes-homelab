@@ -14,8 +14,8 @@
   become: true
   ansible.builtin.pip:
     name:
-      - kubernetes==25.3.0
-      - pyyaml==6.0
+      - kubernetes==28.1.0
+      - pyyaml==6.0.1
 
 - name: Create node-drainer-sa ServiceAccount
   become: true
@@ -58,10 +58,10 @@
         - apiGroups: [""]
           resources: ["pods/eviction"]
           verbs: ["create"]
-        # Needed to list pods by Node
+        # Needed to delete pods by Node
         - apiGroups: [""]
           resources: ["pods"]
-          verbs: ["get", "list"]
+          verbs: ["delete"]
         # Needed to cordon Nodes
         - apiGroups: [""]
           resources: ["nodes"]
@@ -74,6 +74,10 @@
         - apiGroups: ["extensions"]
           resources: ["daemonsets", "replicasets"]
           verbs: ["get", "list"]
+        # Needed to delete pod disruption budgets
+        - apiGroups: ["policy"]
+          resources: ["poddisruptionbudgets"]
+          verbs: ["delete"]
     kubeconfig: "{{ kube_file }}"
 
 - name: Create ClusterRole Binding
