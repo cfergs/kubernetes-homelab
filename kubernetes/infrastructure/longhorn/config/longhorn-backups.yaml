@@ -9,5 +9,5 @@ spec:
   task: "backup"
   groups:
     - default
-  retain: 60 # retain 30 days of backups
+  retain: 40 # retain 20 days of backups
   concurrency: 2
