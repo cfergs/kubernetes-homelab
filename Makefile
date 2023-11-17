@@ -55,17 +55,17 @@ clean: clean-venv clean-pre-commit
 ansible-env: ci-environment
 	cd ansible; make ansible-requirements
 
-ansible-k3s:
+ansible-k3s: ci-environment
 	cd ansible; make ansible-k3s
 
-ansible-flux: ansible-env
+ansible-flux: ci-environment
 	cd ansible; make ansible-flux
 
-ansible-node-patch: ansible-env
+ansible-node-patch: ci-environment
 	cd ansible; make ansible-node-patch
 
-ansible-node-reboot: ansible-env
+ansible-node-reboot: ci-environment
 	cd ansible; make ansible-node-reboot
 
-ansible-node-shutdown: ansible-env
+ansible-node-shutdown: ci-environment
 	cd ansible; make ansible-node-shutdown
