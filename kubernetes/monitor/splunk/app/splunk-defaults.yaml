@@ -60,6 +60,12 @@ data:
               osnix:
                 disabled : false
                 frozenTimePeriodInSecs : 15552000 # 6months
+        - key: props
+          value:
+            directory: /opt/splunk/etc/apps/search/local
+            content:
+              routeros:
+                EXTRACT-mikrotik-firewall : '((?<rule>\S+)\s)?(?<chain>.+?):\sin:(?<in_if>.*?)\sout:(?<out_if>[^,]+),(\spacket-mark:(?<packet_mark>\S+))?(\sconnection-mark:(?<connection_mark>\S+))?(\sconnection-state:(?<connection_state>\S+))?(\ssrc-mac\s(?<src_mac>[^,]+),)?\sproto\s(?<protocol>\S+)(\s\((?<flag>[^\)]*)\))?,\s\[?(?<src_ip>(?:\d+\.\d+\.\d+\.\d+|[^\]]+))\]?(:(?<src_port>[^-]+))?->\[?(?<dest_ip>(?:\d+\.\d+\.\d+\.\d+|[^\]]+))(\]?:(?<dest_port>[^,]+))?,\s(?:NAT[^,]+, )?(prio\s(?<prio>[^,]+),\s)?len\s(?<length>\d+)'
         - key: telemetry
           value:
             directory: /opt/splunk/etc/apps/splunk_instrumentation/local
