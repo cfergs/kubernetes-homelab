@@ -6,6 +6,7 @@ metadata:
 data:
   default.yml: |-
     cert_prefix: https
+    hide_password: true
     splunk:
       disable_popups: true
       http_port: 8000
@@ -76,9 +77,4 @@ data:
             directory: /opt/splunk/etc/system/local
             content:
               general:
-                #render_version_messages : 0
-                #hideInstrumentationOptInModal : 1
-                #dismissedInstrumentationOptInVersion : 4
                 tz : Australia/Perth
-              #general_default:
-                #showWhatsNew : 0
