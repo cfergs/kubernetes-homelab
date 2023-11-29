@@ -50,7 +50,7 @@ spec:
             sizeLimit: 256Mi
       containers:
         - name: mylar3
-          image: ghcr.io/cdloh/mylar3:0.7.5@sha256:a401de18173141f6e11cbfd69f47edba3a432a9fc8f09f12c5b2c4c3cf64285f
+          image: ghcr.io/cdloh/mylar3:0.7.6@sha256:8a69823d5dec966b3c4199d59e0d2754807ebbf3c84c1a459f1002e4e5272638
           command: ["/bin/sh"]
           args: ["-c", "/app/entrypoint.sh"]
           ports:
