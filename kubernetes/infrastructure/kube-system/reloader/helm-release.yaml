@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: reloader
-      version: 1.0.48
+      version: 1.0.51
       interval: 1h0m0s
       sourceRef:
         kind: HelmRepository

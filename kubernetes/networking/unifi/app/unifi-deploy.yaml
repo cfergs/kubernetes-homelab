@@ -34,7 +34,7 @@ spec:
             sizeLimit: 64Mi
       containers:
         - name: unifi
-          image: ghcr.io/jacobalberty/unifi-docker:v7.3.83@sha256:b2c58b67e8a63d34dab649cd19316c56cf024fa5a76cb224a0fc258b239a14c8
+          image: ghcr.io/jacobalberty/unifi-docker:v7.5.176@sha256:b348a85a4853106565839839c8dce3d5ea152a72095c183d9d65b287df9e8d07
           ports:
             - containerPort: 3478 # used for STUN
               name: ubnt-3478
