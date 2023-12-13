@@ -71,15 +71,6 @@ spec:
             capabilities:
               drop:
                 - ALL
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: "kubernetes.io/hostname"
-                    operator: In
-                    values:
-                      - mindy
 ---
 apiVersion: v1
 kind: Service
