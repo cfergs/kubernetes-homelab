@@ -12,6 +12,7 @@ data:
     # general
     allow-collecting-longhorn-usage-metrics: "false"
     default-data-locality: best-effort
+    default-replica-count: "2"
     node-down-pod-deletion-policy: delete-both-statefulset-and-deployment-pod
     node-drain-policy: always-allow
     remove-snapshots-during-filesystem-trim: "true"

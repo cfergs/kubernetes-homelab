@@ -25,8 +25,8 @@ k3s_cluster:
       ansible_host: 192.168.0.225
     crackers:
       ansible_host: 192.168.0.226
-    mindy:
-      ansible_host: 192.168.0.227
+  #  mindy:
+  #    ansible_host: 192.168.0.227
   vars:
     # SSH connectivity
     ansible_connection: paramiko # don't need to apt-get sshpass
