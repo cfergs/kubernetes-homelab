@@ -8,7 +8,6 @@
     | kubectl delete -f -
   become_user: "{{ local_username }}"
   delegate_to: localhost
-  when: reboot_required_file.stat.exists or just_reboot is defined
 
 - name: Drain node # noqa no-changed-when command-instead-of-shell partial-become[task]
   ansible.builtin.shell: |
@@ -27,7 +26,6 @@
       - app!=longhorn-conversion-webhook
       - app!=longhorn-driver-deployer
   register: swamp_drained
-  when: reboot_required_file.stat.exists or just_reboot is defined
 
 - name: Shutdown node
   community.general.shutdown:
