@@ -43,6 +43,8 @@ spec:
           ports:
             - containerPort: 8989
           env:
+            - name: SONARR__AUTHENTICATION_METHOD
+              value: External
             - name: SONARR__ANALYTICS_ENABLED
               value: "False"
             - name: SONARR__URL_BASE
