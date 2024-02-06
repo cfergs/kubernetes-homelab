@@ -39,7 +39,7 @@ spec:
             sizeLimit: 64Mi
       containers:
         - name: sonarr
-          image: ghcr.io/onedr0p/sonarr:3.0.10@sha256:65547cf18b20e114ba3cbb3be5f6b14ffc7d3183e87cd6577bbf3f7ce869a67a
+          image: ghcr.io/onedr0p/sonarr:4.0.1@sha256:4f7b520af6d128385e02b38484a735ece1487ee12cca8b0204f458f2fc39533e
           ports:
             - containerPort: 8989
           env:

@@ -38,7 +38,7 @@ spec:
             sizeLimit: 64Mi
       containers:
         - name: sabnzbd
-          image: ghcr.io/onedr0p/sabnzbd:4.1@sha256:1d10e2c162fd53c8f1d119de9a5debdb1e72675a93c70353a39563a920939b10
+          image: ghcr.io/onedr0p/sabnzbd:4.2.2@sha256:40e89ec57e3659f409d52b14d19d4bdb9b3bb3131e5578afa11f79ff529b030d
           ports:
             - containerPort: 8080
           env:
