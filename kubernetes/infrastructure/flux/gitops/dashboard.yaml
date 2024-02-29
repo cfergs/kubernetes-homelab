@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: weaveworks
         namespace: flux-system
-      version: 4.0.35 # v0.37.0
+      version: 4.0.36 # v0.38.0
   install:
     remediation:
       retries: 3
