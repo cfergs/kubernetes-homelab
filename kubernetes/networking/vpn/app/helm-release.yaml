@@ -21,12 +21,12 @@ spec:
 
     image:
       repository: ghcr.io/angelnu/pod-gateway
-      tag: v1.8.1@sha256:baba1f27d821e8cbd27be115156425041455d1281115a8ca8d3bca9379a3ee24
+      tag: v1.10.0@sha256:7c5a429aae32787fb8e56e2cb7be971342d2101eb27c48c6d79edfda636e5aa5
 
     webhook:
       image:
         repository: ghcr.io/angelnu/gateway-admision-controller
-        tag: v3.9.0@sha256:87afaa7c6d7b4fcce44091da790f92035f5e8a1f455e3df8dc61abf94e822128
+        tag: v3.10.0@sha256:18b6b8acbaf58eea6aecf3c2656d8cc5ba18bcd4a11d10f98b825f25fd3caa11
 
     addons:
       vpn:
@@ -35,7 +35,7 @@ spec:
         gluetun:
           image:
             repository: ghcr.io/qdm12/gluetun
-            tag: v3.36@sha256:9ff63062551fe3295551fca63b1c323f5eab274834191ff57f9ef1fa7815efd4
+            tag: v3.37@sha256:a392439b7af3811945f6d209f5b077fd05bbb4fa588cfa56f8b4f6132ab1e81c
 
         env:
           - name: DOT
