@@ -6,7 +6,7 @@ localhost:
     ansible_connection: local
 
     # Flux
-    flux_version: 2.2.1
+    flux_version: 2.2.3
     weave_gitops_version: 0.38.0
 
     # Flux - Github values
