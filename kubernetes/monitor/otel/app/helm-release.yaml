@@ -35,6 +35,7 @@ spec:
           - "/var/log/pods/kube-system_snapshot-controller*/*/*.log"
           - "/var/log/pods/longhorn-system_longhorn-manager*/*/*.log"
           - "/var/log/pods/nginx-internal_logging-nginx-internal-controller*/*/*.log"
+          - "/var/log/pods/networking_unifi*/*/*.log" # unifi generates debug by default - https://github.com/jacobalberty/unifi-docker/issues/716
 
       journald:
         enabled: true
