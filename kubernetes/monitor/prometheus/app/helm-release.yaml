@@ -121,12 +121,6 @@ spec:
           external-secrets:
             url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
             datasource: Prometheus
-          longhorn-storage:
-            gnetId: 13032 # https://grafana.com/grafana/dashboards/13032?tab=revisions
-            revision: 6
-            datasource:
-              - name: DS_PROMETHEUS
-                value: Prometheus
           mikrotik-mktxp-exporter:
             gnetId: 13679 # https://grafana.com/grafana/dashboards/13679?tab=revisions
             revision: 20
