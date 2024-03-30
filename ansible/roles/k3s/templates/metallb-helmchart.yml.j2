@@ -16,13 +16,6 @@ spec:
   version: {{ metallb_version }}
   targetNamespace: metallb-system
   valuesContent: |-
-    prometheus:
-      rbacPrometheus: false
-      secureMetricsPort: 9120
-      prometheusRule:
-        enabled: true
-      serviceMonitor:
-        enabled: true
     speaker:
       frr:
         enabled: false

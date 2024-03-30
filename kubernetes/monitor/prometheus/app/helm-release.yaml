@@ -133,10 +133,6 @@ spec:
             datasource:
               - name: DS_PROMETHEUS
                 value: Prometheus
-          metallb:
-            gnetId: 14127 # https://grafana.com/grafana/dashboards/14127?tab=revisions
-            revision: 1
-            datasource: Prometheus
           node-exporter-full:
             gnetId: 1860 # https://grafana.com/grafana/dashboards/1860?tab=revisions
             revision: 31
