@@ -44,22 +44,22 @@ data:
                 remote.azure.secret_key : "{{ lookup('env','AZURE_BLOB_STORAGE_SECRET', no_log='True') }}"
               ingress:
                 disabled : false
-                frozenTimePeriodInSecs : 15552000 # 6months
+                frozenTimePeriodInSecs : 7776000 # 3months
               k8s_events:
                 disabled : false
                 frozenTimePeriodInSecs : 7776000 # 3months
               k8s_apps:
                 disabled : false
-                frozenTimePeriodInSecs : 15552000 # 6months
+                frozenTimePeriodInSecs : 7776000 # 3months
               netfw: # mikrotik
                 disabled : false
-                frozenTimePeriodInSecs : 15552000 # 6months
-              netops: # hpeprocurve, mikrotik
+                frozenTimePeriodInSecs : 7776000 # 3months
+              netops: #mikrotik
                 disabled : false
-                frozenTimePeriodInSecs : 15552000 # 6months
+                frozenTimePeriodInSecs : 7776000 # 3months
               osnix:
                 disabled : false
-                frozenTimePeriodInSecs : 15552000 # 6months
+                frozenTimePeriodInSecs : 7776000 # 3months
         - key: props
           value:
             directory: /opt/splunk/etc/apps/search/local

@@ -9,13 +9,17 @@ spec:
   chart:
     spec:
       chart: splunk-operator
-      version: 2.4.0 # splunk 9.1.1
+      version: 2.5.2 # splunk 9.1.3
       interval: 1h0m0s
       sourceRef:
         kind: HelmRepository
         name: splunk-operator
         namespace: flux-system
   values:
+    splunkOperator:
+      persistentVolumeClaim:
+        storageClassName: local-path
+
       volumes:
         - name: app-staging
           persistentVolumeClaim:
