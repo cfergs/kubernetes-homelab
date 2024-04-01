@@ -35,7 +35,7 @@ k3s_cluster:
 
     # k3s settings
     k3s_registration_address: 192.168.0.225
-    k3s_release_version: v1.28.3+k3s2
+    k3s_release_version: v1.28.8+k3s1
 
     # Kubernetes app versions - only ones installed thru ansible
     longhorn_version: 1.6.1
