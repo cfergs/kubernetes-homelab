@@ -12,14 +12,14 @@ This homelab operates on 100% cat power.
   </tr>
   <tr>
     <td><img src="images/monty.png" width=110px height=90px></td>
-    <td>Monty</td>
+    <td>Monty (RIP)</td>
     <td>HP EliteDesk 800 G1 Base Model Desktop Mini PC</td>
     <td>128Gb HDD, 8Gb RAM</td>
     <td>Kubernetes Master Node</td>
   </tr>
   <tr>
     <td><img src="images/crackers.png" width=110px height=90px></td>
-    <td>Crackers</td>
+    <td>Crackers (RIP)</td>
     <td>Lenovo Thinkcentre M73 Tiny Form Factor</td>
     <td>128Gb HDD, 12Gb RAM</td>
     <td>Kubernetes Worker Node</td>
