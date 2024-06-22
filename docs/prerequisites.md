@@ -39,8 +39,6 @@ The following secrets are required in an Azure Keyvault:
 | nordvpn-username                     | download VPN creds                               | Manual     |
 | nut-user-controller-password         | NUT controller password                          | Terraform  |
 | nut-user-subscriber-password         | NUT subscriber password                          | Terraform  |
-| prometheus-blob-account-key          | prometheus (thanos) storage account key          | Terraform  |
-| prometheus-blob-storage-account      | prometheus (thanos) storage account name         | Terraform  |
 | pushover-app-token                   | NUT alerting                                     | Manual     |
 | pushover-app-user                    | NUT alerting                                     | Manual     |
 | splunk-admin-password                | splunk admin account password                    | Terraform  |
@@ -61,7 +59,6 @@ Offsite storage. Managed using the repo [kubernetes-homelab-azure](https://githu
 Used by:
 * Longhorn volume backups
 * Splunk smartstore and app storage
-* Prometheus (Thanos) metrics
 
 ## CloudFlare
 

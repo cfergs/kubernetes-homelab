@@ -17,7 +17,7 @@ HEC_URL: splunk-hec.DOMAIN_NAME
 
 ## Prometheus
 
-Using [prometheus-community](https://github.com/prometheus-community/helm-charts) helm chart to configure prometheus, grafana and upload of metrics via thanos. [bitnami-thanos](https://github.com/bitnami/charts/tree/main/bitnami/thanos) does thanos querying, compacting and storegateway actions.
+Using [prometheus-community](https://github.com/prometheus-community/helm-charts) helm chart to configure prometheus and grafana.
 
 Prometheus monitors metrics for:
 * cert-manager
@@ -32,29 +32,4 @@ Prometheus monitors metrics for:
 
 Metrics are stored in Grafana. Dashboards are stored in code along with all config.
 
-Prometheus uploads metrics older than 2hours to an azure container using Thanos. Thanos set as default datastore in grafana.
-
 URL: https://grafana.DOMAIN_NAME. Accessible via AzureAd authentication
-
-TL;DR. Prometheus-community chart manages prom/grafana & uploads metrics to thanos, Thanos chart manages cloud storage and makes metrics available for querying.
-
-```text
-                       +--------------+                  +--------------+      +--------------+
-                       | Thanos       |----------------> | Thanos Store |      | Thanos       |
-                       | Query        |           |      | Gateway      |      | Compactor    |
-                       +--------------+           |      +--------------+      +--------------+
-                                                  |             |                     |
-                                                  |             | storages            | Downsample &
-                                                  |             | query metrics       | compact blocks
-                                                  |             |                     |
-                                                  |             \/                    |
-                                                  |      +----------------+           |
-                                                  |----> | Azure          | <---------+
-                                                  |      | Container      |
-+------------------------------+                  |      +----------------+
-|+------------+  +------------+|                  |
-|| Prometheus |->| Thanos     || <----------------+
-|| (*)        |<-| Sidecar (*)||    query
-|+------------+  +------------+|    metrics
-+------------------------------+
-```

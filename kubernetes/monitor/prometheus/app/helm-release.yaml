@@ -47,16 +47,6 @@ spec:
     grafana:
       enabled: true
 
-      additionalDataSources:
-        - name: Prometheus
-          access: proxy
-          isDefault: true
-          jsonData:
-            incrementalQuerying: true
-            prometheusType: Thanos
-          type: prometheus
-          url: http://thanos-query-frontend.monitor.svc.cluster.local:9090
-
       admin:
         existingSecret: grafana-admin-creds
 
@@ -99,14 +89,6 @@ spec:
               editable: true
               options:
                 path: /var/lib/grafana/dashboards/grafana-dashboards-nginx
-            - name: grafana-dashboards-thanos
-              orgId: 1
-              folder: Thanos
-              type: file
-              disableDeletion: true
-              editable: true
-              options:
-                path: /var/lib/grafana/dashboards/grafana-dashboards-thanos
 
       dashboards:
         grafana-dashboards-flux:
@@ -149,22 +131,6 @@ spec:
             url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/nginx.json
           nginx-request-handling-performance:
             url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/grafana/dashboards/request-handling-performance.json
-            datasource: Prometheus
-        grafana-dashboards-thanos:
-          thanos-compact:
-            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/compact.json
-            datasource: Prometheus
-          thanos-overview:
-            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/overview.json
-            datasource: Prometheus
-          thanos-query:
-            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query.json
-            datasource: Prometheus
-          thanos-query-frontend:
-            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/query-frontend.json
-            datasource: Prometheus
-          thanos-store:
-            url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/thanos/dashboards/store.json
             datasource: Prometheus
 
       defaultDashboardsTimezone: browser
@@ -218,12 +184,6 @@ spec:
         hosts:
           - grafana.${DOMAIN_NAME}
         path: /
-
-      sidecar:
-        datasources:
-          alertmanager:
-            enabled: true # left at default value
-          defaultDatasourceEnabled: false # disable default prometheus datasource as we recreate it pointing to thanos
 
     # flux monitoring config will add to rbac and crd fields
     kube-state-metrics:
@@ -318,22 +278,6 @@ spec:
         ruleSelectorNilUsesHelmValues: false
         scrapeConfigSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
-
-        thanos:
-          image: quay.io/thanos/thanos:v0.32.2
-          objectStorageConfig:
-            key: objstore.yml
-            name: prometheus-thanos-blob-creds
-        walCompression: true
-
-      thanosService:
-        enabled: true
-      thanosServiceMonitor:
-        enabled: true
-
-    prometheusOperator:
-      annotations:
-        secret.reloader.stakater.com/reload: prometheus-thanos-blob-creds
 
   postRenderers:
     - kustomize:
