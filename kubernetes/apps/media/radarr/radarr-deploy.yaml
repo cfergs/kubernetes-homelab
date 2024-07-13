@@ -41,7 +41,7 @@ spec:
             sizeLimit: 64Mi
       containers:
         - name: radarr
-          image: ghcr.io/onedr0p/radarr:5.6.0.8846@sha256:61e3ac4fa250fe67c33519c79e1d1a2a2ad41e6e769f73ea710ef32f678b46cc
+          image: ghcr.io/onedr0p/radarr:5.7.0@sha256:90c1d2b3df1d3e3033a329179a43cc0de314070f4405aaa275346c4ba01f91f7
           ports:
             - containerPort: 7878
           env:
