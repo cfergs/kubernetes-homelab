@@ -11,7 +11,7 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "redhat.telemetry.enabled": false,
-    "terminal.integrated.defaultProfile.windows": "Ubuntu-20.04 (WSL)",
+    "terminal.integrated.defaultProfile.windows": "Ubuntu-24.04 (WSL)",
     "yaml.schemas": {
         "ansible": "ansible/**/*.yml",
         "kubernetes": "kubernetes/**/*.yaml"
